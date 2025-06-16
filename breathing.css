@@ -9,16 +9,14 @@ body {
   font-family: 'Montserrat', sans-serif;
   min-height: 100vh;
   overflow: hidden;
-
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-
   padding-bottom: 100px;
 }
 
-/* Header fixes to the top */
+/* Header */
 h1 {
   position: fixed;
   top: 20px;
@@ -27,7 +25,7 @@ h1 {
   margin-bottom: 20px;
 }
 
-/* Controls fixed at bottom */
+/* Controls */
 .controls {
   position: fixed;
   bottom: 20px;
@@ -37,7 +35,7 @@ h1 {
   text-align: center;
 }
 
-/* Center circle */
+/* Breathing container */
 .breathing-container {
   height: 250px;
   width: 250px;
@@ -45,6 +43,7 @@ h1 {
   transform: scale(1);
 }
 
+/* Base circle */
 .circle {
   background-color: #010f1c;
   height: 100%;
@@ -56,6 +55,33 @@ h1 {
   z-index: -1;
 }
 
+/* Glow effect */
+.glow-circle {
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  width: 290px;
+  height: 290px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -3;
+}
+
+.breathing-container.active .glow-circle {
+  animation: pulseGlow 2s ease-in-out infinite;
+  animation-play-state: running;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 40px 20px #3b82f6;
+  }
+  50% {
+    box-shadow: 0 0 80px 40px #3b82f6;
+  }
+}
+
+/* Conic background */
 .gradient-circle {
   background: conic-gradient(
     #4ca493 0%,
@@ -74,25 +100,35 @@ h1 {
   left: -10px;
 }
 
+/* Pointer structure */
+.pointer-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.pointer-rotator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  transform-origin: center;
+}
+
 .pointer {
   background-color: #fff;
   border-radius: 50%;
   height: 20px;
   width: 20px;
-  display: block;
-}
-
-.pointer-container {
   position: absolute;
-  top: -40px;
-  left: 115px;
-  width: 20px;
-  height: 160px;
-  transform-origin: bottom center;
-}
-
-.rotate {
-  animation: rotate 12s linear forwards infinite;
+  left: -10px; /* Center horizontally */
+  top: -160px;  /* Default orbit distance */
+  transition: top 0.3s linear;
 }
 
 @keyframes rotate {
@@ -104,6 +140,7 @@ h1 {
   }
 }
 
+/* Breathing animation phases */
 .breathing-container.grow {
   animation: grow 4s linear forwards;
 }
@@ -130,15 +167,15 @@ h1 {
   }
 }
 
+/* Center text */
 .breathing-text {
-    position: absolute;
-    bottom: 50%;
-    left: 50%;
-    transform: translate(-50%, 50%);
-    color: #fff;
-    font-size: 1.5rem;
-    z-index: 1;
-    text-align: center;
-    width: 100%;
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  color: #fff;
+  font-size: 1.5rem;
+  z-index: 1;
+  text-align: center;
+  width: 100%;
 }
-
