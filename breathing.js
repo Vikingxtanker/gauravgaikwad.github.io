@@ -22,15 +22,17 @@ function startBreathing() {
 
 function animate() {
   text.innerText = 'Breathe In';
-  container.className = 'container grow';
-  
+  container.classList.remove('shrink'); // just in case
+  container.classList.add('grow'); // grow first
+    
   setTimeout(() => {
     text.innerText = 'Hold';
   }, 4000);
 
   setTimeout(() => {
     text.innerText = 'Breathe Out';
-    container.className = 'container shrink';
+    container.classList.remove('grow'); // remove grow
+    container.classList.add('shrink'); // shrink
   }, 8000);
 }
 
@@ -49,7 +51,8 @@ function stopBreathing() {
   // Stop rotation
   pointerContainer.classList.remove('rotate');
   
-  container.className = 'container';
+  container.classList.remove('grow'); 
+  container.classList.remove('shrink'); 
   text.innerText = '';
 }
 
