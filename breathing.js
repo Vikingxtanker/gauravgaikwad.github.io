@@ -2,7 +2,7 @@ let isRunning = false;
 let timeoutId = null;
 let animationFrameId = null;
 
-let phases = [
+const phases = [
   { text: "Breathe in", className: "grow", duration: 4000 },
   { text: "Hold", className: "grow", duration: 4000 },
   { text: "Breathe out", className: "shrink", duration: 4000 }
@@ -15,7 +15,6 @@ let stepRemaining = phases[currentStep].duration;
 const BASE_RADIUS = 125;
 const OFFSET = 20;
 const SCALE_GROW = 1.2;
-
 const TOTAL_CYCLE_DURATION = 12000;
 
 const text = document.getElementById("text");
@@ -30,9 +29,9 @@ const pauseBtn = document.getElementById("pauseBtn");
 const stopBtn = document.getElementById("stopBtn");
 
 let cycleStartTime = 0;
-let rotationOffset = 0; // total ms of rotation elapsed before pause
+let rotationOffset = 0; // Tracks elapsed time before pause
 
-// --- Rotation logic ---
+// --- Pointer rotation control ---
 function setPointerRadius(scale) {
   const distance = BASE_RADIUS * scale + OFFSET;
   pointer.style.top = `-${distance}px`;
@@ -47,11 +46,10 @@ function updatePointerRotation() {
   const angle = progress * 360;
 
   pointerRotator.style.transform = `rotate(${angle}deg)`;
-
   animationFrameId = requestAnimationFrame(updatePointerRotation);
 }
 
-// --- Breathing control ---
+// --- Breathing cycle control ---
 function startBreathing() {
   if (isRunning) return;
 
@@ -64,12 +62,15 @@ function startBreathing() {
   container.style.animationPlayState = "running";
 
   setPointerRadius(SCALE_GROW);
-
   rotationOffset = 0;
   cycleStartTime = performance.now();
   updatePointerRotation();
-
   performStep();
+
+  // 🔒 Disable Start, enable Pause and Stop
+  startBtn.disabled = true;
+  pauseBtn.disabled = false;
+  stopBtn.disabled = false;
 }
 
 function performStep() {
@@ -84,7 +85,7 @@ function performStep() {
   container.style.animationPlayState = "running";
   glow.style.animationPlayState = "running";
 
-  setPointerRadius(SCALE_GROW); // Always fixed outer orbit
+  setPointerRadius(SCALE_GROW);
 
   stepStartTime = performance.now();
 
@@ -98,11 +99,9 @@ function performStep() {
 function pauseBreathing() {
   if (!isRunning) return;
 
-  // Stop phase timer
   clearTimeout(timeoutId);
   timeoutId = null;
 
-  // Capture how much time has passed in this cycle
   const now = performance.now();
   rotationOffset += now - cycleStartTime;
 
@@ -120,6 +119,9 @@ function pauseBreathing() {
 
   pauseBtn.textContent = "Resume";
   pauseBtn.onclick = resumeBreathing;
+
+  // Keep Start disabled during pause
+  startBtn.disabled = true;
 }
 
 function resumeBreathing() {
@@ -146,18 +148,19 @@ function resumeBreathing() {
     performStep();
   }, stepRemaining);
 
-  // Resume rotation from where it left off
   cycleStartTime = performance.now();
   updatePointerRotation();
 
   pauseBtn.textContent = "Pause";
   pauseBtn.onclick = pauseBreathing;
+
+  // Still keep Start disabled
+  startBtn.disabled = true;
 }
 
 function stopBreathing() {
   clearTimeout(timeoutId);
   cancelAnimationFrame(animationFrameId);
-
   timeoutId = null;
   animationFrameId = null;
   isRunning = false;
@@ -170,13 +173,22 @@ function stopBreathing() {
 
   pointerRotator.style.transform = "rotate(0deg)";
   setPointerRadius(SCALE_GROW);
-
   rotationOffset = 0;
 
+  // 🔓 Re-enable Start, reset Pause
+  startBtn.disabled = false;
+  pauseBtn.disabled = false;
   pauseBtn.textContent = "Pause";
   pauseBtn.onclick = pauseBreathing;
+  stopBtn.disabled = true;
 }
 
+// --- Initial button state on page load ---
+startBtn.disabled = false;
+pauseBtn.disabled = true;
+stopBtn.disabled = true;
+
+// --- Event handlers ---
 startBtn.onclick = startBreathing;
 pauseBtn.onclick = pauseBreathing;
 stopBtn.onclick = stopBreathing;
