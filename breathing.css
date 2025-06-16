@@ -9,14 +9,40 @@ body {
   font-family: 'Montserrat', sans-serif;
   min-height: 100vh;
   overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  padding-bottom: 100px;
 }
 
+/* Header fixes to the top */
+h1 {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 20px;
+}
+
+/* Controls fixed at bottom */
+.controls {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  text-align: center;
+}
+
+/* Center circle */
 .breathing-container {
   height: 250px;
   width: 250px;
   position: relative;
   transform: scale(1);
-    top: 100px;
 }
 
 .circle {
@@ -105,22 +131,14 @@ body {
 }
 
 .breathing-text {
-    position: fixed;
-    text-align: center;
-    top: 55%;
+    position: absolute;
+    bottom: 50%;
     left: 50%;
-    overflow: hidden;
-    translate: -50% -50%;
-    
-  color: #fff;
-  font-size: 1.5rem;
+    transform: translate(-50%, 50%);
+    color: #fff;
+    font-size: 1.5rem;
+    z-index: 1;
+    text-align: center;
+    width: 100%;
 }
 
-.controls {
-    position: fixed;
-    text-align: center;
-    top: 70%;
-    left: 50%;
-    overflow: hidden;
-    translate: -50% -50%;
-}
