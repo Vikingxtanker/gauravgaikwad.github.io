@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Health Camp - Station Hub</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<h2>Health Camp - Station Hub</h2>
+
+<form id="verifyForm">
+    <label>Enter Patient ID:
+        <input type="text" id="patientID" required>
+    </label>
+    <button type="submit">Verify</button>
+</form>
+
+<div id="stationSection" style="display:none; margin-top: 20px;">
+    
+    <p><strong>Name:</strong> <span id="patientName"></span></p>
+    <p><strong>Age:</strong> <span id="patientAge"></span></p>
+    <p><strong>Gender:</strong> <span id="patientGender"></span></p>
+
+    <label>Select Station:
+        <select id="stationSelect" required>
+            <option value="">-- Choose Station --</option>
+            <option value="hb">Hemoglobin</option>
+            <option value="rbg">Random Blood Glucose</option>
+            <option value="fev">Forced Expiratory Volume</option>
+            <option value="bp">Blood Pressure</option>
+        </select>
+    </label>
+
+</div>
+
+<div id="hbFormSection" style="display:none; margin-top: 15px;">
+    <h3>Hemoglobin Station</h3>
+    <form id="hbForm">
+        <label>Hemoglobin (g/dL):
+            <input type="number" id="hemoglobin" step="0.1" required>
+        </label>
+        <button type="submit">Save Hemoglobin</button>
+    </form>
+</div>
+
+<div id="rbgFormSection" style="display:none; margin-top: 15px;">
+    <h3>Random Blood Glucose</h3>
+    <form id="rbgForm">
+        <label>RBG (mg/dL):
+            <input type="number" id="rbg" required>
+        </label>
+        <button type="submit">Save RBG</button>
+    </form>
+</div>
+
+<div id="fevFormSection" style="display:none; margin-top: 15px;">
+    <h3>Forced Expiratory Volume</h3>
+    <form id="fevForm">
+        <label>FEV (Liters):
+            <input type="number" id="fev" step="0.01" required>
+        </label>
+        <button type="submit">Save FEV</button>
+    </form>
+</div>
+
+<div id="bpFormSection" style="display:none; margin-top: 15px;">
+    <h3>Blood Pressure</h3>
+    <form id="bpForm">
+        <label>Systolic (mmHg):
+            <input type="number" id="systolic" required>
+        </label>
+        <label>Diastolic (mmHg):
+            <input type="number" id="diastolic" required>
+        </label>
+        <button type="submit">Save BP</button>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/station-hub.js"></script>
+
+</body>
+</html>

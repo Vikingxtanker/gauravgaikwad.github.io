@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Health Camp Registration</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+    <h2>Patient Registration and Demographics</h2>
+
+    <div class="form-container">
+
+        <div class="form-controls">
+            <button type="button" id="clearFormBtn">Clear All</button>
+        </div>
+
+        <form id="registrationForm">
+            
+            <h3 style="text-align: center;">Registration Form</h3>
+
+            <label>Name:
+                <input type="text" id="name" required>
+            </label>
+
+            <label>Date of Birth:
+                <input type="date" id="dob" required>
+            </label>
+
+            <label>Age (auto-calculated):
+                <input type="number" id="age" readonly>
+            </label>
+
+            <label>Gender:
+                <select id="gender" required>
+                    <option value="">Select</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                </select>
+            </label>
+
+            <label>Height (cm):
+                <input type="number" id="height" step="0.1" required>
+            </label>
+
+            <label>Weight (kg):
+                <input type="number" id="weight" step="0.1" required>
+            </label>
+
+            <label>BMI (auto-calculated):
+                <input type="text" id="bmi" readonly>
+            </label>
+
+            <label>Phone Number:
+                <input type="tel" id="phone" required>
+            </label>
+
+            <label>Address:
+                <textarea id="address" required></textarea>
+            </label>
+
+            <h3>Social History</h3>
+
+            <label>Tobacco:
+                <select id="tobacco" required>
+                    <option value="">Select</option>
+                    <option>Yes</option>
+                    <option>No</option>
+                </select>
+            </label>
+
+            <label>Smoking:
+                <select id="smoking" required>
+                    <option value="">Select</option>
+                    <option>Yes</option>
+                    <option>No</option>
+                </select>
+            </label>
+
+            <label>Allergy:
+                <select id="allergy" required onchange="toggleAllergyDetails()">
+                    <option value="">Select</option>
+                    <option>Yes</option>
+                    <option>No</option>
+                </select>
+            </label>
+
+            <div id="allergyDetailsDiv" style="display:none;">
+                <label>If Yes, specify allergy:
+                    <input type="text" id="allergyDetails">
+                </label>
+            </div>
+
+            <label>Married:
+                <select id="married" required>
+                    <option value="">Select</option>
+                    <option>Yes</option>
+                    <option>No</option>
+                </select>
+            </label>
+
+            <label>Alcohol:
+                <select id="alcohol" required>
+                    <option value="">Select</option>
+                    <option>Yes</option>
+                    <option>No</option>
+                </select>
+            </label>
+
+            <h3>Medical History</h3>
+
+            <label>Past Medical History:
+                <textarea id="pastMedicalHistory"></textarea>
+            </label>
+
+            <label>Past Medication History:
+                <textarea id="pastMedicationHistory"></textarea>
+            </label>
+
+            <br><br>
+            <button type="submit">Register</button>
+
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/register.js"></script>
+
+    <script>
+        document.getElementById('dob').addEventListener('change', function() {
+            const dob = this.value;
+            if (!dob) {
+                document.getElementById('age').value = '';
+                return;
+            }
+            const [year, month, day] = dob.split("-");
+            calculateAgeFromParts(year, month, day);
+        });
+
+        function calculateAgeFromParts(year, month, day) {
+            const birthDate = new Date(`${year}-${month}-${day}`);
+            const today = new Date();
+
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            document.getElementById('age').value = age >= 0 ? age : '';
+        }
+
+        function calculateBMI() {
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value);
+            if (weight > 0 && height > 0) {
+                const bmi = weight / ((height / 100) ** 2);
+                document.getElementById('bmi').value = bmi.toFixed(2);
+            } else {
+                document.getElementById('bmi').value = '';
+            }
+        }
+
+        function toggleAllergyDetails() {
+            const allergy = document.getElementById('allergy').value;
+            document.getElementById('allergyDetailsDiv').style.display = (allergy === 'Yes') ? 'block' : 'none';
+        }
+
+        document.getElementById('weight').addEventListener('input', calculateBMI);
+        document.getElementById('height').addEventListener('input', calculateBMI);
+
+        document.getElementById('clearFormBtn').addEventListener('click', function() {
+            document.getElementById('registrationForm').reset();
+            document.getElementById('bmi').value = '';
+            document.getElementById('age').value = '';
+            document.getElementById('allergyDetailsDiv').style.display = 'none';
+        });
+    </script>
+
+</body>
+</html>

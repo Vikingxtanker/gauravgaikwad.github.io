@@ -18,11 +18,12 @@ body {
 
 /* Header */
 h1 {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-bottom: 20px;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 20px;
+    text-align: center;
 }
 
 /* Controls */
@@ -184,4 +185,3 @@ button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
-
