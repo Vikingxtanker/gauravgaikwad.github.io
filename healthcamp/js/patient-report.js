@@ -38,7 +38,7 @@ document.getElementById('generatePDF').addEventListener('click', async () => {
     const p = window.currentPatient;
     if (!p) return;
 
-    const templateUrl = 'reporttemplate.pdf';  // Ensure this path is correct
+    const templateUrl = 'reporttemplate.pdf';  
     const existingPdfBytes = await fetch(templateUrl).then(res => res.arrayBuffer());
 
     const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
@@ -46,19 +46,19 @@ document.getElementById('generatePDF').addEventListener('click', async () => {
     const pages = pdfDoc.getPages();
     const firstPage = pages[0];
 
-    // Place patient data using exact coordinates
-    firstPage.drawText(p.name ?? '', { x: 132, y: 206, size: 10, font });
-    firstPage.drawText((p.age ?? '').toString(), { x: 318, y: 206, size: 10, font });
-    firstPage.drawText(p.phone ?? '', { x: 91, y: 220, size: 10, font });
-    firstPage.drawText(p.gender ?? '', { x: 317, y: 220, size: 10, font });
-    firstPage.drawText(p.id ?? '', { x: 112, y: 224, size: 10, font });
-    firstPage.drawText((p.bmi ?? '').toString(), { x: 316, y: 234, size: 10, font });
-    firstPage.drawText(new Date().toLocaleDateString(), { x: 83, y: 248, size: 10, font });
+    // Place patient data with corrected coordinates
+    firstPage.drawText(p.name ?? '', { x: 136, y: 633, size: 10, font });
+    firstPage.drawText((p.age ?? '').toString(), { x: 320, y: 633, size: 10, font });
+    firstPage.drawText(p.phone ?? '', { x: 94.5, y: 617, size: 10, font });
+    firstPage.drawText(p.gender ?? '', { x: 342, y: 617, size: 10, font });
+    firstPage.drawText(p.id ?? '', { x: 117, y: 604.64, size: 10, font });
+    firstPage.drawText((p.bmi ?? '').toString(), { x: 321, y: 604.64, size: 10, font });
+    firstPage.drawText(new Date().toLocaleDateString(), { x: 87, y: 590.64, size: 10, font });
 
-    firstPage.drawText((p.hemoglobin ?? 'N/A').toString(), { x: 225, y: 324, size: 10, font });
-    firstPage.drawText((p.fev ?? 'N/A').toString(), { x: 225, y: 307, size: 10, font });
-    firstPage.drawText((p.randomBloodGlucose ?? 'N/A').toString(), { x: 225, y: 380, size: 10, font });
-    firstPage.drawText(p.bloodPressure ?? 'N/A', { x: 225, y: 425, size: 10, font });
+    firstPage.drawText((p.hemoglobin ?? 'N/A').toString(), { x: 222.5, y: 511.74, size: 10, font });
+    firstPage.drawText((p.fev ?? 'N/A').toString(), { x: 222.5, y: 440.24, size: 10, font });
+    firstPage.drawText((p.randomBloodGlucose ?? 'N/A').toString(), { x: 222.5, y: 456.14, size: 10, font });
+    firstPage.drawText(p.bloodPressure ?? 'N/A', { x: 222.5, y: 411.64, size: 10, font });
 
     const pdfBytes = await pdfDoc.save();
     const blob = new Blob([pdfBytes], { type: 'application/pdf' });
