@@ -1,4 +1,4 @@
-// db comes from firebase-config.js
+// Uses db from firebase-config.js
 const loginSection = document.getElementById('loginSection');
 const dashboardSection = document.getElementById('dashboardSection');
 const loginButton = document.getElementById('loginButton');
@@ -22,7 +22,17 @@ loginButton.addEventListener('click', () => {
 function formatTimestamp(timestamp) {
     if (!timestamp) return '';
     const date = timestamp.toDate();
-    return date.toLocaleString();
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return `${day}/${month}/${year} ${time}`;
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return '-';
+    const [year, month, day] = dateStr.split('-');
+    return `${day}/${month}/${year}`;
 }
 
 function matchesFilters(data) {
@@ -57,7 +67,7 @@ function renderAppointments() {
                 <td>${data.name}</td>
                 <td>${data.phone}</td>
                 <td>${data.organization}</td>
-                <td>${data.appointmentDate ?? '-'}</td>
+                <td>${formatDate(data.appointmentDate)}</td>
                 <td>${data.timeslot}</td>
                 <td>${formatTimestamp(data.timestamp)}</td>
             `;

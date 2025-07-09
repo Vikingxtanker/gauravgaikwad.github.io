@@ -1,4 +1,4 @@
-// Uses global `db` from firebase-config.js
+// Uses db from firebase-config.js
 
 document.getElementById('appointmentForm').addEventListener('submit', async function (e) {
     e.preventDefault();
@@ -6,10 +6,14 @@ document.getElementById('appointmentForm').addEventListener('submit', async func
     const name = document.getElementById('name').value.trim();
     const phone = document.getElementById('phone').value.trim();
     const organization = document.getElementById('organization').value.trim();
-    const appointmentDate = document.getElementById('appointmentDate').value;
+
+    const rawDate = document.getElementById('appointmentDate').value;
+    const [year, month, day] = rawDate.split("-");
+    const appointmentDate = `${day}/${month}/${year}`;
+
     const timeslot = document.getElementById('timeslot').value;
 
-    if (!name || !phone || !organization || !appointmentDate || !timeslot) {
+    if (!name || !phone || !organization || !rawDate || !timeslot) {
         Swal.fire('Error', 'Please fill in all fields', 'error');
         return;
     }
