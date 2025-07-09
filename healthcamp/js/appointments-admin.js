@@ -3,6 +3,7 @@ const loginSection = document.getElementById('loginSection');
 const dashboardSection = document.getElementById('dashboardSection');
 const loginButton = document.getElementById('loginButton');
 const filterDate = document.getElementById('filterDate');
+const filterDateDisplay = document.getElementById('filterDateDisplay');
 const filterSlot = document.getElementById('filterSlot');
 const tableBody = document.querySelector('#appointmentsTable tbody');
 
@@ -40,7 +41,6 @@ function matchesFilters(data) {
     }
 
     if (selectedDate && data.appointmentDate) {
-        // Match formatted DD/MM/YYYY with YYYY-MM-DD input
         const [year, month, day] = selectedDate.split('-');
         const formatted = `${day}/${month}/${year}`;
         if (data.appointmentDate !== formatted) {
@@ -53,32 +53,32 @@ function matchesFilters(data) {
 
 function renderAppointments() {
     db.collection('appointments')
-        .orderBy('timestamp', 'desc')
-        .onSnapshot(snapshot => {
-            tableBody.innerHTML = '';
+      .orderBy('timestamp', 'desc')
+      .onSnapshot(snapshot => {
+        tableBody.innerHTML = '';
 
-            snapshot.forEach(doc => {
-                const data = doc.data();
-                if (!matchesFilters(data)) return;
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            if (!matchesFilters(data)) return;
 
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${data.name}</td>
-                    <td>${data.phone}</td>
-                    <td>${data.organization}</td>
-                    <td>${data.appointmentDate}</td>
-                    <td>${data.timeslot}</td>
-                    <td>${formatTimestamp(data.timestamp)}</td>
-                    <td>
-                        <button class="edit-btn" data-id="${doc.id}">✏️</button>
-                        <button class="delete-btn" data-id="${doc.id}">🗑️</button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-
-            attachActionListeners(); // Add button listeners
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${data.name}</td>
+                <td>${data.phone}</td>
+                <td>${data.organization}</td>
+                <td>${data.appointmentDate}</td>
+                <td>${data.timeslot}</td>
+                <td>${formatTimestamp(data.timestamp)}</td>
+                <td>
+                    <button class="edit-btn" data-id="${doc.id}">✏️</button>
+                    <button class="delete-btn" data-id="${doc.id}">🗑️</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
         });
+
+        attachActionListeners();
+      });
 }
 
 function attachActionListeners() {
@@ -138,5 +138,16 @@ function attachActionListeners() {
     });
 }
 
-filterDate.addEventListener('change', renderAppointments);
+// Show formatted date display under date filter
+filterDate.addEventListener('change', () => {
+    const value = filterDate.value;
+    if (value) {
+        const [year, month, day] = value.split("-");
+        filterDateDisplay.value = `Selected: ${day}/${month}/${year}`;
+    } else {
+        filterDateDisplay.value = '';
+    }
+    renderAppointments();
+});
+
 filterSlot.addEventListener('change', renderAppointments);
