@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Health Screening Test Appointment</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<h2 class="page-header">Health Screening Test Appointment</h2>
+
+<div id="appointmentFormContainer">
+    <form id="appointmentForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" required>
+
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" pattern="[0-9]{10}" required>
+
+        <label for="organization">Organization / Firm:</label>
+        <input type="text" id="organization" required>
+
+        <label for="timeslot">Select Time Slot:</label>
+        <select id="timeslot" required>
+            <option value="">-- Choose Slot --</option>
+            <option value="Morning (10 AM - 12 PM)">Morning (10 AM - 12 PM)</option>
+            <option value="Afternoon (2 PM - 5 PM)">Afternoon (2 PM - 5 PM)</option>
+        </select>
+
+        <button type="submit">Submit Appointment</button>
+        <div id="successMessage" style="display:none;">✅ Appointment Submitted Successfully!</div>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/appointment.js"></script>
+
+</body>
+</html>
