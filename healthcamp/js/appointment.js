@@ -1,5 +1,3 @@
-const db = firebase.firestore();
-
 document.getElementById('appointmentForm').addEventListener('submit', async function (e) {
     e.preventDefault();
 
