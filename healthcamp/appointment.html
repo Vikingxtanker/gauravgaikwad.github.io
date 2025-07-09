@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Health Screening Test Appointment</title>
+    <title>Blood Sample Appointment</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
-<h2 class="page-header">Health Screening Test Appointment</h2>
+<h2 class="page-header">Book Blood Sample Appointment</h2>
 
 <div id="appointmentFormContainer">
     <form id="appointmentForm">
@@ -20,6 +20,9 @@
 
         <label for="organization">Organization / Firm:</label>
         <input type="text" id="organization" required>
+
+        <label for="appointmentDate">Date of Appointment:</label>
+        <input type="date" id="appointmentDate" required>
 
         <label for="timeslot">Select Time Slot:</label>
         <select id="timeslot" required>

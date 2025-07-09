@@ -1,3 +1,4 @@
+// db comes from firebase-config.js
 const loginSection = document.getElementById('loginSection');
 const dashboardSection = document.getElementById('dashboardSection');
 const loginButton = document.getElementById('loginButton');
@@ -12,7 +13,7 @@ loginButton.addEventListener('click', () => {
     if (inputPass === ADMIN_PASSWORD) {
         loginSection.style.display = 'none';
         dashboardSection.style.display = 'block';
-        renderAppointments(); // Start after login
+        renderAppointments(); // Start live listener
     } else {
         alert("Incorrect password.");
     }
@@ -34,11 +35,8 @@ function matchesFilters(data) {
         match = false;
     }
 
-    if (selectedDate && data.timestamp) {
-        const recordDate = data.timestamp.toDate().toISOString().split("T")[0];
-        if (recordDate !== selectedDate) {
-            match = false;
-        }
+    if (selectedDate && data.appointmentDate) {
+        match = match && data.appointmentDate === selectedDate;
     }
 
     return match;
@@ -49,6 +47,7 @@ function renderAppointments() {
       .orderBy('timestamp', 'desc')
       .onSnapshot(snapshot => {
         tableBody.innerHTML = '';
+
         snapshot.forEach(doc => {
             const data = doc.data();
             if (!matchesFilters(data)) return;
@@ -58,6 +57,7 @@ function renderAppointments() {
                 <td>${data.name}</td>
                 <td>${data.phone}</td>
                 <td>${data.organization}</td>
+                <td>${data.appointmentDate ?? '-'}</td>
                 <td>${data.timeslot}</td>
                 <td>${formatTimestamp(data.timestamp)}</td>
             `;
@@ -66,6 +66,6 @@ function renderAppointments() {
       });
 }
 
-// Re-render on filter change
+// Filters trigger re-render
 filterDate.addEventListener('change', renderAppointments);
 filterSlot.addEventListener('change', renderAppointments);
