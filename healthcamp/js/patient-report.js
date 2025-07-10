@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (blob.type !== "application/pdf") throw new Error(`Expected PDF, got ${blob.type}`);
 
       const pdfBytes = await blob.arrayBuffer();
-      const pdfDoc = await PDFLib.PDFDocument.load(pdfBytes);
+      const pdfDoc = await PDFLib.PDFDocument.load(pdfBytes, { ignoreEncryption: true });
       const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
       const pages = pdfDoc.getPages();
       const firstPage = pages[0];
