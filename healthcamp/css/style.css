@@ -1,65 +1,42 @@
-/* GLOBAL STYLES */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   background-color: #f2f2f2;
 }
 
-/* FIXED NAVBAR */
-.navbar {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 1050;
-  background-color: #fff;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  height: auto;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-/* WRAPPING & RESPONSIVE NAVBAR TEXT */
-.navbar-brand {
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
-/* FORM CONTAINER */
+/* General Form Container */
 .form-container {
-  max-width: 700px;
-  margin: 0 auto;
-  background-color: white;
+  max-width: 600px;
+  margin: auto;
+  background-color: #f8f9fa;
   padding: 30px;
-  padding-top: 20px;
-  border-radius: 8px;
+  border-radius: 10px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  position: relative;
 }
 
-/* FORM FIELDS */
-.form-controls {
-  text-align: left;
-  margin-bottom: 5px;
-}
-
+/* All Form Elements */
 .form-controls label {
-  display: block;
-  font-weight: bold;
-  color: #444;
-  margin-top: 15px;
-  text-align: left !important;
+  font-weight: 500;
+  margin-bottom: 5px;
 }
 
 .form-controls input,
 .form-controls select,
 .form-controls textarea {
-  margin-top: 5px;
-  margin-bottom: 10px;
-  text-align: left;
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
 }
 
-/* REMOVE SPINNERS FROM NUMBER INPUTS */
+/* Textarea Resize Disabled */
+textarea {
+  resize: none;
+}
+
+/* Remove number input arrows (spinners) */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -69,23 +46,47 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
-/* DISABLED FIELD STYLE */
-input[readonly] {
-  cursor: not-allowed;
-  background-color: #e9ecef;
+/* SweetAlert Confirm Button Styling */
+.swal2-confirm {
+  font-size: 1rem !important;
+  padding: 8px 18px !important;
 }
 
-/* TEXTAREAS */
-textarea {
-  resize: none;
+/* Navbar Adjustments */
+.navbar-brand {
+  font-size: 18px;
+  text-align: center;
+}
+.navbar img {
+  object-fit: contain;
+}
+.navbar .container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
-/* BUTTON STYLES */
-button.btn:hover {
-  opacity: 0.9;
+/* Ensure Form is Below Navbar */
+@media (min-width: 768px) {
+  .form-container {
+    margin-top: 100px;
+  }
 }
 
+/* Clear All Button */
 #clearAllBtn {
-  font-size: 13px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
+
+/* Smaller Clear All button */
+#clearAllBtn.btn-sm {
   padding: 4px 10px;
+  font-size: 14px;
+}
+
+/* Responsive Page Header */
+h2.page-header {
+  margin-top: 100px;
+  text-align: center;
 }
