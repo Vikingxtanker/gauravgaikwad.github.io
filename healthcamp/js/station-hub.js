@@ -1,151 +1,146 @@
-document.getElementById('verifyForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
+document.addEventListener("DOMContentLoaded", () => {
+  const db = firebase.firestore();
 
-    const id = document.getElementById('patientID').value.trim().toUpperCase();
-    if (!id) return;
+  const verifyForm = document.getElementById("verifyForm");
+  const patientIDInput = document.getElementById("patientID");
+  const stationSection = document.getElementById("stationSection");
+  const patientName = document.getElementById("patientName");
+  const patientAge = document.getElementById("patientAge");
+  const patientGender = document.getElementById("patientGender");
+  const stationSelect = document.getElementById("stationSelect");
+
+  const verifyContainer = document.getElementById("verifyForm").parentElement;
+  const changePatientBtn = document.createElement("button");
+
+  const sections = {
+    hb: document.getElementById("hbFormSection"),
+    rbg: document.getElementById("rbgFormSection"),
+    fev: document.getElementById("fevFormSection"),
+    bp: document.getElementById("bpFormSection")
+  };
+
+  let currentPatientId = null;
+
+  // ✅ Clear input on load
+  patientIDInput.value = "";
+
+  // ✅ Create "Change Patient" button
+  changePatientBtn.textContent = "Change Patient";
+  changePatientBtn.className = "btn btn-secondary my-3";
+  changePatientBtn.style.display = "none";
+  changePatientBtn.onclick = () => location.reload();
+  verifyContainer.appendChild(changePatientBtn);
+
+  // ✅ Patient ID verification
+  verifyForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const id = patientIDInput.value.trim();
 
     try {
-        const doc = await db.collection('patients').doc(id).get();
+      const doc = await db.collection("patients").doc(id).get();
+      if (!doc.exists) {
+        Swal.fire("Invalid ID", "No patient found with this ID.", "error");
+        return;
+      }
 
-        if (doc.exists) {
-            const data = doc.data();
-            Swal.fire({
-                icon: 'success',
-                title: 'Correct Patient ID',
-                text: `Patient found: ${data.name}`
-            }).then(() => {
-                document.getElementById('patientName').innerText = data.name;
-                document.getElementById('patientAge').innerText = data.age;
-                document.getElementById('patientGender').innerText = data.gender;
-                document.getElementById('stationSection').style.display = 'block';
-            });
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Incorrect Patient ID',
-                text: 'No patient found with this ID.'
-            });
-            document.getElementById('stationSection').style.display = 'none';
-        }
-        
-    } catch (error) {
-        console.error("Error checking ID:", error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Something went wrong while verifying.'
-        });
+      currentPatientId = id;
+      const data = doc.data();
+
+      // Show patient info
+      patientName.textContent = data.name || "N/A";
+      patientAge.textContent = data.age || "N/A";
+      patientGender.textContent = data.gender || "N/A";
+
+      // ✅ SweetAlert for correct ID
+      await Swal.fire("Patient Verified", "Patient ID is valid.", "success");
+
+      // ✅ Show station selector, hide verify form
+      stationSection.style.display = "block";
+      verifyForm.style.display = "none";
+      changePatientBtn.style.display = "inline-block";
+
+    } catch (err) {
+      console.error("Verification error:", err);
+      Swal.fire("Error", "Something went wrong verifying the patient.", "error");
     }
-});
+  });
 
-document.getElementById('stationSelect').addEventListener('change', async function() {
+  // ✅ Station selection
+  stationSelect.addEventListener("change", async () => {
+    const selected = stationSelect.value;
+    Object.values(sections).forEach(s => s.style.display = "none");
+    if (!selected || !currentPatientId) return;
 
-    document.getElementById('hbFormSection').style.display = 'none';
-    document.getElementById('rbgFormSection').style.display = 'none';
-    document.getElementById('fevFormSection').style.display = 'none';
-    document.getElementById('bpFormSection').style.display = 'none';
+    sections[selected].style.display = "block";
 
-    const selection = this.value;
-    const id = document.getElementById('patientID').value.trim().toUpperCase();
-    if (!selection || !id) return;
+    const doc = await db.collection("patients").doc(currentPatientId).get();
+    const data = doc.data();
 
+    if (selected === "hb" && data.hemoglobin !== undefined)
+      document.getElementById("hemoglobin").value = data.hemoglobin;
+    if (selected === "rbg" && data.rbg !== undefined)
+      document.getElementById("rbg").value = data.rbg;
+    if (selected === "fev" && data.fev !== undefined)
+      document.getElementById("fev").value = data.fev;
+    if (selected === "bp" && data.systolic !== undefined && data.diastolic !== undefined) {
+      document.getElementById("systolic").value = data.systolic;
+      document.getElementById("diastolic").value = data.diastolic;
+    }
+  });
+
+  // ✅ Save Hemoglobin
+  document.getElementById("hbForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const val = parseFloat(document.getElementById("hemoglobin").value);
     try {
-        const doc = await db.collection('patients').doc(id).get();
-        if (!doc.exists) return;
-
-        const data = doc.data();
-
-        if (selection === "hb") {
-            document.getElementById('hbFormSection').style.display = 'block';
-            document.getElementById('hemoglobin').value = data.hemoglobin ?? '';
-        }
-        if (selection === "rbg") {
-            document.getElementById('rbgFormSection').style.display = 'block';
-            document.getElementById('rbg').value = data.randomBloodGlucose ?? '';
-        }
-        if (selection === "fev") {
-            document.getElementById('fevFormSection').style.display = 'block';
-            document.getElementById('fev').value = data.fev ?? '';
-        }
-        if (selection === "bp") {
-            document.getElementById('bpFormSection').style.display = 'block';
-            
-            if (data.bloodPressure) {
-                const [sys, dia] = data.bloodPressure.split('/');
-                document.getElementById('systolic').value = sys || '';
-                document.getElementById('diastolic').value = dia || '';
-            } else {
-                document.getElementById('systolic').value = '';
-                document.getElementById('diastolic').value = '';
-            }
-        }
-
-    } catch (error) {
-        console.error("Error fetching patient for pre-fill:", error);
+      await db.collection("patients").doc(currentPatientId).update({ hemoglobin: val });
+      Swal.fire("Success", "Hemoglobin saved!", "success");
+    } catch (err) {
+      console.error("Error saving HB:", err);
+      Swal.fire("Error", "Failed to save Hemoglobin.", "error");
     }
-});
+  });
 
-// Save Hemoglobin
-document.getElementById('hbForm').addEventListener('submit', async function(e) {
+  // ✅ Save RBG
+  document.getElementById("rbgForm").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const id = document.getElementById('patientID').value.trim().toUpperCase();
-    const hb = parseFloat(document.getElementById('hemoglobin').value);
-    if (isNaN(hb)) return;
+    const val = parseFloat(document.getElementById("rbg").value);
+    try {
+      await db.collection("patients").doc(currentPatientId).update({ rbg: val });
+      Swal.fire("Success", "RBG saved!", "success");
+    } catch (err) {
+      console.error("Error saving RBG:", err);
+      Swal.fire("Error", "Failed to save RBG.", "error");
+    }
+  });
 
-    await db.collection('patients').doc(id).update({
-        hemoglobin: hb,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    Swal.fire('Saved', 'Hemoglobin saved.', 'success');
-    this.reset();
-    document.getElementById('hbFormSection').style.display = 'none';
-});
-
-// Save RBG
-document.getElementById('rbgForm').addEventListener('submit', async function(e) {
+  // ✅ Save FEV
+  document.getElementById("fevForm").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const id = document.getElementById('patientID').value.trim().toUpperCase();
-    const rbg = parseFloat(document.getElementById('rbg').value);
-    if (isNaN(rbg)) return;
+    const val = parseFloat(document.getElementById("fev").value);
+    try {
+      await db.collection("patients").doc(currentPatientId).update({ fev: val });
+      Swal.fire("Success", "FEV saved!", "success");
+    } catch (err) {
+      console.error("Error saving FEV:", err);
+      Swal.fire("Error", "Failed to save FEV.", "error");
+    }
+  });
 
-    await db.collection('patients').doc(id).update({
-        randomBloodGlucose: rbg,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    Swal.fire('Saved', 'Random Blood Glucose saved.', 'success');
-    this.reset();
-    document.getElementById('rbgFormSection').style.display = 'none';
-});
-
-// Save FEV
-document.getElementById('fevForm').addEventListener('submit', async function(e) {
+  // ✅ Save BP
+  document.getElementById("bpForm").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const id = document.getElementById('patientID').value.trim().toUpperCase();
-    const fev = parseFloat(document.getElementById('fev').value);
-    if (isNaN(fev)) return;
-
-    await db.collection('patients').doc(id).update({
-        fev: fev,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    Swal.fire('Saved', 'FEV saved.', 'success');
-    this.reset();
-    document.getElementById('fevFormSection').style.display = 'none';
-});
-
-// Save BP
-document.getElementById('bpForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const id = document.getElementById('patientID').value.trim().toUpperCase();
-    const systolic = parseFloat(document.getElementById('systolic').value);
-    const diastolic = parseFloat(document.getElementById('diastolic').value);
-    if (isNaN(systolic) || isNaN(diastolic)) return;
-
-    await db.collection('patients').doc(id).update({
-        bloodPressure: `${systolic}/${diastolic}`,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    Swal.fire('Saved', 'Blood Pressure saved.', 'success');
-    this.reset();
-    document.getElementById('bpFormSection').style.display = 'none';
+    const sys = parseInt(document.getElementById("systolic").value);
+    const dia = parseInt(document.getElementById("diastolic").value);
+    try {
+      await db.collection("patients").doc(currentPatientId).update({
+        systolic: sys,
+        diastolic: dia
+      });
+      Swal.fire("Success", "Blood Pressure saved!", "success");
+    } catch (err) {
+      console.error("Error saving BP:", err);
+      Swal.fire("Error", "Failed to save Blood Pressure.", "error");
+    }
+  });
 });

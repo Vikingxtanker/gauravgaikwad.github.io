@@ -1,102 +1,91 @@
+/* GLOBAL STYLES */
 body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    background-color: #f2f2f2;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background-color: #f2f2f2;
 }
 
-h2 {
-    text-align: center;
-    color: #333;
+/* FIXED NAVBAR */
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1050;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  height: auto;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
+/* WRAPPING & RESPONSIVE NAVBAR TEXT */
+.navbar-brand {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* FORM CONTAINER */
 .form-container {
-    position: relative;
-    max-width: 500px;
-    margin: 20px auto;
+  max-width: 700px;
+  margin: 0 auto;
+  background-color: white;
+  padding: 30px;
+  padding-top: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  position: relative;
 }
 
+/* FORM FIELDS */
 .form-controls {
-    text-align: right;
-    margin-bottom: 5px;
+  text-align: left;
+  margin-bottom: 5px;
 }
 
-#clearFormBtn {
-    padding: 5px 10px;
-    background-color: #e0e0e0;
-    color: #333;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-    transition: background-color 0.3s;
+.form-controls label {
+  display: block;
+  font-weight: bold;
+  color: #444;
+  margin-top: 15px;
+  text-align: left !important;
 }
 
-#clearFormBtn:hover {
-    background-color: #d5d5d5;
+.form-controls input,
+.form-controls select,
+.form-controls textarea {
+  margin-top: 5px;
+  margin-bottom: 10px;
+  text-align: left;
 }
 
-form {
-    background: #fff;
-    padding: 20px 30px;
-    border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+/* REMOVE SPINNERS FROM NUMBER INPUTS */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
-
-label {
-    display: block;
-    margin-top: 15px;
-    color: #444;
-    font-weight: bold;
-}
-
-input[type="text"],
-input[type="number"],
-input[type="tel"],
-input[type="date"],
-select,
-textarea {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-    font-size: 14px;
-    resize: none;
-}
-
-input[readonly] {
-    background-color: #f9f9f9;
-}
-
-input[type=number]::-webkit-outer-spin-button,
-input[type=number]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
 input[type=number] {
-    -moz-appearance: textfield;
+  -moz-appearance: textfield;
 }
 
-button[type="submit"] {
-    margin-top: 20px;
-    width: 100%;
-    padding: 12px;
-    background-color: #007bff;
-    border: none;
-    color: white;
-    font-size: 16px;
-    border-radius: 4px;
-    cursor: pointer;
+/* DISABLED FIELD STYLE */
+input[readonly] {
+  cursor: not-allowed;
+  background-color: #e9ecef;
 }
 
-button[type="submit"]:hover {
-    background-color: #0056b3;
+/* TEXTAREAS */
+textarea {
+  resize: none;
 }
 
-@media (max-width: 600px) {
-    .form-container {
-        max-width: 90%;
-    }
+/* BUTTON STYLES */
+button.btn:hover {
+  opacity: 0.9;
+}
+
+#clearAllBtn {
+  font-size: 13px;
+  padding: 4px 10px;
 }

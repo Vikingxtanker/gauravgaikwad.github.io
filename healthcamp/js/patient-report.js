@@ -1,69 +1,100 @@
-document.getElementById('reportForm').addEventListener('submit', async function(e) {
+document.addEventListener("DOMContentLoaded", () => {
+  const db = firebase.firestore();
+  const form = document.getElementById("reportForm");
+  const patientIDInput = document.getElementById("patientID");
+  const reportSection = document.getElementById("reportSection");
+
+  patientIDInput.value = "";
+  window.currentPatient = null;
+
+  form.addEventListener("submit", async function (e) {
     e.preventDefault();
-    const id = document.getElementById('patientID').value.trim().toUpperCase();
+    const id = patientIDInput.value.trim().toLowerCase();
     if (!id) return;
 
     try {
-        const docSnap = await db.collection('patients').doc(id).get();
-        if (!docSnap.exists) {
-            Swal.fire('Invalid ID', 'No patient found with this ID', 'error');
-            document.getElementById('reportSection').style.display = 'none';
-            return;
-        }
+      const docSnap = await db.collection("patients").doc(id).get();
 
-        const data = docSnap.data();
-        window.currentPatient = { id, ...data };  // Store for PDF use
+      if (!docSnap.exists) {
+        Swal.fire("Invalid ID", "No patient found with this ID", "error");
+        reportSection.style.display = "none";
+        return;
+      }
 
-        document.getElementById('name').innerText = data.name ?? '';
-        document.getElementById('age').innerText = data.age ?? '';
-        document.getElementById('gender').innerText = data.gender ?? '';
-        document.getElementById('phone').innerText = data.phone ?? '';
-        document.getElementById('address').innerText = data.address ?? '';
-        document.getElementById('hemoglobin').innerText = data.hemoglobin ?? 'Not Recorded';
-        document.getElementById('rbg').innerText = data.randomBloodGlucose ?? 'Not Recorded';
-        document.getElementById('fev').innerText = data.fev ?? 'Not Recorded';
-        document.getElementById('bp').innerText = data.bloodPressure ?? 'Not Recorded';
-        document.getElementById('bmi').innerText = data.bmi ?? '';
-        document.getElementById('patientIdDisplay').innerText = id;
+      const data = docSnap.data();
+      window.currentPatient = { id, ...data };
 
-        document.getElementById('reportSection').style.display = 'block';
+      await Swal.fire("Patient Verified", "Report loaded successfully.", "success");
+
+      document.getElementById("name").innerText = data.name ?? "N/A";
+      document.getElementById("age").innerText = data.age ?? "N/A";
+      document.getElementById("gender").innerText = data.gender ?? "N/A";
+      document.getElementById("phone").innerText = data.phone ?? "N/A";
+      document.getElementById("address").innerText = data.address ?? "N/A";
+      document.getElementById("hemoglobin").innerText = data.hemoglobin ?? "Not Recorded";
+      document.getElementById("rbg").innerText = data.rbg ?? data.randomBloodGlucose ?? "Not Recorded";
+      document.getElementById("fev").innerText = data.fev ?? "Not Recorded";
+      document.getElementById("bp").innerText = (data.systolic && data.diastolic)
+        ? `${data.systolic}/${data.diastolic}`
+        : data.bloodPressure ?? "Not Recorded";
+      document.getElementById("bmi").innerText = data.bmi ?? "N/A";
+      document.getElementById("patientIdDisplay").innerText = id;
+
+      reportSection.style.display = "block";
 
     } catch (error) {
-        console.error("Error fetching patient:", error);
-        Swal.fire('Error', 'Could not fetch patient data', 'error');
+      console.error("Error fetching patient:", error);
+      Swal.fire("Error", "Could not fetch patient data", "error");
     }
-});
+  });
 
-document.getElementById('generatePDF').addEventListener('click', async () => {
+  // ✅ PDF generation
+  document.getElementById("generatePDF").addEventListener("click", async () => {
     const p = window.currentPatient;
     if (!p) return;
 
-    const templateUrl = 'reporttemplate.pdf';  
-    const existingPdfBytes = await fetch(templateUrl).then(res => res.arrayBuffer());
+    try {
+      const res = await fetch("pdftest.pdf");
+      if (!res.ok) throw new Error(`Failed to fetch PDF template: ${res.statusText}`);
 
-    const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
-    const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
-    const pages = pdfDoc.getPages();
-    const firstPage = pages[0];
+      const blob = await res.blob();
+      if (blob.type !== "application/pdf") throw new Error(`Expected PDF, got ${blob.type}`);
 
-    // Place patient data with corrected coordinates
-    firstPage.drawText(p.name ?? '', { x: 136, y: 633, size: 10, font });
-    firstPage.drawText((p.age ?? '').toString(), { x: 320, y: 633, size: 10, font });
-    firstPage.drawText(p.phone ?? '', { x: 94.5, y: 617, size: 10, font });
-    firstPage.drawText(p.gender ?? '', { x: 342, y: 617, size: 10, font });
-    firstPage.drawText(p.id ?? '', { x: 117, y: 604.64, size: 10, font });
-    firstPage.drawText((p.bmi ?? '').toString(), { x: 321, y: 604.64, size: 10, font });
-    firstPage.drawText(new Date().toLocaleDateString(), { x: 87, y: 590.64, size: 10, font });
+      const pdfBytes = await blob.arrayBuffer();
+      const pdfDoc = await PDFLib.PDFDocument.load(pdfBytes);
+      const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+      const pages = pdfDoc.getPages();
+      const firstPage = pages[0];
 
-    firstPage.drawText((p.hemoglobin ?? 'N/A').toString(), { x: 222.5, y: 511.74, size: 10, font });
-    firstPage.drawText((p.fev ?? 'N/A').toString(), { x: 222.5, y: 440.24, size: 10, font });
-    firstPage.drawText((p.randomBloodGlucose ?? 'N/A').toString(), { x: 222.5, y: 456.14, size: 10, font });
-    firstPage.drawText(p.bloodPressure ?? 'N/A', { x: 222.5, y: 411.64, size: 10, font });
+      const draw = (text, x, y) => {
+        firstPage.drawText(text.toString(), { x, y, size: 10, font });
+      };
 
-    const pdfBytes = await pdfDoc.save();
-    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `Patient_Report_${p.id}.pdf`;
-    link.click();
+      draw(p.name ?? "", 136, 633);
+      draw(p.age ?? "", 320, 633);
+      draw(p.phone ?? "", 94.5, 617);
+      draw(p.gender ?? "", 342, 617);
+      draw(p.id ?? "", 117, 604.64);
+      draw(p.bmi ?? "", 321, 604.64);
+      draw(new Date().toLocaleDateString("en-GB"), 87, 590.64);
+
+      draw(p.hemoglobin ?? "N/A", 222.5, 511.74);
+      draw(p.fev ?? "N/A", 222.5, 440.24);
+      draw(p.rbg ?? p.randomBloodGlucose ?? "N/A", 222.5, 456.14);
+      draw((p.systolic && p.diastolic)
+        ? `${p.systolic}/${p.diastolic}`
+        : p.bloodPressure ?? "N/A", 222.5, 411.64);
+
+      const pdfFinalBytes = await pdfDoc.save();
+      const blobFinal = new Blob([pdfFinalBytes], { type: "application/pdf" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blobFinal);
+      link.download = `Patient_Report_${p.id}.pdf`;
+      link.click();
+
+    } catch (err) {
+      console.error("PDF Generation Error:", err);
+      Swal.fire("Error", "Could not generate PDF report", "error");
+    }
+  });
 });

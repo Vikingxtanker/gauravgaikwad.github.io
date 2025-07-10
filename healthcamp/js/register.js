@@ -1,106 +1,133 @@
-function generateCustomPatientID(name) {
-    const prefix = name.substring(0, 3).toUpperCase();
-    const randomNum = Math.floor(100 + Math.random() * 900);
-    return `${prefix}${randomNum}`;
-}
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("registrationForm");
 
-async function getUniquePatientID(name) {
-    let uniqueID;
-    let exists = true;
+  const dobInput = document.getElementById("dob");
+  const ageInput = document.getElementById("age");
+  const heightInput = document.getElementById("height");
+  const weightInput = document.getElementById("weight");
+  const bmiInput = document.getElementById("bmi");
+  const allergySelect = document.getElementById("allergy");
+  const allergyDetail = document.getElementById("allergyDetail");
+  const allergyLabel = document.querySelector("label[for='allergyDetail']");
+  const clearBtn = document.getElementById("clearAllBtn");
 
-    while (exists) {
-        uniqueID = generateCustomPatientID(name);
-        const doc = await db.collection('patients').doc(uniqueID).get();
-        exists = doc.exists;
+  // ✅ Auto-calculate age
+  dobInput.addEventListener("change", () => {
+    const dob = new Date(dobInput.value);
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const monthDiff = today.getMonth() - dob.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+      age--;
     }
-    return uniqueID;
-}
+    ageInput.value = age >= 0 ? age : "";
+  });
 
-document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+  // ✅ Auto-calculate BMI
+  function calculateBMI() {
+    const height = parseFloat(heightInput.value);
+    const weight = parseFloat(weightInput.value);
+    if (height > 0 && weight > 0) {
+      const bmi = weight / ((height / 100) ** 2);
+      bmiInput.value = bmi.toFixed(1);
+    } else {
+      bmiInput.value = "";
+    }
+  }
+
+  heightInput.addEventListener("input", calculateBMI);
+  weightInput.addEventListener("input", calculateBMI);
+
+  // ✅ Show/hide allergy detail
+  allergySelect.addEventListener("change", () => {
+    if (allergySelect.value === "Yes") {
+      allergyDetail.style.display = "block";
+      allergyLabel.style.display = "block";
+    } else {
+      allergyDetail.style.display = "none";
+      allergyLabel.style.display = "none";
+      allergyDetail.value = "";
+    }
+  });
+
+  // ✅ Clear form
+  clearBtn.addEventListener("click", () => {
+    form.reset();
+    ageInput.value = "";
+    bmiInput.value = "";
+    allergyDetail.style.display = "none";
+    allergyLabel.style.display = "none";
+  });
+
+  // ✅ Submit form
+  form.addEventListener("submit", async function (e) {
     e.preventDefault();
 
-    const name = document.getElementById('name').value.trim();
-    const dobRaw = document.getElementById('dob').value.trim();
-    let dob = "";
-    if (dobRaw) {
-        const [year, month, day] = dobRaw.split("-");
-        dob = `${day}/${month}/${year}`;
-    }
-    const age = parseInt(document.getElementById('age').value.trim());
-    const gender = document.getElementById('gender').value.trim();
-    const height = parseFloat(document.getElementById('height').value.trim());
-    const weight = parseFloat(document.getElementById('weight').value.trim());
-    const bmi = parseFloat(document.getElementById('bmi').value.trim());
-    const phone = document.getElementById('phone').value.trim();
-    const address = document.getElementById('address').value.trim();
+    const name = document.getElementById("name").value.trim();
+    const dob = dobInput.value;
+    const age = ageInput.value;
+    const gender = document.getElementById("gender").value;
+    const height = heightInput.value;
+    const weight = weightInput.value;
+    const bmi = bmiInput.value;
+    const phone = document.getElementById("phone").value.trim();
+    const address = document.getElementById("address").value.trim();
+    const tobacco = document.getElementById("tobacco").value;
+    const smoking = document.getElementById("smoking").value;
+    const alcohol = document.getElementById("alcohol").value;
+    const married = document.getElementById("married").value;
+    const allergy = allergySelect.value;
+    const allergyDetails = allergyDetail.value.trim();
+    const pastMedical = document.getElementById("pastMedical").value.trim();
+    const pastMedication = document.getElementById("pastMedication").value.trim();
 
-    const tobacco = document.getElementById('tobacco').value.trim();
-    const smoking = document.getElementById('smoking').value.trim();
-    const allergy = document.getElementById('allergy').value.trim();
-    const allergyDetails = document.getElementById('allergyDetails').value.trim();
-    const married = document.getElementById('married').value.trim();
-    const alcohol = document.getElementById('alcohol').value.trim();
-
-    const pastMedicalHistory = document.getElementById('pastMedicalHistory').value.trim();
-    const pastMedicationHistory = document.getElementById('pastMedicationHistory').value.trim();
-
-    if (!name || !dob || !age || !gender || !height || !weight || !phone || !address || !tobacco || !smoking || !allergy || !married || !alcohol) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Incomplete Form',
-            text: 'Please fill all required fields.'
-        });
-        return;
-    }
+    // ✅ New patient ID format
+    const firstThree = name.toLowerCase().replace(/\s+/g, '').slice(0, 3);
+    const randomDigits = Math.floor(100 + Math.random() * 900);
+    const patientId = firstThree + randomDigits;
 
     try {
-        const patientID = await getUniquePatientID(name);
+      await db.collection("patients").doc(patientId).set({
+        name,
+        dob,
+        age,
+        gender,
+        height,
+        weight,
+        bmi,
+        phone,
+        address,
+        tobacco,
+        smoking,
+        alcohol,
+        married,
+        allergy,
+        allergyDetails,
+        pastMedical,
+        pastMedication,
+        timestamp: new Date()
+      });
 
-        await db.collection('patients').doc(patientID).set({
-            patientID,
-            name,
-            dob,
-            age,
-            gender,
-            height,
-            weight,
-            bmi,
-            phone,
-            address,
-            socialHistory: {
-                tobacco,
-                smoking,
-                allergy,
-                allergyDetails: (allergy === 'Yes') ? allergyDetails : '',
-                married,
-                alcohol
-            },
-            pastMedicalHistory,
-            pastMedicationHistory,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+      Swal.fire({
+        icon: "success",
+        title: "Registered successfully!",
+        text: `Patient ID: ${patientId}`,
+        confirmButtonColor: "#3085d6"
+      });
 
-        Swal.fire({
-            title: 'Registration Successful!',
-            text: `Patient ID: ${patientID}`,
-            icon: 'success',
-            confirmButtonText: 'OK',
-            customClass: {
-                popup: 'animate__animated animate__fadeInDown'
-            }
-        }).then(() => {
-            document.getElementById('registrationForm').reset();
-            document.getElementById('bmi').value = '';
-            document.getElementById('age').value = '';
-            document.getElementById('allergyDetailsDiv').style.display = 'none';
-        });
+      form.reset();
+      ageInput.value = "";
+      bmiInput.value = "";
+      allergyDetail.style.display = "none";
+      allergyLabel.style.display = "none";
 
     } catch (error) {
-        console.error("Error saving data:", error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Error Occurred',
-            text: 'An error occurred while saving. Please try again.'
-        });
+      console.error("❌ Firebase error:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Submission Failed",
+        text: "An error occurred. Please try again."
+      });
     }
+  });
 });
