@@ -58,12 +58,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const res = await fetch("pdftest.pdf");
+      const res = await fetch("reporttemplate2.pdf");
       if (!res.ok) throw new Error("PDF file not found or not served correctly");
 
       const pdfBytes = await res.arrayBuffer();
 
-      const pdfDoc = await PDFLib.PDFDocument.load(pdfBytes, { ignoreEncryption: true });
+      const pdfDoc = await PDFLib.PDFDocument.load(pdfBytes);
       const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
       const page = pdfDoc.getPages()[0];
 
