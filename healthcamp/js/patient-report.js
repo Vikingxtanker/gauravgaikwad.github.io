@@ -4,9 +4,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const patientIDInput = document.getElementById("patientID");
   const reportSection = document.getElementById("reportSection");
 
+  // Clear input on load
   patientIDInput.value = "";
   window.currentPatient = null;
 
+  // Fetch patient data on submit
   form.addEventListener("submit", async function (e) {
     e.preventDefault();
     const id = patientIDInput.value.trim().toLowerCase();
@@ -14,7 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const docSnap = await db.collection("patients").doc(id).get();
-
       if (!docSnap.exists) {
         Swal.fire("Invalid ID", "No patient found with this ID", "error");
         reportSection.style.display = "none";
@@ -48,28 +49,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ✅ PDF generation
+  // ✅ PDF Generation with pdf-lib
   document.getElementById("generatePDF").addEventListener("click", async () => {
     const p = window.currentPatient;
-    if (!p) return;
+    if (!p) {
+      Swal.fire("Error", "No patient data available", "error");
+      return;
+    }
 
     try {
       const res = await fetch("pdftest.pdf");
-      if (!res.ok) throw new Error(`Failed to fetch PDF template: ${res.statusText}`);
+      if (!res.ok) throw new Error("PDF file not found or not served correctly");
 
-      const blob = await res.blob();
-      if (blob.type !== "application/pdf") throw new Error(`Expected PDF, got ${blob.type}`);
+      const pdfBytes = await res.arrayBuffer();
 
-      const pdfBytes = await blob.arrayBuffer();
       const pdfDoc = await PDFLib.PDFDocument.load(pdfBytes, { ignoreEncryption: true });
       const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
-      const pages = pdfDoc.getPages();
-      const firstPage = pages[0];
+      const page = pdfDoc.getPages()[0];
 
       const draw = (text, x, y) => {
-        firstPage.drawText(text.toString(), { x, y, size: 10, font });
+        page.drawText(text.toString(), { x, y, size: 10, font });
       };
 
+      // 🔧 You may update these coordinates based on your PDF
       draw(p.name ?? "", 136, 633);
       draw(p.age ?? "", 320, 633);
       draw(p.phone ?? "", 94.5, 617);
@@ -85,10 +87,11 @@ document.addEventListener("DOMContentLoaded", () => {
         ? `${p.systolic}/${p.diastolic}`
         : p.bloodPressure ?? "N/A", 222.5, 411.64);
 
-      const pdfFinalBytes = await pdfDoc.save();
-      const blobFinal = new Blob([pdfFinalBytes], { type: "application/pdf" });
+      const pdfBytesFinal = await pdfDoc.save();
+      const blob = new Blob([pdfBytesFinal], { type: "application/pdf" });
+
       const link = document.createElement("a");
-      link.href = URL.createObjectURL(blobFinal);
+      link.href = URL.createObjectURL(blob);
       link.download = `Patient_Report_${p.id}.pdf`;
       link.click();
 
