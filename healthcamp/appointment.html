@@ -9,11 +9,11 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 
-  <!-- Firebase -->
+  <!-- Firebase SDK (load only once) -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 
 <!-- ✅ Fixed Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
@@ -65,13 +65,18 @@
   </form>
 </div>
 
+<!-- ✅ Sticky Footer -->
+<footer class="bg-light text-center py-3 shadow-sm mt-auto">
+  <small class="text-muted">© 2025 Designed & Developed by Kumkum Bhenwal & Gaurav Gaikwad</small>
+</footer>
+
 <!-- ✅ Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="js/firebase-config.js"></script>
 <script src="js/appointment.js"></script>
 
-<!-- ✅ Dynamic Navbar Spacing Script -->
+<!-- ✅ Navbar Spacing Script -->
 <script>
   function adjustFormMargin() {
     const navbar = document.querySelector(".navbar");
