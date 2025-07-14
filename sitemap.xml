@@ -1,19 +1,64 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-		<!--	created with www.mysitemapgenerator.com	-->
-		<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url>
-	<loc>https://gauravgaikwad.ddns.net/</loc>
-	<lastmod>2025-06-13T21:36:56+01:00</lastmod>
-	<priority>1.0</priority>
-</url>
-<url>
-	<loc>https://gauravgaikwad.ddns.net/pass.html</loc>
-	<lastmod>2025-06-13T21:36:56+01:00</lastmod>
-	<priority>1.0</priority>
-</url>
-<url>
-	<loc>https://gauravgaikwad.ddns.net/untitled.html</loc>
-	<lastmod>2025-06-13T21:36:56+01:00</lastmod>
-	<priority>1.0</priority>
-</url>
+<!-- Generated manually for gauravgaikwad.ddns.net -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Root pages -->
+  <url>
+    <loc>https://gauravgaikwad.ddns.net/</loc>
+    <lastmod>2025-07-14</lastmod>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://gauravgaikwad.ddns.net/index.html</loc>
+    <lastmod>2025-07-14</lastmod>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://gauravgaikwad.ddns.net/breather.html</loc>
+    <lastmod>2025-07-14</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gauravgaikwad.ddns.net/pass.html</loc>
+    <lastmod>2025-07-14</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gauravgaikwad.ddns.net/untitled.html</loc>
+    <lastmod>2025-07-14</lastmod>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- Healthcamp folder pages -->
+  <url>
+    <loc>https://gauravgaikwad.ddns.net/healthcamp/register.html</loc>
+    <lastmod>2025-07-14</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://gauravgaikwad.ddns.net/healthcamp/station.html</loc>
+    <lastmod>2025-07-14</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://gauravgaikwad.ddns.net/healthcamp/appointment.html</loc>
+    <lastmod>2025-07-14</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://gauravgaikwad.ddns.net/healthcamp/appointments-admin.html</loc>
+    <lastmod>2025-07-14</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://gauravgaikwad.ddns.net/healthcamp/patient-report.html</loc>
+    <lastmod>2025-07-14</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://gauravgaikwad.ddns.net/healthcamp/admin.html</loc>
+    <lastmod>2025-07-14</lastmod>
+    <priority>0.7</priority>
+  </url>
+
 </urlset>
