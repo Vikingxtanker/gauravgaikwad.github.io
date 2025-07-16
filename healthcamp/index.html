@@ -3,92 +3,182 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Health Screening Test - Home</title>
+  <title>Pharmacy Practice - Home</title>
 
   <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-<style>
-  body, html {
-    height: 100%;
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-  }
+  <style>
+    .scroll-down-btn {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(255, 255, 255, 0.9);
+      border: none;
+      padding: 10px 15px;
+      border-radius: 50px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 1050;
+      cursor: pointer;
+      transition: opacity 0.3s;
+    }
 
-  .background {
-    position: relative;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    z-index: 0;
-    overflow: hidden;
-  }
+    .scroll-down-btn i {
+      font-size: 20px;
+      color: #333;
+    }
 
-  .background::before {
-    content: "";
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
-                url('assets/pharmacy_lab.jpg') no-repeat center center / cover;
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    z-index: -1;
-  }
+    .scroll-down-btn:hover {
+      background-color: #f1f1f1;
+    }
 
-  .main-content {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    color: white;
-    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
-    text-align: center;
-    padding-top: 120px;
-  }
+    .scroll-down-btn.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
 
-  .btn-group a {
-    margin: 10px;
-  }
-</style>
+    .navbar-brand-text {
+      font-size: 16px;
+      line-height: 1.2;
+    }
 
+    @media (max-width: 767.98px) {
+      .navbar-brand-text {
+        display: none;
+      }
+
+      .mobile-brand-text {
+        display: block;
+        text-align: center;
+        margin-top: 5px;
+        font-size: 14px;
+        line-height: 1.2;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .mobile-brand-text {
+        display: none;
+      }
+    }
+  </style>
 </head>
-<body class="background">
 
-<!-- ✅ Fixed Navbar -->
+<body class="d-flex flex-column min-vh-100">
+
+<!-- ✅ Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
-  <div class="container align-items-center">
-    <img src="assets/DYP_LOGO_RED.jpg" alt="DYP Logo" height="100" width="100" class="me-3">
-    <a class="navbar-brand flex-grow-1 text-wrap text-center m-0" href="#">
+  <div class="container-fluid px-3 d-flex align-items-start flex-wrap">
+    
+    <!-- Logo -->
+    <a class="navbar-brand d-flex align-items-center" href="#">
+      <img src="assets/DYP_LOGO_RED.jpg" alt="DYP Logo" height="50" class="me-2">
+    </a>
+
+    <!-- Brand Text -->
+    <div class="navbar-brand-text d-none d-md-block mt-2">
       <strong>Dr. D.Y Patil Pratishthan’s</strong><br>
       Dr. D.Y Patil College of Pharmacy Akurdi, Pune – 411044<br>
-      <small class="text-muted" style="font-size:14px;">Department of Pharmacy Practice (Pharm. D.)</small>
-    </a>
+      <small class="text-muted">Department of Pharmacy Practice (Pharm. D.)</small>
+    </div>
+
+    <!-- Mobile Brand -->
+    <div class="w-100 d-block d-md-none text-center mt-1 mobile-brand-text">
+      <strong>DYPCOP, Akurdi</strong><br>
+      <small class="text-muted">Department of Pharmacy (Pharm. D.)</small>
+    </div>
+
+    <!-- Toggle Button -->
+    <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+      aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navbar Links -->
+    <div class="collapse navbar-collapse justify-content-end mt-2 mt-lg-0" id="navbarContent">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link fw-semibold" href="#">Home</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="#">Facilities</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="#">Faculty Profile</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="#">Student Profile</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="#about">About Us</a></li>
+      </ul>
+    </div>
   </div>
 </nav>
 
-<!-- ✅ Main Content -->
-<div class="main-content">
-  <h1 class="display-5">Welcome to Health Screening Test</h1>
-  <p class="lead">Health Screening Test Services Provided</p>
-  <div class="btn-group">
-    <a href="appointment.html" class="btn btn-outline-light">Book Appointment</a>
-    <a href="register.html" class="btn btn-outline-light">Register</a>
-    <a href="station.html" class="btn btn-outline-light">Station</a>
-    <a href="patient-report.html" class="btn btn-outline-light">Patient Report</a>
-    <a href="admin.html" class="btn btn-outline-light">Admin</a>
-  </div>
+
+<!-- ✅ Mobile Brand Text -->
+<div class="mobile-brand-text">
+  <strong>DYPCOP, Akurdi</strong><br>
+  <small class="text-muted">Department of Pharmacy (Pharm. D.)</small>
 </div>
 
-<!-- ✅ Sticky Footer -->
+<!-- ✅ Hero Section -->
+<section class="hero-section text-white text-center d-flex flex-column justify-content-center">
+  <div class="container">
+    <h1 class="display-5 fw-bold">Welcome to the Pharmacy Practice Portal</h1>
+    <p class="lead">Explore our services below</p>
+    <div class="mt-3">
+      <a href="health-screening.html" class="btn btn-outline-light me-2">Health Screening</a>
+      <a href="#" class="btn btn-outline-light me-2">ADR</a>
+      <a href="#" class="btn btn-outline-light">DIC</a>
+    </div>
+  </div>
+</section>
+
+<!-- ✅ Scroll Down Button -->
+<button id="scrollDownBtn" class="scroll-down-btn" title="Scroll Down">
+  <i class="bi bi-chevron-double-down"></i>
+</button>
+
+<!-- ✅ About Us Section -->
+<section id="about" class="about-section py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center mb-4">About Pharmacy Practice Lab</h2>
+    <div class="row mb-4 g-3">
+      <div class="col-md-6">
+        <div class="ratio ratio-16x9">
+          <img src="assets/lab1.jpg" class="rounded shadow object-fit-cover" alt="Lab Image 1">
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="ratio ratio-16x9">
+          <img src="assets/lab2.jpg" class="rounded shadow object-fit-cover" alt="Lab Image 2">
+        </div>
+      </div>
+    </div>
+    <p class="text-center px-3">
+      The Pharmacy Practice Lab (PPL) at Dr. D.Y. Patil College of Pharmacy, Akurdi, was inaugurated on 29th April 2025. It is a dedicated and modern facility specifically designed for Pharm.D. students, aimed at bridging academic learning with practical clinical exposure.
+
+      The lab features 10 fully equipped computers and a lecture room with a smart board, creating an interactive learning environment. It supports key services such as Health Screening Tests, Adverse Drug Reaction (ADR) Reporting, and Drug Information Centers (DIC), providing students with practical experience in real-world pharmacy operations.
+
+      Additionally, students receive hands-on training using clinical tools like Micromedex, allowing them to practice evidence-based decision-making, assess drug interactions, and improve patient counseling skills. The PPL serves as a vital platform for developing competent and confident pharmacy professionals ready for healthcare settings.
+    </p>
+  </div>
+</section>
+
+<!-- ✅ Footer -->
 <footer class="bg-light text-center py-3 shadow-sm mt-auto">
   <small class="text-muted">© 2025 Designed & Developed by Kumkum Bhenwal & Gaurav Gaikwad</small>
 </footer>
 
 <!-- ✅ Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const scrollBtn = document.getElementById('scrollDownBtn');
+
+  window.addEventListener('scroll', () => {
+    scrollBtn.classList.toggle('hidden', window.scrollY > 50);
+  });
+
+  scrollBtn.addEventListener('click', () => {
+    document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
+  });
+</script>
 
 </body>
 </html>
