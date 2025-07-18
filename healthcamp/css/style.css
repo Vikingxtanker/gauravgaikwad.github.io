@@ -5,6 +5,7 @@ body, html {
   font-family: 'Segoe UI', sans-serif;
   scroll-behavior: smooth;
   background-color: #f8f9fa;
+    padding-bottom: 10px;
 }
 
 /* Hero Background with Overlay */
@@ -116,7 +117,7 @@ body, html {
 /* Scroll Down Button */
 .scroll-down-btn {
   position: fixed;
-  bottom: 30px;
+  bottom: 80px;
   left: 50%;
   transform: translateX(-50%);
   background-color: rgba(255, 255, 255, 0.9);
@@ -149,9 +150,122 @@ footer {
   color: #666;
   font-size: 14px;
   text-align: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
 }
 
 /* Section Padding */
 section {
   padding: 60px 0;
+}
+
+.hero-box {
+  display: inline-block;
+  background-color: #fff;
+  color: #000;
+  padding: 10px 18px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.hero-box:hover {
+  background-color: #f8f9fa;
+  color: #0056b3;
+  transform: translateY(-2px);
+}
+
+.info-section {
+  background-color: #ffffff;
+}
+
+.info-box {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  padding: 15px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.info-box:hover {
+  background-color: #e9ecef;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+}
+
+.gallery-section img {
+  object-fit: cover;
+  height: 250px;
+  width: 100%;
+}
+
+.gallery-img {
+  max-height: 500px;
+  object-fit: cover;
+  width: 100%;
+  border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+  .gallery-img {
+    max-height: 300px;
+  }
+}
+
+/* Carousel Button Fix */
+.carousel-control-prev.custom-control,
+.carousel-control-next.custom-control {
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #fff; /* solid white background */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  opacity: 1 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Ensure controls are inside the carousel */
+.carousel-control-prev.custom-control {
+  left: 15px;
+}
+
+.carousel-control-next.custom-control {
+  right: 15px;
+}
+
+/* Dark icons for visibility */
+.carousel.carousel-dark .carousel-control-prev-icon,
+.carousel.carousel-dark .carousel-control-next-icon {
+  filter: invert(1);  /* Makes the default icons dark */
+  width: 25px;
+  height: 25px;
+}
+
+.faculty-image-wrapper {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
+}
+
+.faculty-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
