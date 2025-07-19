@@ -9,7 +9,7 @@ body, html {
 }
 
 /* Hero Background with Overlay */
-.hero-section {
+.pp-hero-section {
   position: relative;
   min-height: 100vh;
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
@@ -19,6 +19,18 @@ body, html {
   justify-content: center;
   padding: 0 20px;
 }
+
+.hst-hero-section {
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+              url('../assets/healthscreening.jpg') center center / cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+}
+
 
 /* Hero Buttons */
 .hero-btn {
