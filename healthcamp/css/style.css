@@ -5,7 +5,7 @@ body, html {
   font-family: 'Segoe UI', sans-serif;
   scroll-behavior: smooth;
   background-color: #f8f9fa;
-    padding-bottom: 10px;
+  padding-bottom: 10px;
 }
 
 /* Hero Background with Overlay */
@@ -204,6 +204,7 @@ section {
   transform: translateY(-2px);
 }
 
+/* Gallery Override (Legacy Bootstrap) */
 .gallery-section img {
   object-fit: cover;
   height: 250px;
@@ -228,7 +229,7 @@ section {
 .carousel-control-next.custom-control {
   top: 50%;
   transform: translateY(-50%);
-  background-color: #fff; /* solid white background */
+  background-color: #fff;
   border-radius: 50%;
   width: 50px;
   height: 50px;
@@ -239,7 +240,6 @@ section {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
-/* Ensure controls are inside the carousel */
 .carousel-control-prev.custom-control {
   left: 15px;
 }
@@ -248,14 +248,14 @@ section {
   right: 15px;
 }
 
-/* Dark icons for visibility */
 .carousel.carousel-dark .carousel-control-prev-icon,
 .carousel.carousel-dark .carousel-control-next-icon {
-  filter: invert(1);  /* Makes the default icons dark */
+  filter: invert(1);
   width: 25px;
   height: 25px;
 }
 
+/* Faculty Image */
 .faculty-image-wrapper {
   width: 100%;
   aspect-ratio: 4 / 3;
@@ -268,4 +268,143 @@ section {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* Swiper 3D Coverflow Gallery */
+/* Swiper Container */
+.tranding-slider {
+  width: 100%;
+  padding: 2rem 0;
+  position: relative;
+}
+
+/* Slide Appearance */
+.tranding-slide {
+  width: 100%;
+  height: auto;
+  max-width: 400px;
+  aspect-ratio: 4 / 3;
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* Slide Image */
+.tranding-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Swiper Navigation Buttons (Prev/Next Arrows) */
+.tranding-slider-control {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+.slider-arrow {
+  background-color: #ffffff;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  cursor: pointer;
+}
+
+.slider-arrow ion-icon {
+  font-size: 24px;
+  color: #000;
+}
+
+/* Swiper Pagination Container Background */
+.swiper-pagination {
+  margin-top: 1rem;
+  text-align: center;
+  background-color: rgba(0,0,0,0.3);
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  position: relative;
+  z-index: 5;
+}
+
+.swiper-pagination-bullet {
+  width: 12px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.7);
+  opacity: 1;
+  border-radius: 50%;
+  margin: 0 6px !important;
+}
+
+.swiper-pagination-bullet-active {
+  background: rgba(255, 255, 255, 1);
+}
+
+/* Hide Swiper default arrows */
+.swiper-button-next,
+.swiper-button-prev {
+  display: none !important;
+}
+
+/* Custom arrow buttons */
+.swiper-button-next-custom,
+.swiper-button-prev-custom {
+  background-color: #fff;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  cursor: pointer;
+  z-index: 10;
+}
+
+.swiper-button-prev-custom { left: 10px; }
+.swiper-button-next-custom { right: 10px; }
+
+.swiper-button-prev-custom ion-icon,
+.swiper-button-next-custom ion-icon {
+  font-size: 24px;
+  color: #000;
+}
+
+/* White pagination background */
+.swiper-pagination {
+  background-color: rgba(255, 255, 255, 0.8);
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 12px;
+  margin-top: 1rem;
+}
+
+.swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  opacity: 1;
+  margin: 0 4px;
+}
+
+.swiper-pagination-bullet-active {
+  background: rgba(0, 0, 0, 0.7);
 }
