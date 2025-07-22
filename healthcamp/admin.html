@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Health Screening Test - Admin Panel</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<h2>Health Screening  Test - Admin Panel</h2>
+
+<div id="loginSection">
+    <label>Enter Admin Password:
+        <input type="password" id="adminPassword">
+    </label>
+    <button id="loginBtn">Login</button>
+</div>
+
+<div id="dataSection" style="display:none; margin-top: 20px;">
+    <h3>Patient Records</h3>
+    <button id="downloadBtn">Download CSV</button>
+    <table border="1" id="dataTable" style="margin-top: 15px; border-collapse: collapse;">
+        <thead>
+            <tr>
+                <th>Patient ID</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Hemoglobin</th>
+                <th>RBG</th>
+                <th>FEV</th>
+                <th>BP</th>
+                <th>Last Updated</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/admin.js"></script>
+
+</body>
+</html>
