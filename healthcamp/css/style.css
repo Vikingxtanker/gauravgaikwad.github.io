@@ -6,6 +6,75 @@ body, html {
   scroll-behavior: smooth;
   background-color: #f8f9fa;
   padding-bottom: 10px;
+    margin-bottom: 40px;
+}
+
+/* General Form Container */
+.form-container {
+  max-width: 600px;
+  margin: auto;
+  background-color: #f8f9fa;
+  padding: 30px;
+  padding-bottom: 20px; /* ✅ Added */
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* All Form Elements */
+.form-controls label {
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.form-controls input,
+.form-controls select,
+.form-controls textarea {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+/* Textarea Resize Disabled */
+textarea {
+  resize: none;
+}
+
+/* Remove number input arrows (spinners) */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* SweetAlert Confirm Button Styling */
+.swal2-confirm {
+  font-size: 1rem !important;
+  padding: 8px 18px !important;
+}
+
+/* Ensure Form is Below Navbar */
+@media (min-width: 768px) {
+  .form-container {
+    margin-top: 100px;
+  }
+}
+
+/* Clear All Button */
+#clearAllBtn {
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
+
+/* Smaller Clear All button */
+#clearAllBtn.btn-sm {
+  padding: 4px 10px;
+  font-size: 14px;
 }
 
 /* Hero Background with Overlay */
