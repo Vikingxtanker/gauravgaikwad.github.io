@@ -1,0 +1,105 @@
+/* Fullscreen Swiper Hero */
+.dic-hero-section {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin-top: 70px; /* space for navbar */
+}
+
+.dic-slider {
+  width: 100%;
+  height: 100vh;
+}
+
+.dic-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Curved Box Wrapper Centered */
+.curved-box-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 20px 0;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.curved-box-wrapper:hover .curved-box-text,
+.curved-box-wrapper:hover .circle {
+  background-color: #e9ecef;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+  cursor: pointer;
+}
+
+/* Curved Rectangle Text */
+.curved-box-text {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  padding: 18px 20px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 16px;
+  width: 80%;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+/* Circle Icon (larger and nicely merged) */
+.circle {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-size: 75%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+/* Position for Left/Right */
+.curved-box-wrapper.left .circle {
+  left: 10%;
+}
+.curved-box-wrapper.right .circle {
+  right: 10%;
+}
+
+/* Specific Background Images */
+.circle.drug-requesting {
+  background-image: url('../assets/drugreqform.png');
+}
+.circle.patient-counseling {
+  background-image: url('../assets/patientcounseling.png');
+}
+.circle.rx-express {
+  background-image: url('../assets/rxexpress.png');
+}
+.circle.drugs {
+  background-image: url('../assets/drugs.png');
+}
+.circle.drug-monograph {
+  background-image: url('../assets/drugmon.png');
+}
+
+/* Right Column Monograph Box */
+.latest-monograph-box {
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
