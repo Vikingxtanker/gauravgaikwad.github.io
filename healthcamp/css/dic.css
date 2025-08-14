@@ -1,105 +1,116 @@
-/* Fullscreen Swiper Hero */
-.dic-hero-section {
-  position: relative;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  margin-top: 70px; /* space for navbar */
-}
-
-.dic-slider {
-  width: 100%;
+/* Welcome Section */
+.dic-welcome-section {
   height: 100vh;
-}
-
-.dic-slide img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Curved Box Wrapper Centered */
-.curved-box-wrapper {
+  padding-top: 70px;
+  text-align: center;
+  background: linear-gradient(135deg, #e5daf0, #f2ebf7);
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
-  width: 100%;
-  margin: 20px 0;
+  align-items: center;
+}
+
+.welcome-line {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #5a3c8a;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.drug-request-tab {
+  display: inline-block;
+  padding: 12px 25px;
+  margin-top: 30px;
+  background-color: #5a3c8a;
+  color: #fff;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-decoration: none;
+  border-radius: 30px;
+  transition: all 0.3s ease;
+}
+
+.drug-request-tab:hover {
+  background-color: #7b55b3;
+  transform: scale(1.05);
+}
+
+/* Curved Section */
+.dic-curved-section {
+  background: linear-gradient(to bottom, #e9e0f2, #c8b3d6);
+  padding: 80px 0;
+}
+
+/* Zigzag Container */
+.zigzag-container {
   position: relative;
+  width: 100%;
+  max-width: 300px;
+}
+
+.zigzag-bg {
+  width: 100%;
+  height: auto;
+}
+
+/* Circles with percentage positioning */
+.circle {
+  position: absolute;
+  width: 25%;
+  height: 25%;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  border: 2px solid #5a3c8a;
+  cursor: pointer;
   transition: transform 0.3s ease;
 }
 
-.curved-box-wrapper:hover .curved-box-text,
-.curved-box-wrapper:hover .circle {
-  background-color: #e9ecef;
-  transform: translateY(-2px);
-  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-  cursor: pointer;
+.circle:hover {
+  transform: scale(1.1);
 }
 
-/* Curved Rectangle Text */
-.curved-box-text {
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
-  padding: 18px 20px;
-  border-radius: 30px;
-  font-weight: 600;
-  font-size: 16px;
-  width: 80%;
-  text-align: center;
-  transition: all 0.3s ease;
-  position: relative;
-  z-index: 1;
-}
-
-/* Circle Icon (larger and nicely merged) */
-.circle {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  background-size: 75%;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 2;
-  transition: all 0.3s ease;
-}
-
-/* Position for Left/Right */
-.curved-box-wrapper.left .circle {
-  left: 10%;
-}
-.curved-box-wrapper.right .circle {
-  right: 10%;
-}
-
-/* Specific Background Images */
-.circle.drug-requesting {
+/* Place circles relative to zigzag spine */
+.circle1 {
+  top: 17%;
+  left: 3%;
   background-image: url('../assets/drugreqform.png');
 }
-.circle.patient-counseling {
+
+.circle2 {
+  top: 36%;
+  right: 5%;
   background-image: url('../assets/patientcounseling.png');
 }
-.circle.rx-express {
+
+.circle3 {
+  top: 49%;
+  left: 3%;
   background-image: url('../assets/rxexpress.png');
 }
-.circle.drugs {
-  background-image: url('../assets/drugs.png');
-}
-.circle.drug-monograph {
+
+.circle4 {
+  top: 69%;
+  right: 3%;
   background-image: url('../assets/drugmon.png');
 }
 
-/* Right Column Monograph Box */
+/* Latest Monograph Box */
 .latest-monograph-box {
-  background-color: #ffffff;
   border: 1px solid #dee2e6;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Responsive Fix for Mobile */
+@media (max-width: 768px) {
+  .zigzag-container {
+    max-width: 200px;
+    margin-bottom: 30px;
+  }
+  .circle {
+    width: 18%;
+    height: 18%;
+  }
 }

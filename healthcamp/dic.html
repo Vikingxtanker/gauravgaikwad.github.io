@@ -7,14 +7,9 @@
 
   <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css"> <!-- Global styles -->
-  <link rel="stylesheet" href="css/dic.css">   <!-- DIC specific styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dic.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
-  <!-- Swiper CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
-  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -47,73 +42,47 @@
   </div>
 </nav>
 
-<!-- Fullscreen Swiper Hero -->
-<section class="dic-hero-section text-white text-center d-flex flex-column justify-content-center">
-  <div class="swiper dic-slider">
-    <div class="swiper-wrapper">
-      <div class="swiper-slide dic-slide"><img src="assets/dic1.jpg" alt="DIC Image 1"></div>
-      <div class="swiper-slide dic-slide"><img src="assets/dic2.jpg" alt="DIC Image 2"></div>
-      <div class="swiper-slide dic-slide"><img src="assets/dic3.jpg" alt="DIC Image 3"></div>
-    </div>
-    <!-- Custom navigation only -->
-    <div class="swiper-button-prev-custom slider-arrow">
-      <ion-icon name="chevron-back-outline"></ion-icon>
-    </div>
-    <div class="swiper-button-next-custom slider-arrow">
-      <ion-icon name="chevron-forward-outline"></ion-icon>
-    </div>
-  </div>
+<!-- Welcome Section -->
+<section class="dic-welcome-section d-flex flex-column justify-content-center align-items-center">
+  <h1 class="welcome-line">Welcome</h1>
+  <h1 class="welcome-line">To</h1>
+  <h1 class="welcome-line">Drug Information Center</h1>
+
+  <!-- Drug Requesting Form Tab -->
+  <a href="#dicform.html" class="drug-request-tab mt-4">Drug Requesting Form</a>
 </section>
 
-<!-- Scroll Down Button -->
-<button id="scrollDownBtn" class="scroll-down-btn" title="Scroll Down">
-  <i class="bi bi-chevron-double-down"></i>
-</button>
-
 <!-- Curved Box Section -->
-<section class="dic-curved-section py-5">
+<section class="dic-curved-section d-flex align-items-center">
   <div class="container">
-    <div class="row g-4 align-items-start">
+    <div class="row g-5 align-items-start">
 
-      <!-- Left Column with Curved Boxes -->
-      <div class="col-md-6 d-flex flex-column align-items-center gap-3">
+      <!-- Zigzag Column -->
+      <div class="col-md-6 d-flex justify-content-center">
+        <div class="zigzag-container">
+          <img src="assets/zigzag-bg.png" alt="Zigzag Spine" class="zigzag-bg">
 
-        <div class="curved-box-wrapper left">
-          <div class="circle drug-requesting"></div>
-          <div class="curved-box-text">Drug Requesting</div>
+          <!-- Circular Images (Clickable) -->
+          <a href="#" class="circle circle1"></a>
+          <a href="#" class="circle circle2"></a>
+          <a href="#" class="circle circle3"></a>
+          <a href="#" class="circle circle4"></a>
         </div>
-
-        <div class="curved-box-wrapper right">
-          <div class="circle patient-counseling"></div>
-          <div class="curved-box-text">Patient Counseling</div>
-        </div>
-
-        <div class="curved-box-wrapper left">
-          <div class="circle rx-express"></div>
-          <div class="curved-box-text">Rx Express</div>
-        </div>
-
-        <div class="curved-box-wrapper right">
-          <div class="circle drugs"></div>
-          <div class="curved-box-text">Drugs</div>
-        </div>
-
-        <div class="curved-box-wrapper left">
-          <div class="circle drug-monograph"></div>
-          <div class="curved-box-text">Drug Monograph</div>
-        </div>
-
       </div>
 
-      <!-- Right Column: Latest Drug Monograph -->
+      <!-- Latest Monograph Column -->
       <div class="col-md-6">
-        <div class="latest-monograph-box p-4 rounded shadow">
+        <div class="latest-monograph-box p-4 rounded shadow bg-white">
           <h3 class="mb-3">Latest Drug Monograph</h3>
           <p>
-            Te drug cha latest wala monograph yat basnar. <br>
-Height width nantr baghu formatting.<br>
-Zop areli merko zopta m zopne do merko.
+            tum merko info send krow.
           </p>
+		<p>
+			fir m add krega info
+			</p>
+			<p>space1</p>
+			<p>space2</p>
+			<p>space3</p>
         </div>
       </div>
 
@@ -128,19 +97,5 @@ Zop areli merko zopta m zopne do merko.
 
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
-<script src="js/swiper-dic.js"></script>
-
-<script>
-  // Scroll down button behavior
-  const scrollBtn = document.getElementById('scrollDownBtn');
-  window.addEventListener('scroll', () => {
-    scrollBtn.classList.toggle('hidden', window.scrollY > 50);
-  });
-  scrollBtn.addEventListener('click', () => {
-    document.querySelector('.dic-curved-section').scrollIntoView({ behavior: 'smooth' });
-  });
-</script>
-
 </body>
 </html>
