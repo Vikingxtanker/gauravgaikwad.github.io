@@ -50,11 +50,16 @@ document.addEventListener("DOMContentLoaded", function() {
   window.renderNavbar = renderNavbar;
   renderNavbar();
 
-  // ✅ Protect all pages except health-screening.html
+  // ✅ Protect only specific pages
   const currentPage = window.location.pathname.split("/").pop().toLowerCase();
-  const publicPages = ["health-screening.html"]; // always accessible
+  const protectedPages = [
+    "register.html",
+    "station.html",
+    "patient-report.html",
+    "admin.html"
+  ];
 
-  if (!publicPages.includes(currentPage) && !localStorage.getItem("loggedInUser")) {
+  if (protectedPages.includes(currentPage) && !localStorage.getItem("loggedInUser")) {
     Swal.fire({
       icon: 'warning',
       title: 'Login Required',
