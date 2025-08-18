@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body class="d-flex flex-column min-vh-100 background" data-login-required="true">
+<body class="d-flex flex-column min-vh-100 background"><!-- PUBLIC PAGE -->
 
 <!-- ✅ Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
@@ -66,6 +66,31 @@
   </div>
 </section>
 
+<!-- ✅ Login Modal (works with navbar.js) -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="loginModalLabel">Login</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="loginForm">
+          <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="username" required>
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ✅ Footer -->
 <footer class="bg-light text-center py-3 shadow-sm mt-auto">
   <small class="text-muted">© 2025 Designed & Developed by Gaurav Gaikwad & Kumkum Bhenwal</small>
@@ -87,6 +112,45 @@
   }
   window.addEventListener("load", adjustHeroMargin);
   window.addEventListener("resize", adjustHeroMargin);
+</script>
+
+<!-- ✅ Login handling (local to this page's modal) -->
+<script>
+  // demo users
+  const validUsers = [
+    { username: "admin",   password: "admin123" },
+    { username: "doctor1", password: "docpass" },
+    { username: "nurse1",  password: "nursepass" }
+  ];
+
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const u = document.getElementById('username').value.trim();
+    const p = document.getElementById('password').value.trim();
+    const match = validUsers.find(user => user.username === u && user.password === p);
+
+    if (match) {
+      localStorage.setItem('loggedInUser', u);
+      Swal.fire({
+        icon: 'success',
+        title: 'Login successful',
+        showConfirmButton: false,
+        timer: 1200
+      }).then(() => {
+        const modalEl = document.getElementById('loginModal');
+        const instance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+        instance.hide();
+        // refresh navbar immediately
+        if (window.renderNavbar) window.renderNavbar();
+      });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid credentials',
+        text: 'Please try again.'
+      });
+    }
+  });
 </script>
 
 </body>

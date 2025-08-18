@@ -29,16 +29,32 @@ document.addEventListener("DOMContentLoaded", function() {
         });
       });
     } else {
-      li.innerHTML = `<a class="nav-link fw-semibold" href="health-screening.html">Login</a>`;
-      navLinks.appendChild(li);
+      // If we're on the homepage and the modal exists, open it. Else link to homepage.
+      const loginModalEl = document.getElementById("loginModal");
+      if (loginModalEl) {
+        li.innerHTML = `<a class="nav-link fw-semibold" href="#" id="loginLink">Login</a>`;
+        navLinks.appendChild(li);
+        document.getElementById("loginLink").addEventListener("click", function(e) {
+          e.preventDefault();
+          const modal = new bootstrap.Modal(loginModalEl);
+          modal.show();
+        });
+      } else {
+        li.innerHTML = `<a class="nav-link fw-semibold" href="health-screening.html">Login</a>`;
+        navLinks.appendChild(li);
+      }
     }
   }
 
+  // expose globally so pages can re-render after login
+  window.renderNavbar = renderNavbar;
   renderNavbar();
 
-  // Optional: redirect if login required
-  const requiresLogin = document.body.getAttribute("data-login-required") === "true";
-  if (requiresLogin && !localStorage.getItem("loggedInUser")) {
+  // ✅ Protect all pages except health-screening.html
+  const currentPage = window.location.pathname.split("/").pop().toLowerCase();
+  const publicPages = ["health-screening.html"]; // always accessible
+
+  if (!publicPages.includes(currentPage) && !localStorage.getItem("loggedInUser")) {
     Swal.fire({
       icon: 'warning',
       title: 'Login Required',
