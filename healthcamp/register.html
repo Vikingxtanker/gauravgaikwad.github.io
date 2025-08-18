@@ -16,7 +16,7 @@
     }
   </style>
 </head>
-<body>
+<body data-login-required="true">
 
 <!-- ✅ Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
@@ -36,7 +36,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse justify-content-end mt-2 mt-lg-0" id="navbarContent">
-      <ul class="navbar-nav">
+      <ul class="navbar-nav" id="navLinks">
         <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
         <li class="nav-item"><a class="nav-link fw-semibold" href="appointment.html">Book Appointment</a></li>
         <li class="nav-item"><a class="nav-link fw-semibold" href="register.html">Register</a></li>
@@ -175,13 +175,14 @@
   <small class="text-muted">© 2025 Designed & Developed by Gaurav Gaikwad & Kumkum Bhenwal</small>
 </footer>
     
-<!-- ✅ Script Includes -->
+<!-- ✅ Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="js/firebase-config.js"></script>
 <script src="js/register.js"></script>
+<script src="js/navbar.js"></script>
 
 <!-- ✅ Fix Navbar Overlap Dynamically -->
 <script>
