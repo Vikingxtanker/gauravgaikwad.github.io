@@ -1,9 +1,11 @@
-/* Gradient background */
+/* Reset page background */
 body {
-  background: linear-gradient(135deg, #e5daf0, #f2ebf7);
+  background: #fff;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  color: #333;
+  font-family: Arial, sans-serif;
 }
 
 /* Main content layout */
@@ -11,115 +13,55 @@ main {
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding-top: 100px;
+  padding-top: 90px;  /* space for fixed navbar */
   padding-bottom: 40px;
 }
 
-/* Welcome heading styling */
-.welcome-text h2 {
-  color: #333;
-  font-size: 2rem;
-  margin-bottom: 20px;
+/* Section headings */
+h2, h3, h5, h6 {
+  color: #222;
 }
 
-/* Modal content width (to show gradient sides) */
-.adr-modal {
-  max-width: 1300px;
-  width: 100%;
-  background-color: #fff;
-  margin: 0 auto;
+/* Hero section */
+section.bg-light {
+  background-color: #f8f9fa !important;
 }
 
-/* Scroll down button */
-.scroll-down-btn {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #fff;         /* white button */
-  color: #333;              /* dark icon */
-  border: none;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  font-size: 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 1000;
-  transition: transform 0.2s ease, opacity 0.3s ease;
-}
-.scroll-down-btn.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-.scroll-down-btn:hover {
-  transform: translateX(-50%) scale(1.1);
+/* Icons in steps */
+.bi {
+  color: #0d6efd; /* bootstrap primary blue */
 }
 
-/* NEWS SECTION */
-.news-section {
-  background: transparent;
-  padding-top: 60px;
-}
-
-/* Bullet container */
-.custom-bullet-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-/* Bullet shape: concave left + convex right (purple) */
-.custom-bullet {
-  display: inline-block;
-  position: relative;
-  background: #4b3b77; /* Purple color */
-  color: #fff;
-  font-weight: 600;
-  font-size: 1rem;
-  padding: 10px 40px;
-  width: 250px;
-  text-align: center;
-  text-decoration: none;
-  margin-bottom: 15px;
-  transition: background 0.3s ease, transform 0.2s ease;
-  border-radius: 0;
-
-  /* Create concave left and convex right shape */
-  clip-path: polygon(
-    0 0,                  /* top-left */
-    calc(100% - 20px) 0,  /* top-right before convex tip */
-    100% 50%,             /* convex outward tip */
-    calc(100% - 20px) 100%,/* bottom-right */
-    0 100%,               /* bottom-left */
-    20px 50%              /* concave inward notch on left */
-  );
-}
-
-/* Hover effect */
-.custom-bullet:hover {
-  background: #372c5d;
-  transform: scale(1.03);
-}
-
-/* Latest News box */
-.latest-news-box {
+/* Resource cards */
+section .border {
   background: #fff;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  padding: 20px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.latest-news-box h4 {
-  border-bottom: 2px solid #ddd;
-  padding-bottom: 10px;
-  margin-bottom: 15px;
+section .border:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-/* Contact footer bar */
+section h3 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #0d6efd; /* Bootstrap blue */
+  margin-bottom: 10px;
+}
+
+
+/* Contact bar */
 .contact-bar {
-  border-top: 2px solid #ddd;
+  background: #fff;
+  border-top: 1px solid #ddd;
   font-size: 0.95rem;
+}
+
+/* Footer */
+footer {
+  background: #fff;
+  border-top: 1px solid #ddd;
+}
+footer small {
+  color: #666;
 }
