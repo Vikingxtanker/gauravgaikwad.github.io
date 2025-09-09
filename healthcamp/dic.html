@@ -5,97 +5,647 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Drug Information Center - Pharmacy Practice</title>
 
+  <!-- Google Fonts (used by dic.css) -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&family=Roboto+Slab:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Your site CSS -->
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/dic.css">
+
+  <!-- Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
-
 <body class="d-flex flex-column min-vh-100">
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
-  <div class="container-fluid px-3 d-flex align-items-center justify-content-between">
-    <div class="d-flex align-items-center">
-      <a class="navbar-brand d-flex align-items-center" href="index.html">
-        <img src="assets/DYP_LOGO_RED.jpg" alt="DYP Logo" height="50" class="me-2">
-      </a>
-      <div class="navbar-brand-text d-none d-md-block">
-        <strong>Dr. D.Y Patil Pratishthan’s</strong><br>
-        Dr. D.Y Patil College of Pharmacy Akurdi, Pune – 411044<br>
-        <small class="text-muted">Department of Pharmacy Practice (Pharm. D.)</small>
-      </div>
-    </div>
-    <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
-      aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse justify-content-end mt-2 mt-lg-0" id="navbarContent">
-      <ul class="navbar-nav">
-        <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
-        <li class="nav-item"><a class="nav-link fw-semibold" href="#">Register</a></li>
-        <li class="nav-item"><a class="nav-link fw-semibold" href="#">Guidelines</a></li>
-        <li class="nav-item"><a class="nav-link fw-semibold" href="#">About Us</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
-<!-- Welcome Section -->
-<section class="dic-welcome-section d-flex flex-column justify-content-center align-items-center">
-  <h1 class="welcome-line">Welcome</h1>
-  <h1 class="welcome-line">To</h1>
-  <h1 class="welcome-line">Drug Information Center</h1>
-
-  <!-- Drug Requesting Form Tab -->
-  <a href="#dicform.html" class="drug-request-tab mt-4">Drug Requesting Form</a>
-</section>
-
-<!-- Curved Box Section -->
-<section class="dic-curved-section d-flex align-items-center">
-  <div class="container">
-    <div class="row g-5 align-items-start">
-
-      <!-- Zigzag Column -->
-      <div class="col-md-6 d-flex justify-content-center">
-        <div class="zigzag-container">
-          <img src="assets/zigzag-bg.png" alt="Zigzag Spine" class="zigzag-bg">
-
-          <!-- Circular Images (Clickable) -->
-          <a href="#" class="circle circle1"></a>
-          <a href="#" class="circle circle2"></a>
-          <a href="#" class="circle circle3"></a>
-          <a href="#" class="circle circle4"></a>
+  <!-- Top Navbar (kept from your dic.html) -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
+    <div class="container-fluid px-3">
+      <!-- Left: logo + college text -->
+      <div class="d-flex align-items-center">
+        <a class="navbar-brand d-flex align-items-center" href="index.html">
+          <img src="assets/DYP_LOGO_RED.jpg" alt="DYP Logo" height="50" class="me-2">
+        </a>
+        <div class="navbar-brand-text d-none d-md-block">
+          <strong>Dr. D.Y Patil Pratishthan’s</strong><br>
+          Dr. D.Y Patil College of Pharmacy Akurdi, Pune – 411044<br>
+          <small class="text-muted">Department of Pharmacy Practice (Pharm. D.)</small>
         </div>
       </div>
 
-      <!-- Latest Monograph Column -->
-      <div class="col-md-6">
-        <div class="latest-monograph-box p-4 rounded shadow bg-white">
-          <h3 class="mb-3">Latest Drug Monograph</h3>
-          <p>
-            tum merko info send krow.
-          </p>
-		<p>
-			fir m add krega info
-			</p>
-			<p>space1</p>
-			<p>space2</p>
-			<p>space3</p>
+      <!-- Toggler -->
+      <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse"
+        data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false"
+        aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Right: nav links -->
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#">Register</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#">Guidelines</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#">About Us</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main content (from dic layout.html, converted to not use Tailwind or inline styles) -->
+  <!-- Main content -->
+<main class="dic-main">
+
+  <!-- Hero Section (now starts immediately) -->
+  <section class="hero-section">
+    <div class="hero-16-9">
+      <div class="container h-100 d-flex flex-column justify-content-center align-items-center py-4">
+        <div class="soft-glass rounded-3xl p-4 mb-4 hero-card w-100">
+          <h2 class="hero-title text-center">WELCOME TO DRUG INFORMATION CENTER</h2>
+          <p class="hero-subtitle text-center">Your trusted source for comprehensive pharmaceutical information</p>
+
+          <!-- Search bar -->
+          <div class="d-flex flex-column flex-md-row gap-3 justify-content-center align-items-center mt-4 search-row">
+            <div class="flex-fill position-relative">
+              <input type="text" placeholder="Search medications, interactions, dosages..." class="form-control gentle-input hero-search-input">
+              <div class="search-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+              </div>
+            </div>
+            <button class="btn soft-button hero-search-btn">🔍 Search</button>
+          </div>
+        </div>
+
+        <!-- Circular Tab Navigation -->
+        <div class="d-flex justify-content-center mt-3">
+          <div class="circular-tabs d-flex flex-wrap justify-content-center gap-3 p-3 soft-glass rounded-3xl">
+            <div class="text-center">
+              <button onclick="switchTab('drug-request-form')" class="circular-tab active" data-tab="drug-request-form">
+                <span class="emoji">📋</span>
+                <div class="circular-label">Request Form</div>
+              </button>
+            </div>
+            <div class="text-center">
+              <button onclick="switchTab('rx-express')" class="circular-tab" data-tab="rx-express">
+                <span class="emoji">⚡</span>
+                <div class="circular-label">RX Express</div>
+              </button>
+            </div>
+            <div class="text-center">
+              <button onclick="switchTab('patient-counselling')" class="circular-tab" data-tab="patient-counselling">
+                <span class="emoji">👨‍⚕️</span>
+                <div class="circular-label">Counselling</div>
+              </button>
+            </div>
+            <div class="text-center">
+              <button onclick="switchTab('drug-monograph')" class="circular-tab" data-tab="drug-monograph">
+                <span class="emoji">📚</span>
+                <div class="circular-label">Monograph</div>
+              </button>
+            </div>
+            <div class="text-center">
+              <button onclick="switchTab('latest-news')" class="circular-tab" data-tab="latest-news">
+                <span class="emoji">📰</span>
+                <div class="circular-label">Latest News</div>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- Footer -->
-<footer class="bg-light text-center py-3 shadow-sm mt-auto">
-  <small class="text-muted">© 2025 Designed & Developed by Gaurav Gaikwad & Kumkum Bhenwal</small>
-</footer>
+  <!-- Tab Content Section (converted to Bootstrap grid) -->
+    <section class="container py-5">
+      <div class="soft-glass rounded-3xl p-4 tab-wrapper">
 
-<!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Drug Request Form Tab -->
+        <div id="drug-request-form" class="tab-content active">
+          <div class="container-lg">
+            <h3 class="text-center mb-4 section-title">📋 Drug Information Request Form</h3>
+
+            <div class="row g-4">
+              <div class="col-12 col-lg-6">
+                <div class="soft-card rounded-3xl p-3 mint-gradient h-100">
+                  <h4 class="mb-3">Request Information</h4>
+                  <form class="space-y-3">
+                    <div class="mb-3">
+                      <label class="form-label">Drug Name</label>
+                      <input type="text" class="form-control gentle-input" placeholder="Enter drug name...">
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Information Type</label>
+                      <select class="form-select gentle-input">
+                        <option>Select information type...</option>
+                        <option>Dosage & Administration</option>
+                        <option>Side Effects & Contraindications</option>
+                        <option>Drug Interactions</option>
+                        <option>Pharmacokinetics</option>
+                        <option>Pregnancy & Lactation</option>
+                        <option>Pediatric Information</option>
+                      </select>
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Priority Level</label>
+                      <select class="form-select gentle-input">
+                        <option>Routine (24-48 hours)</option>
+                        <option>Urgent (4-6 hours)</option>
+                        <option>Emergency (1 hour)</option>
+                      </select>
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Additional Details</label>
+                      <textarea class="form-control gentle-input" rows="4" placeholder="Provide specific details about your request..."></textarea>
+                    </div>
+                  </form>
+                </div>
+              </div>
+
+              <div class="col-12 col-lg-6">
+                <div class="soft-card rounded-3xl p-3 sky-gradient h-100">
+                  <h4 class="mb-3">Requester Information</h4>
+                  <form class="space-y-3">
+                    <div class="mb-3">
+                      <label class="form-label">Full Name</label>
+                      <input type="text" class="form-control gentle-input" placeholder="Your full name...">
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Professional Title</label>
+                      <select class="form-select gentle-input">
+                        <option>Select your role...</option>
+                        <option>Pharmacist</option>
+                        <option>Physician</option>
+                        <option>Nurse</option>
+                        <option>Medical Student</option>
+                        <option>Pharmacy Student</option>
+                        <option>Other Healthcare Professional</option>
+                      </select>
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Institution/Hospital</label>
+                      <input type="text" class="form-control gentle-input" placeholder="Your workplace...">
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Contact Email</label>
+                      <input type="email" class="form-control gentle-input" placeholder="your.email@example.com">
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Phone Number</label>
+                      <input type="tel" class="form-control gentle-input" placeholder="+1 (555) 123-4567">
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-center mt-4">
+              <button class="btn soft-button px-4 py-2">📤 Submit Request</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RX Express Tab -->
+        <div id="rx-express" class="tab-content">
+          <div class="text-center mb-4">
+            <h3 class="section-title">⚡ RX Express - Quick Drug Lookup</h3>
+            <p class="section-subtitle">Fast access to essential drug information</p>
+          </div>
+
+          <div class="row g-4 mb-4">
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="soft-card rounded-3xl p-3 mint-gradient h-100 text-center">
+                <div class="icon-box mb-3">💊</div>
+                <h5>Quick Dosage</h5>
+                <p class="small text-muted">Instant access to standard dosing information</p>
+                <button class="btn w-100 btn-light mt-3">Access Now →</button>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="soft-card rounded-3xl p-3 sky-gradient h-100 text-center">
+                <div class="icon-box mb-3">⚠️</div>
+                <h5>Safety Alerts</h5>
+                <p class="small text-muted">Critical safety information and warnings</p>
+                <button class="btn w-100 btn-light mt-3">Check Alerts →</button>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="soft-card rounded-3xl p-3 lavender-gradient h-100 text-center">
+                <div class="icon-box mb-3">🔄</div>
+                <h5>Interactions</h5>
+                <p class="small text-muted">Rapid drug interaction screening</p>
+                <button class="btn w-100 btn-light mt-3">Screen Now →</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="soft-card rounded-3xl p-3">
+            <div class="container-lg">
+              <div class="d-flex gap-3 mb-3">
+                <input type="text" class="form-control gentle-input" placeholder="Enter drug name for instant lookup...">
+                <button class="btn soft-button">⚡ Express</button>
+              </div>
+
+              <div class="d-flex flex-wrap gap-2">
+                <button class="btn btn-outline-success">Aspirin</button>
+                <button class="btn btn-outline-info">Metformin</button>
+                <button class="btn btn-outline-primary">Lisinopril</button>
+                <button class="btn btn-outline-warning">Atorvastatin</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Patient Counselling Tab -->
+        <div id="patient-counselling" class="tab-content">
+          <div class="text-center mb-4">
+            <h3 class="section-title">👨‍⚕️ Patient Counselling Resources</h3>
+            <p class="section-subtitle">Comprehensive tools for effective patient education</p>
+          </div>
+
+          <div class="row g-4 mb-4">
+            <div class="col-12 col-lg-6">
+              <div class="soft-card rounded-3xl p-3 mint-gradient h-100">
+                <h5>📋 Counselling Checklist Generator</h5>
+                <form class="mt-3">
+                  <div class="mb-3">
+                    <label class="form-label">Medication</label>
+                    <input type="text" class="form-control gentle-input" placeholder="Enter medication name...">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Patient Age Group</label>
+                    <select class="form-select gentle-input">
+                      <option>Adult (18-65)</option>
+                      <option>Pediatric (0-17)</option>
+                      <option>Geriatric (65+)</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Special Considerations</label>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="pregnancyCheck">
+                      <label class="form-check-label" for="pregnancyCheck">Pregnancy/Lactation</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="renalCheck">
+                      <label class="form-check-label" for="renalCheck">Renal Impairment</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="hepaticCheck">
+                      <label class="form-check-label" for="hepaticCheck">Hepatic Impairment</label>
+                    </div>
+                  </div>
+                  <button class="btn btn-success w-100">📋 Generate Checklist</button>
+                </form>
+              </div>
+            </div>
+
+            <div class="col-12 col-lg-6">
+              <div class="soft-card rounded-3xl p-3 sky-gradient h-100">
+                <h5>📚 Patient Education Materials</h5>
+                <div class="mt-3">
+                  <div class="bg-white rounded-3 p-2 mb-2 d-flex justify-content-between align-items-center">
+                    <span>Medication Adherence Guide</span>
+                    <button class="btn btn-link">Download PDF</button>
+                  </div>
+                  <div class="bg-white rounded-3 p-2 mb-2 d-flex justify-content-between align-items-center">
+                    <span>Side Effects Monitoring</span>
+                    <button class="btn btn-link">Download PDF</button>
+                  </div>
+                  <div class="bg-white rounded-3 p-2 mb-2 d-flex justify-content-between align-items-center">
+                    <span>Drug Storage Guidelines</span>
+                    <button class="btn btn-link">Download PDF</button>
+                  </div>
+                  <div class="bg-white rounded-3 p-2 mb-2 d-flex justify-content-between align-items-center">
+                    <span>Interaction Prevention</span>
+                    <button class="btn btn-link">Download PDF</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-12 col-md-4">
+              <div class="soft-card rounded-3xl p-3 lavender-gradient text-center h-100">
+                <div class="display-4 mb-2">🗣️</div>
+                <h6>Communication Tips</h6>
+                <p class="small text-muted">Effective patient communication strategies</p>
+                <button class="btn btn-outline-primary w-100">Learn More</button>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="soft-card rounded-3xl p-3 peach-gradient text-center h-100">
+                <div class="display-4 mb-2">📱</div>
+                <h6>Mobile Resources</h6>
+                <p class="small text-muted">Apps and tools for patient education</p>
+                <button class="btn btn-outline-warning w-100">Explore Apps</button>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="soft-card rounded-3xl p-3 rose-gradient text-center h-100">
+                <div class="display-4 mb-2">📊</div>
+                <h6>Counselling Metrics</h6>
+                <p class="small text-muted">Track counselling effectiveness</p>
+                <button class="btn btn-outline-danger w-100">View Analytics</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Drug Monograph, Latest News and other tab content copied over similarly -->
+        <!-- drug-monograph and latest-news content omitted here for brevity in the editor,
+             but below I include them fully as taken from dic layout.html. -->
+
+        <!-- Drug Monograph Tab -->
+        <div id="drug-monograph" class="tab-content">
+          <!-- Monograph header -->
+          <div class="text-center mb-4">
+            <h3 class="section-title">📚 Drug Monograph Database</h3>
+            <p class="section-subtitle">Comprehensive pharmaceutical monographs and clinical data</p>
+          </div>
+
+          <div class="soft-card rounded-3xl p-3 mb-4">
+            <div class="d-flex flex-column flex-md-row gap-3 mb-3">
+              <input type="text" class="form-control gentle-input me-2" placeholder="Search drug monographs...">
+              <select class="form-select gentle-input me-2">
+                <option>All Categories</option>
+                <option>Cardiovascular</option>
+                <option>Antibiotics</option>
+                <option>CNS Agents</option>
+                <option>Endocrine</option>
+                <option>Oncology</option>
+              </select>
+              <button class="btn soft-button">🔍 Search</button>
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="soft-card rounded-3xl p-3 mint-gradient h-100">
+                <div class="d-flex justify-content-between mb-2">
+                  <h5>Aspirin</h5>
+                  <span class="badge bg-success">Updated</span>
+                </div>
+                <p class="small text-muted">Acetylsalicylic acid - Antiplatelet agent</p>
+                <div class="small text-muted mb-2">
+                  <div class="d-flex justify-content-between"><span>Class:</span><span>NSAID</span></div>
+                  <div class="d-flex justify-content-between"><span>Route:</span><span>Oral</span></div>
+                  <div class="d-flex justify-content-between"><span>Last Updated:</span><span>Dec 2024</span></div>
+                </div>
+                <button class="btn btn-outline-success w-100">View Monograph →</button>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="soft-card rounded-3xl p-3 sky-gradient h-100">
+                <div class="d-flex justify-content-between mb-2">
+                  <h5>Metformin</h5>
+                  <span class="badge bg-info text-dark">Popular</span>
+                </div>
+                <p class="small text-muted">Biguanide antidiabetic agent</p>
+                <div class="small text-muted mb-2">
+                  <div class="d-flex justify-content-between"><span>Class:</span><span>Antidiabetic</span></div>
+                  <div class="d-flex justify-content-between"><span>Route:</span><span>Oral</span></div>
+                  <div class="d-flex justify-content-between"><span>Last Updated:</span><span>Nov 2024</span></div>
+                </div>
+                <button class="btn btn-outline-info w-100">View Monograph →</button>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="soft-card rounded-3xl p-3 lavender-gradient h-100">
+                <div class="d-flex justify-content-between mb-2">
+                  <h5>Lisinopril</h5>
+                  <span class="badge bg-secondary">New</span>
+                </div>
+                <p class="small text-muted">ACE inhibitor for hypertension</p>
+                <div class="small text-muted mb-2">
+                  <div class="d-flex justify-content-between"><span>Class:</span><span>ACE Inhibitor</span></div>
+                  <div class="d-flex justify-content-between"><span>Route:</span><span>Oral</span></div>
+                  <div class="d-flex justify-content-between"><span>Last Updated:</span><span>Dec 2024</span></div>
+                </div>
+                <button class="btn btn-outline-secondary w-100">View Monograph →</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="soft-card rounded-3xl p-3 mt-4">
+            <h6>📊 Monograph Statistics</h6>
+            <div class="row g-3 mt-3">
+              <div class="col-6 col-md-3">
+                <div class="stat-card p-3 mint-gradient text-center rounded-3">
+                  <div class="h4">2,847</div>
+                  <div class="small text-success">Total Monographs</div>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="stat-card p-3 sky-gradient text-center rounded-3">
+                  <div class="h4">156</div>
+                  <div class="small text-info">Updated This Month</div>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="stat-card p-3 lavender-gradient text-center rounded-3">
+                  <div class="h4">23</div>
+                  <div class="small text-purple">New Additions</div>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="stat-card p-3 peach-gradient text-center rounded-3">
+                  <div class="h4">98%</div>
+                  <div class="small text-orange">Accuracy Rate</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Latest News Tab -->
+        <div id="latest-news" class="tab-content">
+          <div class="text-center mb-4">
+            <h3 class="section-title">📰 Latest Pharmaceutical News</h3>
+            <p class="section-subtitle">Stay updated with the latest developments in pharmaceutical science</p>
+          </div>
+
+          <div class="row g-4">
+            <div class="col-lg-8">
+              <div class="soft-card rounded-3xl p-3 news-popup mb-3">
+                <div class="d-flex gap-3">
+                  <div class="news-icon bg-danger text-white rounded-3 d-flex align-items-center justify-content-center flex-shrink-0">
+                    🚨
+                  </div>
+                  <div>
+                    <div class="d-flex gap-2 align-items-center mb-1">
+                      <span class="badge bg-danger">BREAKING</span>
+                      <small class="text-muted">2 hours ago</small>
+                    </div>
+                    <h5>FDA Approves New Alzheimer's Treatment</h5>
+                    <p class="small text-muted">Revolutionary drug shows significant cognitive improvement in clinical trials, offering new hope for millions of patients worldwide.</p>
+                    <a class="text-success">Read Full Article →</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="soft-card rounded-3xl p-3 news-popup mb-3">
+                <div class="d-flex gap-3">
+                  <div class="news-icon bg-info text-white rounded-3 d-flex align-items-center justify-content-center flex-shrink-0">
+                    💊
+                  </div>
+                  <div>
+                    <div class="d-flex gap-2 align-items-center mb-1">
+                      <span class="badge bg-info text-dark">RESEARCH</span>
+                      <small class="text-muted">5 hours ago</small>
+                    </div>
+                    <h5>Breakthrough in Cancer Immunotherapy</h5>
+                    <p class="small text-muted">New combination therapy shows 85% response rate in advanced melanoma patients, marking a significant advancement in oncology treatment.</p>
+                    <a class="text-success">Read Full Article →</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="soft-card rounded-3xl p-3 news-popup">
+                <div class="d-flex gap-3">
+                  <div class="news-icon bg-success text-white rounded-3 d-flex align-items-center justify-content-center flex-shrink-0">
+                    🌿
+                  </div>
+                  <div>
+                    <div class="d-flex gap-2 align-items-center mb-1">
+                      <span class="badge bg-success">NATURAL</span>
+                      <small class="text-muted">8 hours ago</small>
+                    </div>
+                    <h5>Plant-Based Drug Discovery Initiative</h5>
+                    <p class="small text-muted">Major pharmaceutical companies partner to explore traditional medicine compounds for modern drug development.</p>
+                    <a class="text-success">Read Full Article →</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="soft-card rounded-3xl p-3 mb-3 mint-gradient">
+                <h6>🔥 Trending Topics</h6>
+                <div class="mt-2 small">
+                  <div class="d-flex justify-content-between"><span>#PersonalizedMedicine</span><span class="text-success">+24%</span></div>
+                  <div class="d-flex justify-content-between"><span>#AIInPharma</span><span class="text-success">+18%</span></div>
+                  <div class="d-flex justify-content-between"><span>#DrugSafety</span><span class="text-success">+15%</span></div>
+                  <div class="d-flex justify-content-between"><span>#Biosimilars</span><span class="text-success">+12%</span></div>
+                </div>
+              </div>
+
+              <div class="soft-card rounded-3xl p-3 sky-gradient mb-3">
+                <h6>📊 News Analytics</h6>
+                <div class="mt-2 small">
+                  <div class="text-center p-2 bg-white/50 rounded-3 mb-2">
+                    <div class="h5 mb-0">247</div>
+                    <div class="small text-muted">Articles Today</div>
+                  </div>
+                  <div class="text-center p-2 bg-white/50 rounded-3 mb-2">
+                    <div class="h5 mb-0">1.2M</div>
+                    <div class="small text-muted">Total Readers</div>
+                  </div>
+                  <div class="text-center p-2 bg-white/50 rounded-3">
+                    <div class="h5 mb-0">89%</div>
+                    <div class="small text-muted">Accuracy Rate</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="soft-card rounded-3xl p-3 lavender-gradient">
+                <h6>🔔 News Alerts</h6>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="alert1" checked>
+                  <label class="form-check-label" for="alert1">FDA Approvals</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="alert2" checked>
+                  <label class="form-check-label" for="alert2">Drug Recalls</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="alert3">
+                  <label class="form-check-label" for="alert3">Clinical Trials</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="alert4">
+                  <label class="form-check-label" for="alert4">Market Updates</label>
+                </div>
+                <button class="btn btn-outline-secondary w-100 mt-3">Save Preferences</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- .tab-wrapper -->
+    </section>
+</main>
+
+  <!-- Footer (kept from dic.html) -->
+  <footer class="bg-light text-center py-3 shadow-sm mt-auto">
+    <small class="text-muted">© 2025 Designed & Developed by Gaurav Gaikwad & Kumkum Bhenwal</small>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Page script (tab switching + reveal effects) -->
+  <script>
+    function switchTab(tabId) {
+      // Hide all tab contents
+      const tabContents = document.querySelectorAll('.tab-content');
+      tabContents.forEach(content => content.classList.remove('active'));
+
+      // Remove active class from all circular tabs
+      const circularTabs = document.querySelectorAll('.circular-tab');
+      circularTabs.forEach(tab => tab.classList.remove('active'));
+
+      // Show selected tab content with gentle animation
+      setTimeout(() => {
+        const el = document.getElementById(tabId);
+        if (el) el.classList.add('active');
+      }, 120);
+
+      // Add active class to clicked circular tab
+      const clickedTab = document.querySelector(`[data-tab="${tabId}"]`);
+      if (clickedTab) clickedTab.classList.add('active');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const cards = document.querySelectorAll('.soft-card');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, { threshold: 0.1 });
+
+      cards.forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'all 0.8s ease';
+        observer.observe(card);
+      });
+
+      // Stagger news popup animations
+      const newsItems = document.querySelectorAll('.news-popup');
+      newsItems.forEach((item, index) => {
+        item.style.animationDelay = `${index * 0.2}s`;
+      });
+    });
+  </script>
 </body>
 </html>
