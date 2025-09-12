@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const draw = (text, x, y) =>
         page.drawText(text?.toString() ?? "", { x, y, size: 10, font });
 
-      // existing fields …
+      // existing fields â€¦
       draw(p.name ?? "", 136, 633);
       draw(p.age ?? "", 320, 633);
       draw(p.phone ?? "", 94.5, 617);
@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       // ? Counseling at given coordinates
-      draw(p.counselingPoints ?? "N/A", 56, 299.5);
+      draw(p.counselingPoints ?? "N/A", 56, 250);
 5
       const finalPdf = await pdfDoc.save();
       const blob = new Blob([finalPdf], { type: "application/pdf" });
