@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
     try {
-      const res = await fetch("reporttemplate2.pdf");
+      const res = await fetch("report_hss.pdf");
       if (!res.ok) throw new Error("PDF template not found");
 
       const pdfBytes = await res.arrayBuffer();
