@@ -9,22 +9,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const patientGender = document.getElementById("patientGender");
   const stationSelect = document.getElementById("stationSelect");
 
-  const verifyContainer = document.getElementById("verifyForm").parentElement;
   const changePatientBtn = document.createElement("button");
+  const verifyContainer = document.getElementById("verifyForm").parentElement;
 
   const sections = {
     hb: document.getElementById("hbFormSection"),
     rbg: document.getElementById("rbgFormSection"),
     fev: document.getElementById("fevFormSection"),
-    bp: document.getElementById("bpFormSection")
+    bp: document.getElementById("bpFormSection"),
+    counseling: document.getElementById("counselingFormSection")
   };
 
   let currentPatientId = null;
 
-  // ✅ Clear input on load
   patientIDInput.value = "";
 
-  // ✅ Create "Change Patient" button
   changePatientBtn.textContent = "Change Patient";
   changePatientBtn.className = "btn btn-secondary my-3";
   changePatientBtn.style.display = "none";
@@ -46,15 +45,12 @@ document.addEventListener("DOMContentLoaded", () => {
       currentPatientId = id;
       const data = doc.data();
 
-      // Show patient info
       patientName.textContent = data.name || "N/A";
       patientAge.textContent = data.age || "N/A";
       patientGender.textContent = data.gender || "N/A";
 
-      // ✅ SweetAlert for correct ID
       await Swal.fire("Patient Verified", "Patient ID is valid.", "success");
 
-      // ✅ Show station selector, hide verify form
       stationSection.style.display = "block";
       verifyForm.style.display = "none";
       changePatientBtn.style.display = "inline-block";
@@ -86,6 +82,8 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("systolic").value = data.systolic;
       document.getElementById("diastolic").value = data.diastolic;
     }
+    if (selected === "counseling" && data.counselingPoints !== undefined)
+      document.getElementById("counselingPoints").value = data.counselingPoints;
   });
 
   // ✅ Save Hemoglobin
@@ -141,6 +139,19 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) {
       console.error("Error saving BP:", err);
       Swal.fire("Error", "Failed to save Blood Pressure.", "error");
+    }
+  });
+
+  // ✅ Save Counseling Points
+  document.getElementById("counselingForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const points = document.getElementById("counselingPoints").value.trim();
+    try {
+      await db.collection("patients").doc(currentPatientId).update({ counselingPoints: points });
+      Swal.fire("Success", "Counseling points saved!", "success");
+    } catch (err) {
+      console.error("Error saving counseling:", err);
+      Swal.fire("Error", "Failed to save counseling points.", "error");
     }
   });
 });

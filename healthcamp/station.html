@@ -40,7 +40,6 @@
         <li class="nav-item"><a class="nav-link fw-semibold" href="station.html">Station</a></li>
         <li class="nav-item"><a class="nav-link fw-semibold" href="patient-report.html">Patient Report</a></li>
         <li class="nav-item"><a class="nav-link fw-semibold" href="admin.html">Admin</a></li>
-        <!-- Login/Logout will be injected by navbar.js -->
       </ul>
     </div>
   </div>
@@ -71,6 +70,7 @@
         <option value="rbg">Random Blood Glucose</option>
         <option value="fev">Forced Expiratory Volume</option>
         <option value="bp">Blood Pressure</option>
+        <option value="counseling">Patient Counseling</option>
       </select>
     </div>
   </div>
@@ -108,6 +108,15 @@
       <button type="submit" class="btn btn-success">Save BP</button>
     </form>
   </div>
+
+  <!-- ✅ Patient Counseling Section -->
+  <div id="counselingFormSection" style="display:none; margin-top: 15px;">
+    <h4>Patient Counseling</h4>
+    <form id="counselingForm">
+      <textarea id="counselingPoints" rows="5" class="form-control mb-2" placeholder="Enter counseling points for the patient..." required></textarea>
+      <button type="submit" class="btn btn-success">Save Counseling Points</button>
+    </form>
+  </div>
 </div>
 
 <!-- ✅ Footer -->
@@ -122,7 +131,6 @@
 <script src="js/station-hub.js"></script>
 <script src="js/navbar.js"></script>
 
-<!-- ✅ Adjust Form Margin -->
 <script>
   function adjustFormMargin() {
     const navbar = document.querySelector(".navbar");
@@ -134,6 +142,5 @@
   window.addEventListener("load", adjustFormMargin);
   window.addEventListener("resize", adjustFormMargin);
 </script>
-
 </body>
 </html>
