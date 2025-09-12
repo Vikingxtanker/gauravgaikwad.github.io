@@ -36,7 +36,6 @@
         <li class="nav-item"><a class="nav-link fw-semibold" href="station.html">Station</a></li>
         <li class="nav-item"><a class="nav-link fw-semibold active" href="patient-report.html">Patient Report</a></li>
         <li class="nav-item"><a class="nav-link fw-semibold" href="admin.html">Admin</a></li>
-        <!-- Login/Logout will be injected dynamically by navbar.js -->
       </ul>
     </div>
   </div>
@@ -68,16 +67,17 @@
     <p><strong>FEV1:</strong> <span id="fev"></span></p>
     <p><strong>Blood Pressure:</strong> <span id="bp"></span></p>
 
+    <!-- ⭐ Added -->
+    <p><strong>Patient Counseling:</strong> <span id="counseling"></span></p>
+
     <button id="generatePDF" class="btn btn-success mt-3">Generate PDF Report</button>
   </div>
 </div>
 
-<!-- ✅ Sticky Footer -->
 <footer class="bg-light text-center py-3 shadow-sm mt-auto">
   <small class="text-muted">© 2025 Designed & Developed by Gaurav Gaikwad & Kumkum Bhenwal</small>
 </footer>
 
-<!-- ✅ Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -87,7 +87,6 @@
 <script src="js/patient-report.js"></script>
 <script src="js/navbar.js"></script>
 
-<!-- ✅ Navbar Spacing -->
 <script>
   function adjustFormMargin() {
     const navbar = document.querySelector(".navbar");
@@ -99,6 +98,5 @@
   window.addEventListener("load", adjustFormMargin);
   window.addEventListener("resize", adjustFormMargin);
 </script>
-
 </body>
 </html>
