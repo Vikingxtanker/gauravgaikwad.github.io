@@ -71,27 +71,27 @@ document.addEventListener("DOMContentLoaded", () => {
         page.drawText(text?.toString() ?? "", { x, y, size: 10, font });
 
       // existing fields …
-      draw(p.name ?? "", 136, 633);
-      draw(p.age ?? "", 320, 633);
-      draw(p.phone ?? "", 94.5, 617);
-      draw(p.gender ?? "", 342, 617);
-      draw(p.id ?? "", 117, 604.64);
-      draw(p.bmi ?? "", 321, 604.64);
-      draw(new Date().toLocaleDateString("en-GB"), 87, 590.64);
+      draw(p.name ?? "", 136, 675);
+      draw(p.age ?? "", 408, 675);
+      draw(p.phone ?? "", 82, 657);
+      draw(p.gender ?? "", 423, 657);
+      draw(p.id ?? "", 106, 638);
+      draw(p.bmi ?? "", 409, 638);
+      draw(new Date().toLocaleDateString("en-GB"), 74, 619);
 
-      draw(p.hemoglobin ?? "N/A", 222.5, 511.74);
-      draw(p.fev ?? "N/A", 222.5, 440.24);
-      draw(p.rbg ?? p.randomBloodGlucose ?? "N/A", 222.5, 456.14);
+      draw(p.hemoglobin ?? "N/A", 222.5, 535);
+      draw(p.fev ?? "N/A", 222.5, 422);
+      draw(p.rbg ?? p.randomBloodGlucose ?? "N/A", 222.5, 461);
       draw(
         (p.systolic && p.diastolic)
           ? `${p.systolic}/${p.diastolic}`
           : p.bloodPressure ?? "N/A",
         222.5,
-        411.64
+        385
       );
 
       // ? Counseling at given coordinates
-      draw(p.counselingPoints ?? "N/A", 56, 285);
+      draw(p.counselingPoints ?? "N/A", 41, 252);
 5
       const finalPdf = await pdfDoc.save();
       const blob = new Blob([finalPdf], { type: "application/pdf" });
