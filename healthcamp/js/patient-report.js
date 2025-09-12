@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       // ? Counseling at given coordinates
-      draw(p.counselingPoints ?? "N/A", 539.6, 299.5);
+      draw(p.counselingPoints ?? "N/A", 539.6, 543);
 
       const finalPdf = await pdfDoc.save();
       const blob = new Blob([finalPdf], { type: "application/pdf" });
