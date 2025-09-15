@@ -337,17 +337,11 @@ section {
 }
 
 /* Faculty Image */
-.faculty-image-wrapper {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
-}
 .faculty-image-wrapper img {
-  width: 100%;
-  height: 100%;
   object-fit: contain;
-  background: #fff;
+  background: #f8f9fa;  /* Optional – gives a light background behind empty space */
 }
+
 
 /* Swiper 3D Coverflow Gallery */
 /* Swiper Container */
