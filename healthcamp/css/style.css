@@ -337,11 +337,15 @@ section {
 }
 
 /* Faculty Image */
-.faculty-image-wrapper img {
-  object-fit: contain;
-  background: #f8f9fa;  /* Optional – gives a light background behind empty space */
+.faculty-image-wrapper {
+  width: 100%;
+  height: auto;
 }
-
+.faculty-image-wrapper img {
+  width: 100%;
+  height: auto;
+  object-fit: cover; /* or contain */
+}
 
 /* Swiper 3D Coverflow Gallery */
 /* Swiper Container */
