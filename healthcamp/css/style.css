@@ -494,3 +494,50 @@ section {
 .swiper-pagination-bullet-active {
   background: rgba(0, 0, 0, 0.7);
 }
+
+/* Style for the About Pharm.D box */
+.about-pharmd-section {
+  position: absolute;         /* lets it float over hero */
+  top: 85%;                   /* vertically center over hero */
+  left: 28%;
+  transform: translate(-50%, -50%);
+  max-width: 300px;           /* controls size */
+  width: 90%;                 /* for responsiveness */
+  background: #ffffff;
+  padding: 40px 30px;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+  z-index: 10;
+}
+
+/* Make sure hero has relative position so box sits above it */
+.hero-section {
+  position: relative;
+  z-index: 1;
+}
+
+
+.about-pharmd-section h2 {
+  font-size: 1.2rem;
+}
+
+/* Change font of the Watch Video button text */
+.about-pharmd-section a.btn {
+  font-family: 'Poppins', sans-serif;  /* or any font you like */
+  font-size: 0.8rem;                    /* adjust size */
+  font-weight: 600;                     /* boldness */
+  letter-spacing: 0.5px;                /* optional spacing */
+}
+
+.about-pharmd-section .btn {
+  background-color: #0d6efd;
+  border: none;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.about-pharmd-section .btn:hover {
+  background-color: #0b5ed7;
+}
+
+

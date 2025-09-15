@@ -12,12 +12,11 @@
 
   <!-- Swiper CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
 
-<!-- Swiper CSS & Ionicons -->
-<link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
-<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-
+  <!-- Ionicons -->
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -63,6 +62,17 @@
 <button id="scrollDownBtn" class="scroll-down-btn" title="Scroll Down">
   <i class="bi bi-chevron-double-down"></i>
 </button>
+
+<!-- 🌟 New About Pharm.D Section -->
+<section class="about-pharmd-section py-5 text-center">
+  <div class="container">
+    <h2 class="mb-4 fw-bold">About Pharm. D</h2>
+    <a href="pharmdvideo.html" class="btn btn-primary btn-lg d-inline-flex align-items-center px-4 py-2">
+      Watch Video
+      <i class="bi bi-arrow-right ms-2"></i>
+    </a>
+  </div>
+</section>
 
 <!-- ✅ About Us Section -->
 <section id="about" class="about-section py-5 bg-light">
@@ -117,7 +127,7 @@
   </div>
 </section>
 
-<!-- ✅ Gallery Section (Swiper) -->
+<!-- ✅ Gallery Section -->
 <section id="gallery" class="py-5 bg-light">
   <div class="container">
     <h2 class="text-center mb-4">Gallery</h2>
@@ -133,26 +143,16 @@
         <div class="swiper-slide tranding-slide"><img src="https://i.postimg.cc/xCsrr94X/IMG-5500.jpg" alt="Gallery 8"/></div>
         <div class="swiper-slide tranding-slide"><img src="https://i.postimg.cc/gcT9Nkh5/IMG-5505.jpg" alt="Gallery 9"/></div>
       </div>
-      <!-- Custom navigation -->
       <div class="swiper-button-prev-custom slider-arrow">
         <ion-icon name="chevron-back-outline"></ion-icon>
       </div>
       <div class="swiper-button-next-custom slider-arrow">
         <ion-icon name="chevron-forward-outline"></ion-icon>
       </div>
-      <!-- Pagination -->
       <div class="swiper-pagination"></div>
     </div>
   </div>
 </section>
-
-
-<!-- ✅ Swiper & Ionicons -->
-<link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
-<script src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-<script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
-<script src="js/swiper.js"></script>
-
 
 <!-- ✅ Footer -->
 <footer class="bg-light text-center py-3 shadow-sm mt-auto">
@@ -161,7 +161,8 @@
 
 <!-- ✅ Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
+<script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
+<script src="js/swiper.js"></script>
 
 <script>
   const scrollBtn = document.getElementById('scrollDownBtn');
