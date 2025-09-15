@@ -339,12 +339,21 @@ section {
 /* Faculty Image */
 .faculty-image-wrapper {
   width: 100%;
-  height: auto;
+  aspect-ratio: 4 / 3;          /* Force a 4:3 frame for all photos */
+  overflow: hidden;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
+  background: #ffffff;          /* White background behind image */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
 .faculty-image-wrapper img {
-  width: 100%;
-  height: auto;
-  object-fit: cover; /* or contain */
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;          /* Show full image, keep ratio */
+  background-color: #ffffff;    /* Safety: keeps gaps white */
 }
 
 /* Swiper 3D Coverflow Gallery */
