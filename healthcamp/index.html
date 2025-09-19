@@ -51,10 +51,32 @@
 </nav>
 
 <!-- ✅ Hero Section -->
-<section class="pp-hero-section text-white text-center d-flex flex-column justify-content-center">
-  <div class="container">
-    <h1 class="display-5 fw-bold">Welcome to the Department of Pharmacy Practice</h1>
-    <p class="lead">Explore our services below</p>
+<section class="hero-two-col text-dark">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      
+      <!-- Left Column -->
+      <div class="col-lg-8 col-md-7 hero-left">
+        <h1 class="hero-title">Welcome to Department<br>of Pharmacy Practice</h1>
+        <p class="hero-subtitle">Explore our services</p>
+
+        <div class="hero-buttons">
+          <a href="health-screening.html" class="btn btn-primary btn-hero">Health Screening</a>
+          <a href="adr.html" class="btn btn-outline-primary btn-hero">ADR</a>
+          <a href="dic.html" class="btn btn-outline-primary btn-hero">DIC</a>
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="col-lg-4 col-md-5 hero-right">
+        <div class="video-box">
+          <iframe width="100%" height="250"
+                  src="https://www.youtube.com/embed/PMYNBii1jgk"
+                  title="Pharm.D video" frameborder="0" allowfullscreen></iframe>
+          <p class="video-caption">Explore more about Pharm. D</p>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -62,17 +84,6 @@
 <button id="scrollDownBtn" class="scroll-down-btn" title="Scroll Down">
   <i class="bi bi-chevron-double-down"></i>
 </button>
-
-<!-- 🌟 New About Pharm.D Section -->
-<section class="about-pharmd-section py-5 text-center">
-  <div class="container">
-    <h2 class="mb-4 fw-bold">About Pharm. D</h2>
-    <a href="pharmdvideo.html" class="btn btn-primary btn-lg d-inline-flex align-items-center px-4 py-2">
-      Watch Video
-      <i class="bi bi-arrow-right ms-2"></i>
-    </a>
-  </div>
-</section>
 
 <!-- ✅ About Us Section -->
 <section id="about" class="about-section py-5 bg-light">
