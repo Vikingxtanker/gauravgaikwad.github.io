@@ -5,13 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Health Screening Test - Station Hub</title>
 
-  <!-- Bootstrap 5 -->
+  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
 <body class="d-flex flex-column min-vh-100" data-login-required="true">
 
@@ -28,18 +25,27 @@
         <small class="text-muted">Department of Pharmacy Practice (Pharm. D.)</small>
       </div>
     </div>
-    <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
-      aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+
+    <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse"
+      data-bs-target="#navbarContent" aria-controls="navbarContent"
+      aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse justify-content-end mt-2 mt-lg-0" id="navbarContent">
       <ul class="navbar-nav" id="navLinks">
         <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
         <li class="nav-item"><a class="nav-link fw-semibold" href="appointment.html">Book Appointment</a></li>
         <li class="nav-item"><a class="nav-link fw-semibold" href="register.html">Register</a></li>
-        <li class="nav-item"><a class="nav-link fw-semibold" href="station.html">Station</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold active" href="station.html">Station</a></li>
         <li class="nav-item"><a class="nav-link fw-semibold" href="patient-report.html">Patient Report</a></li>
         <li class="nav-item"><a class="nav-link fw-semibold" href="admin.html">Admin</a></li>
+        <li class="nav-item">
+          <span class="nav-link fw-semibold" id="loggedInfo"></span>
+        </li>
+        <li class="nav-item">
+          <button class="btn btn-primary btn-sm" id="authBtn">Loading...</button>
+        </li>
       </ul>
     </div>
   </div>
@@ -49,6 +55,7 @@
 <div class="container form-container">
   <h2 class="mb-4">Health Screening Test - Station Hub</h2>
 
+  <!-- Verify Patient -->
   <form id="verifyForm">
     <div class="mb-3">
       <label for="patientID" class="form-label">Enter Patient ID:</label>
@@ -57,7 +64,7 @@
     <button type="submit" class="btn btn-primary">Verify</button>
   </form>
 
-  <div id="stationSection" style="display:none; margin-top: 20px;">
+  <div id="stationSection" style="display:none; margin-top:20px;">
     <p><strong>Name:</strong> <span id="patientName"></span></p>
     <p><strong>Age:</strong> <span id="patientAge"></span></p>
     <p><strong>Gender:</strong> <span id="patientGender"></span></p>
@@ -76,44 +83,50 @@
   </div>
 
   <!-- Station Forms -->
-  <div id="hbFormSection" style="display:none; margin-top: 15px;">
+  <div id="hbFormSection" style="display:none; margin-top:15px;">
     <h4>Hemoglobin Station</h4>
     <form id="hbForm">
-      <input type="number" step="0.1" id="hemoglobin" class="form-control mb-2" placeholder="Hemoglobin (g/dL)" required>
+      <input type="number" step="0.1" id="hemoglobin" class="form-control mb-2"
+             placeholder="Hemoglobin (g/dL)" required>
       <button type="submit" class="btn btn-success">Save Hemoglobin</button>
     </form>
   </div>
 
-  <div id="rbgFormSection" style="display:none; margin-top: 15px;">
+  <div id="rbgFormSection" style="display:none; margin-top:15px;">
     <h4>Random Blood Glucose</h4>
     <form id="rbgForm">
-      <input type="number" id="rbg" class="form-control mb-2" placeholder="RBG (mg/dL)" required>
+      <input type="number" id="rbg" class="form-control mb-2"
+             placeholder="RBG (mg/dL)" required>
       <button type="submit" class="btn btn-success">Save RBG</button>
     </form>
   </div>
 
-  <div id="fevFormSection" style="display:none; margin-top: 15px;">
+  <div id="fevFormSection" style="display:none; margin-top:15px;">
     <h4>Forced Expiratory Volume</h4>
     <form id="fevForm">
-      <input type="number" step="0.01" id="fev" class="form-control mb-2" placeholder="FEV (Liters)" required>
+      <input type="number" step="0.01" id="fev" class="form-control mb-2"
+             placeholder="FEV (Liters)" required>
       <button type="submit" class="btn btn-success">Save FEV</button>
     </form>
   </div>
 
-  <div id="bpFormSection" style="display:none; margin-top: 15px;">
+  <div id="bpFormSection" style="display:none; margin-top:15px;">
     <h4>Blood Pressure</h4>
     <form id="bpForm">
-      <input type="number" id="systolic" class="form-control mb-2" placeholder="Systolic (mmHg)" required>
-      <input type="number" id="diastolic" class="form-control mb-2" placeholder="Diastolic (mmHg)" required>
+      <input type="number" id="systolic" class="form-control mb-2"
+             placeholder="Systolic (mmHg)" required>
+      <input type="number" id="diastolic" class="form-control mb-2"
+             placeholder="Diastolic (mmHg)" required>
       <button type="submit" class="btn btn-success">Save BP</button>
     </form>
   </div>
 
-  <!-- ✅ Patient Counseling Section -->
-  <div id="counselingFormSection" style="display:none; margin-top: 15px;">
+  <!-- Patient Counseling -->
+  <div id="counselingFormSection" style="display:none; margin-top:15px;">
     <h4>Patient Counseling</h4>
     <form id="counselingForm">
-      <textarea id="counselingPoints" rows="5" class="form-control mb-2" placeholder="Enter counseling points for the patient..." required></textarea>
+      <textarea id="counselingPoints" rows="5" class="form-control mb-2"
+                placeholder="Enter counseling points..." required></textarea>
       <button type="submit" class="btn btn-success">Save Counseling Points</button>
     </form>
   </div>
@@ -127,20 +140,32 @@
 <!-- ✅ Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Userbase auth -->
+<script src="https://sdk.userbase.com/2/userbase.js"></script>
+<script src="js/auth.js"></script>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="js/firebase-config.js"></script>
+
+<!-- Page scripts -->
 <script src="js/station-hub.js"></script>
 <script src="js/navbar.js"></script>
 
+<!-- Navbar spacing -->
 <script>
-  function adjustFormMargin() {
-    const navbar = document.querySelector(".navbar");
-    const formContainer = document.querySelector(".form-container");
-    if (navbar && formContainer) {
-      formContainer.style.marginTop = `${navbar.offsetHeight + 20}px`;
+  function adjustFormMargin(){
+    const nav=document.querySelector(".navbar");
+    const cont=document.querySelector(".form-container");
+    if(nav && cont){
+      cont.style.marginTop=`${Math.max(90,nav.offsetHeight+20)}px`;
     }
   }
-  window.addEventListener("load", adjustFormMargin);
-  window.addEventListener("resize", adjustFormMargin);
+  window.addEventListener("load",adjustFormMargin);
+  window.addEventListener("resize",adjustFormMargin);
 </script>
+
 </body>
 </html>
