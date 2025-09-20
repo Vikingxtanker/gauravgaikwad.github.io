@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Management</title>
+
+  <!-- Bootstrap CSS + JS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Userbase SDK -->
+  <script src="https://sdk.userbase.com/2/userbase.js"></script>
+
+  <!-- Firebase SDK (compat builds) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <!-- Your Firebase config -->
+  <script src="js/firebase-config.js"></script>
+
+  <style>
+    body { padding-top: 120px; } /* spacing for fixed navbar */
+  </style>
+</head>
+<body>
+
+<!-- Navbar (same as health-screening.html) -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
+  <div class="container-fluid px-3 d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center">
+      <a class="navbar-brand d-flex align-items-center" href="#">
+        <img src="assets/DYP_LOGO_RED.jpg" alt="DYP Logo" height="50" class="me-2">
+      </a>
+      <div class="navbar-brand-text d-none d-md-block">
+        <strong>Dr. D.Y Patil Pratishthan’s</strong><br>
+        Dr. D.Y Patil College of Pharmacy Akurdi, Pune – 411044<br>
+        <small class="text-muted">Department of Pharmacy Practice (Pharm. D.)</small>
+      </div>
+    </div>
+
+    <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+      aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-end mt-2 mt-lg-0" id="navbarContent">
+      <ul class="navbar-nav" id="navLinks">
+        <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="health-screening.html">Health Screening</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="adr.html">ADR</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="dic.html">DIC</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="about-us.html">About Us</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold active" href="userhandling.html">User Management</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Main container -->
+<div class="container">
+  <h2 class="mb-2">User Management</h2>
+  <div id="loggedInfo" class="mb-2"></div>
+
+  <!-- Auth Button -->
+  <div class="mb-3">
+    <button id="authBtn" class="btn btn-primary">Loading...</button>
+  </div>
+
+  <!-- Create user -->
+  <div id="createBox" style="display:none">
+    <h4>Create User</h4>
+    <form id="createUserForm" class="row g-2">
+      <div class="col-md-4">
+        <input type="text" id="newUsername" class="form-control" placeholder="Username" required>
+      </div>
+      <div class="col-md-4">
+        <input type="password" id="newPassword" class="form-control" placeholder="Password" required>
+      </div>
+      <div class="col-md-3">
+        <select id="newRole" class="form-select" required>
+          <option value="admin">Admin</option>
+          <option value="data">Registration</option>
+          <option value="data">Station</option>
+          <option value="data">Documentation</option>
+        </select>
+      </div>
+      <div class="col-md-1">
+        <button type="submit" class="btn btn-success w-100">Add</button>
+      </div>
+    </form>
+    <hr>
+  </div>
+
+  <!-- Users table -->
+  <div id="tableBox" style="display:none">
+    <h4>Existing Users</h4>
+    <table class="table table-bordered table-striped mt-3">
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Role</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="usersTableBody">
+        <!-- Filled by JS -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+/* --------------------- Init ---------------------- */
+let currentUser = null;
+const APP_ID = '2412fcb4-520f-4d6d-9484-242c47e19cb4';
+
+async function initUserbase() {
+  try {
+    const session = await userbase.init({ appId: APP_ID });
+    if (session.user && session.user.profile.role === 'admin') {
+      currentUser = session.user;
+      renderAuthButton();
+      document.getElementById('createBox').style.display = '';
+      document.getElementById('tableBox').style.display = '';
+      listenUsers();
+    } else {
+      renderAuthButton();
+    }
+  } catch (err) {
+    console.error(err);
+    renderAuthButton();
+  }
+}
+
+/* --------------------- Auth Button ---------------------- */
+const authBtn = document.getElementById('authBtn');
+function renderAuthButton() {
+  if (currentUser) {
+    authBtn.textContent = 'Sign Out';
+    document.getElementById('loggedInfo').textContent = `Logged in as: ${currentUser.username} (${currentUser.profile.role})`;
+    document.getElementById('createBox').style.display = '';
+    document.getElementById('tableBox').style.display = '';
+  } else {
+    authBtn.textContent = 'Sign In';
+    document.getElementById('loggedInfo').textContent = '';
+    document.getElementById('createBox').style.display = 'none';
+    document.getElementById('tableBox').style.display = 'none';
+  }
+}
+
+authBtn.addEventListener('click', () => {
+  if (!currentUser) return signInPopup();
+  signOutUser();
+});
+
+async function signInPopup() {
+  const { value: creds } = await Swal.fire({
+    title: 'Sign In',
+    html:
+      '<input id="swal-username" class="swal2-input" placeholder="Username">' +
+      '<input id="swal-password" type="password" class="swal2-input" placeholder="Password">',
+    focusConfirm: false,
+    preConfirm: () => {
+      const u = document.getElementById('swal-username').value;
+      const p = document.getElementById('swal-password').value;
+      if (!u || !p) Swal.showValidationMessage('Please fill both fields');
+      return { username: u, password: p };
+    }
+  });
+  if (!creds) return;
+
+  try {
+    const loginRes = await userbase.signIn({
+      username: creds.username,
+      password: creds.password,
+      rememberMe: 'local'
+    });
+    if (loginRes.user.profile.role !== 'admin') {
+      await userbase.signOut();
+      Swal.fire('Denied', 'You are not allowed on this page', 'error');
+      return;
+    }
+    currentUser = loginRes.user;
+    renderAuthButton();
+    listenUsers();
+  } catch (err) {
+    Swal.fire('Error', err.message, 'error');
+  }
+}
+
+async function signOutUser() {
+  try { await userbase.signOut(); } catch(err){ console.error(err); }
+  currentUser = null;
+  renderAuthButton();
+}
+
+/* --------------------- Create User ---------------------- */
+document.getElementById('createUserForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const username = document.getElementById('newUsername').value.trim();
+  const password = document.getElementById('newPassword').value.trim();
+  const role = document.getElementById('newRole').value;
+
+  try {
+    await userbase.signUp({
+      username, password,
+      profile: { role },
+      rememberMe: 'none'
+    });
+    await db.collection('users').add({ username, role, password });
+    Swal.fire('User created', username, 'success');
+    document.getElementById('createUserForm').reset();
+  } catch(err) {
+    Swal.fire('Error', err.message, 'error');
+  }
+});
+
+/* --------------------- Users Table ---------------------- */
+function listenUsers() {
+  db.collection('users').onSnapshot(snapshot => {
+    const tbody = document.getElementById('usersTableBody');
+    tbody.innerHTML = '';
+    snapshot.forEach(doc => {
+      const u = doc.data();
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${u.username}</td>
+        <td>${u.role}</td>
+        <td>
+          <button class="btn btn-sm btn-warning me-1" onclick="changePw('${doc.id}','${u.username}')">Edit Pw</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteUser('${doc.id}','${u.username}')">Delete</button>
+        </td>`;
+      tbody.appendChild(tr);
+    });
+  });
+}
+
+async function changePw(docId, uname) {
+  const { value: newPw } = await Swal.fire({
+    title: `Change password for ${uname}`,
+    input: 'password',
+    inputLabel: 'New Password',
+    inputPlaceholder: 'Enter new password',
+    showCancelButton: true
+  });
+  if (!newPw) return;
+  await db.collection('users').doc(docId).update({ password: newPw });
+  Swal.fire('Updated!', 'Password changed.', 'success');
+}
+
+async function deleteUser(docId, uname) {
+  const confirmed = await Swal.fire({ title: `Delete ${uname}?`, showCancelButton: true, confirmButtonText: 'Yes' });
+  if (!confirmed.isConfirmed) return;
+  await db.collection('users').doc(docId).delete();
+  Swal.fire('Deleted', '', 'success');
+}
+
+/* --------------------- Init ---------------------- */
+initUserbase();
+</script>
+</body>
+</html>

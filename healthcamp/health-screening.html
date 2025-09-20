@@ -9,11 +9,15 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <style>
+    /* Logout username text in red */
+    #logoutBtn { color: red !important; }
+  </style>
 </head>
 
-<body class="d-flex flex-column min-vh-100 background"><!-- PUBLIC PAGE -->
+<body class="d-flex flex-column min-vh-100 background">
 
-<!-- ✅ Navbar -->
+<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
   <div class="container-fluid px-3 d-flex align-items-center justify-content-between">
     <div class="d-flex align-items-center">
@@ -39,20 +43,28 @@
         <li class="nav-item"><a class="nav-link fw-semibold" href="adr.html">ADR</a></li>
         <li class="nav-item"><a class="nav-link fw-semibold" href="dic.html">DIC</a></li>
         <li class="nav-item"><a class="nav-link fw-semibold" href="about-us.html">About Us</a></li>
+
+        <!-- Login / Logout Links -->
+        <li class="nav-item" id="loginNav">
+          <a class="nav-link fw-semibold" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
+        </li>
+        <li class="nav-item" id="logoutNav" style="display:none;">
+          <a class="nav-link fw-semibold" href="#" id="logoutBtn">Logout</a>
+        </li>
+
         <li class="nav-item"><a class="nav-link fw-semibold" href="admin.html">Admin</a></li>
-        <!-- Login/Logout handled dynamically by navbar.js -->
       </ul>
     </div>
   </div>
 </nav>
 
-<!-- ✅ Mobile Brand Text -->
+<!-- Mobile Brand Text -->
 <div class="mobile-brand-text">
   <strong>DYPCOP, Akurdi</strong><br>
   <small class="text-muted">Department of Pharmacy (Pharm. D.)</small>
 </div>
 
-<!-- ✅ Hero Section -->
+<!-- Hero Section -->
 <section class="hst-hero-section text-white text-center d-flex flex-column justify-content-center">
   <div class="container">
     <h1 class="display-5 fw-bold">Welcome to Health Screening Services</h1>
@@ -66,18 +78,18 @@
   </div>
 </section>
 
-<!-- ✅ Scroll Down Button -->
+<!-- Scroll Down Button -->
 <button id="scrollDownBtn" class="scroll-down-btn" title="Scroll Down">
   <i class="bi bi-chevron-double-down"></i>
 </button>
 
-<!-- ✅ Info Boxes Section -->
+<!-- Info Boxes Section -->
 <section id="info-section" class="py-5 info-section">
   <div class="container">
     <h2 class="text-center mb-4">Explore More</h2>
     <div class="row g-4 justify-content-center">
 
-      <!-- Box 1 -->
+      <!-- Boxes 1-6 -->
       <div class="col-md-4 col-sm-6">
         <a href="services-provided.html" class="text-decoration-none">
           <div class="info-box text-center p-4 rounded shadow-sm h-100">
@@ -86,8 +98,6 @@
           </div>
         </a>
       </div>
-
-      <!-- Box 2 -->
       <div class="col-md-4 col-sm-6">
         <a href="education-training-hst.html" class="text-decoration-none">
           <div class="info-box text-center p-4 rounded shadow-sm h-100">
@@ -96,8 +106,6 @@
           </div>
         </a>
       </div>
-
-      <!-- Box 3 -->
       <div class="col-md-4 col-sm-6">
         <a href="guidelines-hst.html" class="text-decoration-none">
           <div class="info-box text-center p-4 rounded shadow-sm h-100">
@@ -106,8 +114,6 @@
           </div>
         </a>
       </div>
-
-      <!-- Box 4 -->
       <div class="col-md-4 col-sm-6">
         <a href="#" class="text-decoration-none">
           <div class="info-box text-center p-4 rounded shadow-sm h-100">
@@ -116,8 +122,6 @@
           </div>
         </a>
       </div>
-
-      <!-- Box 5 -->
       <div class="col-md-4 col-sm-6">
         <a href="#" class="text-decoration-none">
           <div class="info-box text-center p-4 rounded shadow-sm h-100">
@@ -126,8 +130,6 @@
           </div>
         </a>
       </div>
-
-      <!-- Box 6 -->
       <div class="col-md-4 col-sm-6">
         <a href="#" class="text-decoration-none">
           <div class="info-box text-center p-4 rounded shadow-sm h-100">
@@ -141,8 +143,7 @@
   </div>
 </section>
 
-
-<!-- ✅ Login Modal (works with navbar.js) -->
+<!-- Login Modal -->
 <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -167,68 +168,28 @@
   </div>
 </div>
 
-<!-- ✅ Footer -->
+<!-- Footer -->
 <footer class="bg-light text-center py-3 shadow-sm mt-auto">
   <small class="text-muted">© 2025 Designed & Developed by Gaurav Gaikwad & Kumkum Bhenwal</small>
 </footer>
 
-<!-- ✅ Scripts -->
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="js/navbar.js"></script>
+<script src="https://cdn.userbase.com/userbase.min.js"></script>
+<script src="js/userbase.js"></script>
 
-<!-- ✅ Adjust hero section margin -->
 <script>
+  // Adjust hero section margin for navbar
   function adjustHeroMargin() {
     const navbar = document.querySelector(".navbar");
     const heroSection = document.querySelector(".hst-hero-section");
-    if (navbar && heroSection) {
-      heroSection.style.marginTop = `${navbar.offsetHeight}px`;
-    }
+    if (navbar && heroSection) heroSection.style.marginTop = `${navbar.offsetHeight}px`;
   }
   window.addEventListener("load", adjustHeroMargin);
   window.addEventListener("resize", adjustHeroMargin);
-</script>
 
-<!-- ✅ Login handling -->
-<script>
-  const validUsers = [
-    { username: "admin",   password: "admin123" },
-    { username: "doctor1", password: "docpass" },
-    { username: "nurse1",  password: "nursepass" }
-  ];
-
-  document.getElementById('loginForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const u = document.getElementById('username').value.trim();
-    const p = document.getElementById('password').value.trim();
-    const match = validUsers.find(user => user.username === u && user.password === p);
-
-    if (match) {
-      localStorage.setItem('loggedInUser', u);
-      Swal.fire({
-        icon: 'success',
-        title: 'Login successful',
-        showConfirmButton: false,
-        timer: 1200
-      }).then(() => {
-        const modalEl = document.getElementById('loginModal');
-        const instance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-        instance.hide();
-        if (window.renderNavbar) window.renderNavbar();
-      });
-    } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Invalid credentials',
-        text: 'Please try again.'
-      });
-    }
-  });
-</script>
-
-<!-- ✅ Scroll Button JS -->
-<script>
+  // Scroll down button
   const scrollBtn = document.getElementById('scrollDownBtn');
   window.addEventListener('scroll', () => {
     scrollBtn.classList.toggle('hidden', window.scrollY > 50);
