@@ -1,65 +1,97 @@
-// admin.js
-(function() {
-  const dbInstance = firebase.firestore();
+// js/admin.js
 
-  async function fetchData() {
-    const tbody = document.querySelector('#dataTable tbody');
-    if (!tbody) return;
-    tbody.innerHTML = '';
+const dataSection = document.getElementById('dataSection');
+const dataTableBody = document.querySelector('#dataTable tbody');
+const downloadBtn = document.getElementById('downloadBtn');
+const authBtn = document.getElementById('authBtn');
+const loggedInfo = document.getElementById('loggedInfo');
 
-    try {
-      const snapshot = await dbInstance.collection('patients').get();
-      if (snapshot.empty) {
-        tbody.innerHTML = `<tr><td colspan="12" class="text-center">No patient records found</td></tr>`;
-        return;
-      }
-
-      snapshot.forEach(doc => {
-        const d = doc.data();
-        const row = `
-          <tr>
-            <td>${doc.id}</td>
-            <td>${d.name || ''}</td>
-            <td>${d.age || ''}</td>
-            <td>${d.gender || ''}</td>
-            <td>${d.phone || ''}</td>
-            <td>${d.address || ''}</td>
-            <td>${d.hemoglobin ?? ''}</td>
-            <td>${d.rbg ?? ''}</td>
-            <td>${d.fev ?? ''}</td>
-            <td>${d.systolic ?? ''}</td>
-            <td>${d.diastolic ?? ''}</td>
-            <td>${d.updatedAt ? d.updatedAt.toDate().toLocaleString() : ''}</td>
-          </tr>`;
-        tbody.insertAdjacentHTML('beforeend', row);
-      });
-    } catch (err) {
-      console.error("Error fetching data:", err);
-      tbody.innerHTML = `<tr><td colspan="12" class="text-center text-danger">Error loading patient records</td></tr>`;
-      Swal.fire('Error', 'Could not load patient records', 'error');
+// Fetch data from Firestore
+async function fetchData() {
+  try {
+    dataTableBody.innerHTML = '';
+    const snapshot = await db.collection('patients').get();
+    if (snapshot.empty) {
+      const row = document.createElement('tr');
+      row.innerHTML = `<td colspan="11" class="text-center">No records found</td>`;
+      dataTableBody.appendChild(row);
+      return;
     }
-  }
 
-  // CSV export
-  const downloadBtn = document.getElementById('downloadBtn');
-  if (downloadBtn) {
-    downloadBtn.addEventListener('click', () => {
-      let csv = "Patient ID,Name,Age,Gender,Phone,Address,Hemoglobin,RBG,FEV,Systolic,Diastolic,Last Updated\n";
-      const rows = document.querySelectorAll("#dataTable tbody tr");
-      rows.forEach(row => {
-        const cols = row.querySelectorAll("td");
-        csv += Array.from(cols).map(td => `"${td.innerText}"`).join(",") + "\n";
-      });
-      const blob = new Blob([csv], { type: "text/csv" });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = "Patient_Records.csv";
-      link.click();
+    snapshot.forEach(doc => {
+      const patient = doc.data();
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${doc.id}</td>
+        <td>${patient.name || ''}</td>
+        <td>${patient.age || ''}</td>
+        <td>${patient.gender || ''}</td>
+        <td>${patient.phone || ''}</td>
+        <td>${patient.address || ''}</td>
+        <td>${patient.hemoglobin || ''}</td>
+        <td>${patient.rbg || ''}</td>
+        <td>${patient.fev || ''}</td>
+        <td>${patient.bp || ''}</td>
+        <td>${patient.lastUpdated ? new Date(patient.lastUpdated.seconds * 1000).toLocaleString() : ''}</td>
+      `;
+      dataTableBody.appendChild(row);
     });
+  } catch (err) {
+    console.error('Error fetching patient records:', err);
+    Swal.fire('Error', 'Could not load patient records', 'error');
   }
+}
 
-  // Fetch data on page load regardless of login
-  window.addEventListener("load", fetchData);
+// Download CSV
+function downloadCSV() {
+  let csv = [];
+  document.querySelectorAll('#dataTable tr').forEach(row => {
+    const cols = row.querySelectorAll('th, td');
+    const rowData = [];
+    cols.forEach(col => rowData.push('"' + col.innerText.replace(/"/g, '""') + '"'));
+    csv.push(rowData.join(','));
+  });
+  const csvFile = new Blob([csv.join('\n')], { type: 'text/csv' });
+  const downloadLink = document.createElement('a');
+  downloadLink.download = `patient_records_${new Date().toISOString()}.csv`;
+  downloadLink.href = window.URL.createObjectURL(csvFile);
+  downloadLink.style.display = 'none';
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  document.body.removeChild(downloadLink);
+}
 
-  window.fetchData = fetchData;
-})();
+if (downloadBtn) downloadBtn.addEventListener('click', downloadCSV);
+
+// Admin authentication
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const session = await userbase.init({ appId: '2412fcb4-520f-4d6d-9484-242c47e19cb4' });
+    const currentUser = session?.user;
+
+    if (!currentUser || currentUser.data?.role !== 'admin') {
+      Swal.fire({
+        icon: 'error',
+        title: 'Access Denied',
+        text: 'Admin access only'
+      }).then(() => window.location.href = 'health-screening.html');
+      return;
+    }
+
+    loggedInfo.textContent = `Logged in as: ${currentUser.username} (${currentUser.data?.role})`;
+    authBtn.textContent = 'Sign Out';
+    dataSection.style.display = 'block';
+    fetchData();
+
+    authBtn.addEventListener('click', async () => {
+      await userbase.signOut();
+      Swal.fire('Signed Out', 'You have been signed out.', 'info')
+           .then(() => window.location.href = 'health-screening.html');
+    });
+
+  } catch (err) {
+    console.error('Admin init error:', err);
+    Swal.fire('Error', 'Could not initialize admin panel', 'error')
+         .then(() => window.location.href = 'health-screening.html');
+  }
+});

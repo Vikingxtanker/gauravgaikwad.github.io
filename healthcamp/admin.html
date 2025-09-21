@@ -10,11 +10,10 @@
   <link rel="stylesheet" href="css/style.css">
   <style>
     body { padding-top: 80px; }
-    #dataSection { display: none; } /* Hidden until login verified */
-    #authBtn { min-width: 100px; }
+    #dataSection { display: none; }
   </style>
 </head>
-<body data-login-required="true" class="d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100">
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
@@ -30,12 +29,6 @@
       </div>
     </div>
 
-    <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse"
-            data-bs-target="#navbarContent" aria-controls="navbarContent"
-            aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
     <div class="collapse navbar-collapse justify-content-end mt-2 mt-lg-0" id="navbarContent">
       <ul class="navbar-nav" id="navLinks">
         <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
@@ -45,7 +38,7 @@
         <li class="nav-item"><a class="nav-link fw-semibold" href="patient-report.html">Patient Report</a></li>
         <li class="nav-item"><a class="nav-link fw-semibold active" href="admin.html">Admin</a></li>
 
-        <!-- Userbase Auth Info -->
+        <!-- Auth info -->
         <li class="nav-item">
           <span class="nav-link fw-semibold" id="loggedInfo"></span>
         </li>
@@ -74,8 +67,7 @@
           <th>Hemoglobin</th>
           <th>RBG</th>
           <th>FEV</th>
-          <th>Systolic</th>
-          <th>Diastolic</th>
+          <th>BP</th>
           <th>Last Updated</th>
         </tr>
       </thead>
@@ -92,47 +84,16 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<!-- Userbase Auth -->
+<!-- Userbase -->
 <script src="https://sdk.userbase.com/2/userbase.js"></script>
-<script src="js/auth.js"></script>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="js/firebase-config.js"></script>
 
-<!-- Admin page logic -->
+<!-- Admin script -->
 <script src="js/admin.js"></script>
-<script src="js/navbar.js"></script>
-
-<script>
-  // Only show data section if user is logged in AND is admin
-  async function checkAdminAccess() {
-    try {
-      const user = await userbase.getCurrentUser();
-      if (!user || !user.roles.includes('admin')) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Access Denied',
-          text: 'You must be an admin to access this page',
-          allowOutsideClick: false,
-          allowEscapeKey: false
-        }).then(() => {
-          window.location.href = 'health-screening.html';
-        });
-        return;
-      }
-      // Show data and render navbar
-      document.getElementById('dataSection').style.display = 'block';
-      if (window.renderNavbar) window.renderNavbar();
-    } catch (err) {
-      console.error(err);
-      Swal.fire('Error', 'Unable to verify login', 'error');
-    }
-  }
-
-  document.addEventListener('DOMContentLoaded', checkAdminAccess);
-</script>
 
 </body>
 </html>
