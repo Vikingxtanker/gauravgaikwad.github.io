@@ -1,4 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // ✅ Initialize Firebase if not already initialized
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig); // firebaseConfig comes from firebase-config.js
+  }
+
   const db = firebase.firestore();
 
   const verifyForm = document.getElementById("verifyForm");
@@ -10,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const stationSelect = document.getElementById("stationSelect");
 
   const changePatientBtn = document.createElement("button");
-  const verifyContainer = document.getElementById("verifyForm").parentElement;
+  const verifyContainer = verifyForm.parentElement;
 
   const sections = {
     hb: document.getElementById("hbFormSection"),

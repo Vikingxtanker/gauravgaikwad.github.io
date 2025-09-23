@@ -81,7 +81,8 @@
 </nav>
 
 <!-- Form wrapper with explicit class used by CSS -->
-<div class="form-container">
+<!-- Hidden initially; register.js will show after checking localStorage currentUser role -->
+<div class="form-container" style="display:none;">
   <div class="card form-card">
     <form id="registrationForm" class="form-controls">
 
@@ -213,18 +214,12 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<!-- Userbase + Auth -->
-<script src="https://sdk.userbase.com/2/userbase.js"></script>
-<script src="js/auth.js"></script>
-
-<!-- Firebase -->
+<!-- Keep compat scripts (matching station.html) -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="js/firebase-config.js"></script>
 
-<!-- Your page scripts -->
-<script src="js/register.js"></script>
-<script src="js/navbar.js"></script>
+<!-- NOTE: register.js is a module and imports the modular firebase-config.js (which you said is working) -->
+<script type="module" src="js/register.js"></script>
 
 <!-- Adjust top margin to match navbar height (keeps things neat) -->
 <script>

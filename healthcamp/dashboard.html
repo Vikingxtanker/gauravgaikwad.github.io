@@ -5,12 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Healthcamp – Dashboard</title>
 
-  <!-- Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- Userbase + Auth -->
-  <script src="https://unpkg.com/userbase-js@2.8.0/dist/userbase.js"></script>
-  <script src="js/auth.js" defer></script>
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
   <!-- Custom CSS -->
   <link rel="stylesheet" href="css/style.css">
@@ -38,12 +37,12 @@
 
     <div class="collapse navbar-collapse justify-content-end mt-2 mt-lg-0" id="navbarContent">
       <ul class="navbar-nav" id="navLinks">
-          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="appointment.html">Book Appointment</a></li>
-          <li class="nav-item"><a class="nav-link" href="register.html">Register</a></li>
-          <li class="nav-item"><a class="nav-link" href="station.html">Station</a></li>
-          <li class="nav-item"><a class="nav-link" href="patient-report.html">Patient Report</a></li>
-          <li class="nav-item"><a class="nav-link active" href="dashboard.html">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="appointment.html">Book Appointment</a></li>
+        <li class="nav-item"><a class="nav-link" href="register.html">Register</a></li>
+        <li class="nav-item"><a class="nav-link" href="station.html">Station</a></li>
+        <li class="nav-item"><a class="nav-link" href="patient-report.html">Patient Report</a></li>
+        <li class="nav-item"><a class="nav-link active" href="dashboard.html">Dashboard</a></li>
 
         <!-- Auth display -->
         <li class="nav-item">
@@ -57,101 +56,130 @@
   </div>
 </nav>
 
-  <!-- Dashboard Body -->
-  <main class="container" style="margin-top: 90px;">
-    <h2 class="mb-4 text-center">Patient Database</h2>
+<!-- Dashboard Body -->
+<main class="container" style="margin-top: 100px;">
+  <h2 class="mb-4 text-center">Patient Database</h2>
 
-    <div class="mb-3 text-end">
-      <button id="downloadCsvBtn" class="btn btn-primary">Download CSV</button>
-    </div>
+  <div class="mb-3 text-end">
+    <button id="downloadCsvBtn" class="btn btn-primary">Download CSV</button>
+  </div>
 
-    <div class="table-responsive">
-      <table class="table table-striped table-bordered" id="patientsTable">
-        <thead class="table-dark">
-          <tr>
-            <th>Sr. No.</th>
-            <th>Patient ID</th>
-            <th>Name</th>
-            <th>Age</th>
-            <th>Gender</th>
-            <th>Phone</th>
-            <th>Hemoglobin</th>
-            <th>RBG</th>
-            <th>FEV</th>
-            <th>BP (Sys/Dia)</th>
-            <th>Last Updated</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Populated dynamically -->
-        </tbody>
-      </table>
-    </div>
-  </main>
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered" id="patientsTable">
+      <thead class="table-dark">
+        <tr>
+          <th>Sr. No.</th>
+          <th>Patient ID</th>
+          <th>Name</th>
+          <th>Age</th>
+          <th>Gender</th>
+          <th>Phone</th>
+          <th>Hemoglobin</th>
+          <th>RBG</th>
+          <th>FEV</th>
+          <th>BP (Sys/Dia)</th>
+          <th>Last Updated</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Populated dynamically -->
+      </tbody>
+    </table>
+  </div>
+</main>
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <script src="js/firebase-config.js"></script>
+<!-- Footer -->
+<footer class="bg-light text-center py-3 shadow-sm mt-auto">
+  <small class="text-muted">© 2025 Designed & Developed by Gaurav Gaikwad & Kumkum Bhenwal</small>
+</footer>
 
-  <!-- Bootstrap bundle -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  <!-- Dashboard logic (Firestore + CSV) -->
-  <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      try {
-        // Firebase initialization
-        const firebaseConfig = {
-          // paste your firebase config here
-        };
-        if (!firebase.apps?.length) firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+<!-- Dashboard JS -->
+<script type="module">
+import { db } from './js/firebase-config.js';
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import Swal from "https://cdn.jsdelivr.net/npm/sweetalert2@11/+esm";
 
-        // Populate table
-        const tableBody = document.querySelector('#patientsTable tbody');
-        const snapshot = await db.collection('patients').get();
-        let srNo = 1;
-        snapshot.forEach(doc => {
-          const p = doc.data();
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${srNo++}</td>
-            <td>${doc.id}</td>
-            <td>${p.name || ''}</td>
-            <td>${p.age || ''}</td>
-            <td>${p.gender || ''}</td>
-            <td>${p.phone || ''}</td>
-            <td>${p.hemoglobin || ''}</td>
-            <td>${p.rbg || ''}</td>
-            <td>${p.fev || ''}</td>
-            <td>${p.bpSystolic || ''}/${p.bpDiastolic || ''}</td>
-            <td>${p.lastUpdated || ''}</td>
-          `;
-          tableBody.appendChild(tr);
-        });
+// Navbar elements
+const authBtn = document.getElementById('authBtn');
+const loggedInfo = document.getElementById('loggedInfo');
 
-        // CSV download
-        document.getElementById('downloadCsvBtn').addEventListener('click', () => {
-          let csv = '';
-          document.querySelectorAll('#patientsTable tr').forEach(row => {
-            const cols = [...row.children].map(td => `"${td.textContent.trim()}"`);
-            csv += cols.join(',') + '\n';
-          });
-          const blob = new Blob([csv], { type: 'text/csv' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'patients_database.csv';
-          a.click();
-          URL.revokeObjectURL(url);
-        });
-      } catch (err) {
-        console.error('Dashboard load error:', err);
-        window.location.href = 'health-screening.html';
-      }
+// Load current user
+const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+// ----------- ADMIN CHECK -----------
+if (!currentUser || currentUser.role !== 'admin') {
+  Swal.fire({
+    icon: 'error',
+    title: 'Access Denied',
+    text: 'You must be logged in as admin to access this page.',
+    confirmButtonText: 'OK'
+  }).then(() => {
+    window.location.href = 'health-screening.html';
+  });
+} else {
+  // Update navbar info
+  loggedInfo.textContent = `Logged in as ${currentUser.username} (${currentUser.role})`;
+  authBtn.textContent = 'Logout';
+  authBtn.addEventListener('click', () => {
+    localStorage.removeItem('currentUser');
+    window.location.href = 'health-screening.html';
+  });
+
+  // Populate patient table
+  const tableBody = document.querySelector('#patientsTable tbody');
+
+  const loadPatients = async () => {
+    tableBody.innerHTML = '';
+    try {
+      const snapshot = await getDocs(collection(db, 'patients'));
+      let srNo = 1;
+      snapshot.forEach(doc => {
+        const p = doc.data();
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${srNo++}</td>
+          <td>${doc.id}</td>
+          <td>${p.name || ''}</td>
+          <td>${p.age || ''}</td>
+          <td>${p.gender || ''}</td>
+          <td>${p.phone || ''}</td>
+          <td>${p.hemoglobin || ''}</td>
+          <td>${p.rbg || ''}</td>
+          <td>${p.fev || ''}</td>
+          <td>${p.bpSystolic || ''}/${p.bpDiastolic || ''}</td>
+          <td>${p.lastUpdated || ''}</td>
+        `;
+        tableBody.appendChild(tr);
+      });
+    } catch (err) {
+      console.error('Error loading patients:', err);
+      Swal.fire('Error', 'Failed to load patient data.', 'error');
+    }
+  };
+
+  loadPatients();
+
+  // CSV download
+  document.getElementById('downloadCsvBtn').addEventListener('click', () => {
+    let csv = '';
+    document.querySelectorAll('#patientsTable tr').forEach(row => {
+      const cols = [...row.children].map(td => `"${td.textContent.trim()}"`);
+      csv += cols.join(',') + '\n';
     });
-  </script>
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'patients_database.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+}
+</script>
+
 </body>
 </html>

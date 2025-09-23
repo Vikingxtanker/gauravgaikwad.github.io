@@ -1,80 +1,81 @@
 // js/auth.js
-document.addEventListener("DOMContentLoaded", () => {
 
-  const APP_ID = '2412fcb4-520f-4d6d-9484-242c47e19cb4';
+// Initialize Userbase app
+const appId = '2412fcb4-520f-4d6d-9484-242c47e19cb4'; // Replace with your Userbase App ID
+
+// Initialize Userbase only once
+async function initUserbase() {
+  try {
+    await userbase.init({ appId });
+  } catch (err) {
+    console.error('Userbase init error:', err);
+  }
+}
+
+// Get current user
+export async function authInit() {
+  await initUserbase();
+
   let currentUser = null;
+  try {
+    currentUser = await userbase.getCurrentUser();
+  } catch (err) {
+    console.error('Auth init error:', err);
+  }
 
-  const authBtn = document.getElementById('authBtn');
-  const loggedInfo = document.getElementById('loggedInfo');
+  // If already logged in, save in localStorage for persistent session
+  if (currentUser) {
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    return currentUser;
+  } else {
+    localStorage.removeItem('currentUser');
+    return null;
+  }
+}
 
-  function renderAuthButton() {
-    if (!authBtn || !loggedInfo) return;
-    if (currentUser) {
-      authBtn.textContent = 'Sign Out';
-      loggedInfo.textContent = `Logged in as: ${currentUser.username} (${currentUser.profile?.role || 'user'})`;
+// Sign in user
+export async function signInUser() {
+  await initUserbase();
+
+  // Check localStorage first
+  let storedUser = localStorage.getItem('currentUser');
+  if (storedUser) {
+    return JSON.parse(storedUser);
+  }
+
+  try {
+    const user = await userbase.signIn({
+      username: prompt('Enter username:'),
+      password: prompt('Enter password:'),
+    });
+
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    return user;
+  } catch (err) {
+    if (err.name === 'UserAlreadySignedIn') {
+      // Already signed in, get current user
+      const user = await userbase.getCurrentUser();
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      return user;
     } else {
-      authBtn.textContent = 'Sign In';
-      loggedInfo.textContent = '';
-    }
-  }
-
-  async function initUserbase() {
-    try {
-      const session = await userbase.init({ appId: APP_ID });
-      if (session && session.user) {
-        currentUser = session.user;
-      }
-    } catch (err) {
-      console.error("Error initializing Userbase:", err);
-    }
-    renderAuthButton();
-  }
-
-  authBtn.addEventListener('click', async () => {
-    if (!currentUser) {
-      // Sign In Flow
-      const { value: creds } = await Swal.fire({
-        title: 'Sign In',
-        html:
-          '<input id="swal-username" class="swal2-input" placeholder="Username">' +
-          '<input id="swal-password" type="password" class="swal2-input" placeholder="Password">',
-        focusConfirm: false,
-        preConfirm: () => {
-          const u = document.getElementById('swal-username').value;
-          const p = document.getElementById('swal-password').value;
-          if (!u || !p) Swal.showValidationMessage('Please fill both fields');
-          return { username: u, password: p };
-        }
+      Swal.fire({
+        icon: 'error',
+        title: 'Login Failed',
+        text: err.message,
       });
-      if (!creds) return;
-
-      try {
-        const user = await userbase.signIn({
-          username: creds.username,
-          password: creds.password,
-          rememberMe: 'local'
-        });
-        // user is the object returned from signIn
-        currentUser = user;
-        renderAuthButton();
-        Swal.fire('Success', `Welcome ${currentUser.username}`, 'success');
-      } catch (err) {
-        Swal.fire('Error', err.message, 'error');
-      }
-
-    } else {
-      // Sign Out Flow
-      try {
-        await userbase.signOut();
-        currentUser = null;
-        renderAuthButton();
-        Swal.fire('Signed Out', 'You have been signed out.', 'info');
-      } catch (err) {
-        console.error("Error during sign out:", err);
-      }
+      return null;
     }
-  });
+  }
+}
 
-  // Kick off
-  initUserbase();
-});
+// Sign out user
+export async function signOutUser() {
+  try {
+    await userbase.signOut();
+    localStorage.removeItem('currentUser');
+    return null;
+  } catch (err) {
+    console.error('Sign out error:', err);
+    return null;
+  }
+}
