@@ -1,3 +1,13 @@
+// js/appointment.js
+
+import { db } from "./firebase-config.js";
+import {
+  collection,
+  doc,
+  setDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
 // Initialize EmailJS
 emailjs.init("k7gs9IDv1Gd2sGt4q");
 
@@ -21,18 +31,19 @@ document.getElementById("appointmentForm").addEventListener("submit", async func
   const appointmentDate = `${day}/${month}/${year}`;
 
   try {
-    // Save to Firestore
-    await db.collection("appointments").add({
+    // ✅ Use name as document ID
+    const appointmentRef = doc(db, "appointments", name);
+    await setDoc(appointmentRef, {
       name,
       email,
       phone,
       organization,
       appointmentDate,
       timeslot,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      timestamp: serverTimestamp(),
     });
 
-    // Send confirmation email via EmailJS
+    // ✅ Send confirmation email via EmailJS
     const templateParams = {
       to_name: name,
       to_email: email,
@@ -44,7 +55,7 @@ document.getElementById("appointmentForm").addEventListener("submit", async func
 
     await emailjs.send("service_fvowxi8", "template_n6j8enq", templateParams);
 
-    // Success alert
+    // ✅ Success alert
     Swal.fire({
       icon: "success",
       title: "Appointment Booked!",
