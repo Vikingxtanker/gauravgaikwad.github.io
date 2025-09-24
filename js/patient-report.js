@@ -104,7 +104,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const draw = (text, x, y) =>
         page.drawText(text?.toString() ?? "", { x, y, size: 10, font });
 
-      // normal fields
       draw(p.name ?? "", 126, 675);
       draw(p.age ?? "", 408, 675);
       draw(p.phone ?? "", 82, 657);
@@ -124,32 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
         385
       );
 
-      // ✅ Wrapped text for counseling points
-      function drawWrappedText(page, text, x, y, maxWidth, lineHeight, font, size = 10) {
-        if (!text) return;
-        const words = text.toString().split(" ");
-        let line = "";
-        let currentY = y;
-
-        for (let i = 0; i < words.length; i++) {
-          const testLine = line + (line ? " " : "") + words[i];
-          const testWidth = font.widthOfTextAtSize(testLine, size);
-
-          if (testWidth > maxWidth && line) {
-            page.drawText(line, { x, y: currentY, size, font });
-            line = words[i];
-            currentY -= lineHeight;
-          } else {
-            line = testLine;
-          }
-        }
-
-        if (line) {
-          page.drawText(line, { x, y: currentY, size, font });
-        }
-      }
-
-      drawWrappedText(page, p.counselingPoints ?? "N/A", 41, 245, 500, 12, font, 10);
+      draw(p.counselingPoints ?? "N/A", 41, 245);
 
       const finalPdf = await pdfDoc.save();
       const blob = new Blob([finalPdf], { type: "application/pdf" });
@@ -163,3 +137,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
