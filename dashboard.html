@@ -129,19 +129,38 @@ if (!currentUser || currentUser.role !== 'admin') {
     window.location.href = 'health-screening.html';
   });
 
-  // Populate patient table
+  // Table + CSV export
   const tableBody = document.querySelector('#patientsTable tbody');
+  let patientData = []; // store formatted rows for CSV
 
+  // Helper function to format Firestore timestamp
+  function formatDate(date) {
+    const options = {
+      day: '2-digit',
+      month: '2-digit',
+      year: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    };
+    return new Intl.DateTimeFormat('en-GB', options).format(date);
+  }
+
+  // Load patients from Firestore
   const loadPatients = async () => {
     tableBody.innerHTML = '';
+    patientData = [];
     try {
       const snapshot = await getDocs(collection(db, 'patients'));
       let srNo = 1;
       snapshot.forEach(doc => {
         const p = doc.data();
+        const formattedTimestamp = p.timestamp ? formatDate(p.timestamp.toDate()) : '';
+
+        // Build table row
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>${srNo++}</td>
+          <td>${srNo}</td>
           <td>${doc.id}</td>
           <td>${p.name || ''}</td>
           <td>${p.age || ''}</td>
@@ -151,9 +170,25 @@ if (!currentUser || currentUser.role !== 'admin') {
           <td>${p.rbg || ''}</td>
           <td>${p.fev || ''}</td>
           <td>${p.systolic || ''}/${p.diastolic || ''}</td>
-          <td>${p.timestamp || ''}</td>
+          <td>${formattedTimestamp}</td>
         `;
         tableBody.appendChild(tr);
+
+        // Push row data into array for CSV
+        patientData.push([
+          srNo,
+          doc.id,
+          p.name || '',
+          p.age || '',
+          p.gender || '',
+          p.phone || '',
+          p.hemoglobin || '',
+          p.rbg || '',
+          p.fev || '',
+          `${p.systolic || ''}/${p.diastolic || ''}`,
+          formattedTimestamp
+        ]);
+        srNo++;
       });
     } catch (err) {
       console.error('Error loading patients:', err);
@@ -163,13 +198,18 @@ if (!currentUser || currentUser.role !== 'admin') {
 
   loadPatients();
 
-  // CSV download
+  // CSV download (from patientData array)
   document.getElementById('downloadCsvBtn').addEventListener('click', () => {
     let csv = '';
-    document.querySelectorAll('#patientsTable tr').forEach(row => {
-      const cols = [...row.children].map(td => `"${td.textContent.trim()}"`);
-      csv += cols.join(',') + '\n';
+    const headers = [
+      "Sr. No.","Patient ID","Name","Age","Gender","Phone","Hemoglobin","RBG","FEV","BP (Sys/Dia)","Last Updated"
+    ];
+    csv += headers.join(',') + '\n';
+
+    patientData.forEach(row => {
+      csv += row.map(val => `"${val}"`).join(',') + '\n';
     });
+
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
