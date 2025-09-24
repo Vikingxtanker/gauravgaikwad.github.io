@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Healthcare Screening Test Appointment</title>
+  <title>Health Screening Test Appointment</title>
 
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -44,7 +44,7 @@
 
 <!-- ✅ Form Section -->
 <div class="container form-container">
-  <h2 class="mb-4">Healthcare Screening Test Appointment</h2>
+  <h2 class="mb-4">Health Screening Test Appointment</h2>
 
   <form id="appointmentForm" class="form-controls">
     <div class="mb-3">
@@ -67,17 +67,19 @@
       <input type="text" id="organization" class="form-control" required>
     </div>
 
+    <!-- ✅ Fixed Date (25th Sept 2025) -->
     <div class="mb-3">
       <label for="appointmentDate" class="form-label">Date of Appointment:</label>
-      <input type="date" id="appointmentDate" class="form-control" required>
+      <input type="date" id="appointmentDate" class="form-control" value="2025-09-25" disabled>
+      <div class="form-text text-muted">Health Camp: 25 September 2025</div>
     </div>
 
     <div class="mb-3">
       <label for="timeslot" class="form-label">Select Time Slot:</label>
       <select id="timeslot" class="form-select" required>
         <option value="">-- Choose Slot --</option>
-        <option value="Morning (10 AM - 12 PM)">Morning (10 AM - 12 PM)</option>
-        <option value="Afternoon (2 PM - 5 PM)">Afternoon (2 PM - 5 PM)</option>
+        <option value="Morning (10:30 AM - 1:30 PM)">Morning (10:30 AM - 1:30 PM)</option>
+        <option value="Afternoon (2 PM - 4:30 PM)">Afternoon (2 PM - 4:30 PM)</option>
       </select>
     </div>
 

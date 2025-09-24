@@ -18,17 +18,15 @@ document.getElementById("appointmentForm").addEventListener("submit", async func
   const email = document.getElementById("email").value.trim();
   const phone = document.getElementById("phone").value.trim();
   const organization = document.getElementById("organization").value.trim();
-  const rawDate = document.getElementById("appointmentDate").value;
   const timeslot = document.getElementById("timeslot").value;
 
-  if (!name || !email || !phone || !organization || !rawDate || !timeslot) {
+  // ✅ Fixed Healthcamp Date
+  const appointmentDate = "25/09/2025";
+
+  if (!name || !email || !phone || !organization || !timeslot) {
     Swal.fire("Error", "Please fill in all fields", "error");
     return;
   }
-
-  // Convert date to DD/MM/YYYY
-  const [year, month, day] = rawDate.split("-");
-  const appointmentDate = `${day}/${month}/${year}`;
 
   try {
     // ✅ Use name as document ID
@@ -59,7 +57,7 @@ document.getElementById("appointmentForm").addEventListener("submit", async func
     Swal.fire({
       icon: "success",
       title: "Appointment Booked!",
-      text: "Your blood sample collection is scheduled. A confirmation email has been sent.",
+      text: "Your blood sample collection is scheduled for 25 September 2025. A confirmation email has been sent.",
     }).then(() => {
       document.getElementById("appointmentForm").reset();
     });
