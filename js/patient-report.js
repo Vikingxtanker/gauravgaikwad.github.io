@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // ---------- AUTH CHECK ----------
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-  if (!currentUser || (currentUser.role !== "admin" && currentUser.role !== "documentation")) {
+  if (!currentUser || (currentUser.role !== "admin" && currentUser.role !== "documentation" && currentUser.role !== "station")) {
     Swal.fire({
       icon: "error",
       title: "Access Denied",
