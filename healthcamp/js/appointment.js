@@ -2,7 +2,6 @@
 
 import { db } from "./firebase-config.js";
 import {
-  collection,
   doc,
   setDoc,
   serverTimestamp
@@ -27,6 +26,17 @@ document.getElementById("appointmentForm").addEventListener("submit", async func
     Swal.fire("Error", "Please fill in all fields", "error");
     return;
   }
+
+  // ✅ Show "Please wait..." popup immediately
+  Swal.fire({
+    title: "Please wait...",
+    text: "We are booking your appointment.",
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    didOpen: () => {
+      Swal.showLoading();
+    }
+  });
 
   try {
     // ✅ Use name as document ID
@@ -53,17 +63,19 @@ document.getElementById("appointmentForm").addEventListener("submit", async func
 
     await emailjs.send("service_fvowxi8", "template_n6j8enq", templateParams);
 
-    // ✅ Success alert
+    // ✅ Close "Please wait..." and show success
     Swal.fire({
       icon: "success",
       title: "Appointment Booked!",
-      text: "Your blood sample collection is scheduled for 25 September 2025. A confirmation email has been sent.",
+      text: "Your appointment is scheduled for 25 September 2025. A confirmation email has been sent and a WhatsApp message will be sent shortly.",
     }).then(() => {
       document.getElementById("appointmentForm").reset();
     });
 
   } catch (error) {
     console.error("Error submitting appointment:", error);
+
+    // ✅ Close "Please wait..." and show error
     Swal.fire("Error", "Something went wrong. Try again.", "error");
   }
 });
