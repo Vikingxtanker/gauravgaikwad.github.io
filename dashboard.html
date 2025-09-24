@@ -150,8 +150,8 @@ if (!currentUser || currentUser.role !== 'admin') {
           <td>${p.hemoglobin || ''}</td>
           <td>${p.rbg || ''}</td>
           <td>${p.fev || ''}</td>
-          <td>${p.bpSystolic || ''}/${p.bpDiastolic || ''}</td>
-          <td>${p.lastUpdated || ''}</td>
+          <td>${p.systolic || ''}/${p.diastolic || ''}</td>
+          <td>${p.timestamp || ''}</td>
         `;
         tableBody.appendChild(tr);
       });
