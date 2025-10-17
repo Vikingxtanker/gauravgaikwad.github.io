@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Draw participant name (adjust X,Y as needed)
       page.drawText(participant.name.toUpperCase(), {
-        x: 237,
+        x: 250,
         y: 277.5,
         size: 36,
         font,
