@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Draw participant name
       const page = pdfDoc.getPages()[0];
-      page.drawText(participant.name.toUpperCase(), {
+      page.drawText(participant.name, {
         x: 250,
         y: 285.5,
         size: 36,
