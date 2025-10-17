@@ -50,10 +50,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!res.ok) throw new Error("PDF template not found");
       const templateBytes = await res.arrayBuffer();
 
-      // Load PDF document
+      // Load PDF using PDF-lib
       const pdfDoc = await PDFLib.PDFDocument.load(templateBytes);
 
-      // Register fontkit (UMD)
+      // Register fontkit
       pdfDoc.registerFontkit(window.fontkit);
 
       // Embed custom font
@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const prefix = participant.prefix ?? "";
       const text = `${prefix} ${participant.name}`.trim();
 
-      // Draw participant name centered horizontally
+      // Draw name centered horizontally
       const page = pdfDoc.getPages()[0];
       const pageWidth = page.getWidth();
       const textWidth = customFont.widthOfTextAtSize(text, 36);
@@ -86,11 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const pdfPage = await pdf.getPage(1);
       const viewport = pdfPage.getViewport({ scale: canvas.width / pdfPage.getViewport({ scale: 1 }).width });
       canvas.height = viewport.height;
-      const renderCtx = {
-        canvasContext: ctx,
-        viewport: viewport
-      };
-      await pdfPage.render(renderCtx).promise;
+      await pdfPage.render({ canvasContext: ctx, viewport }).promise;
 
       Swal.fire("Success!", "Certificate generated! You can view it above and download.", "success");
     } catch (err) {
