@@ -1,4 +1,8 @@
 // js/certificate.js
+import { db } from "./firebase-config.js";
+import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import * as PDFLib from "https://cdn.jsdelivr.net/npm/pdf-lib@1.18.2/dist/pdf-lib.min.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   const input = document.getElementById("participantName");
   const verifyBtn = document.getElementById("verifyBtn");
@@ -22,9 +26,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     try {
-      // Firestore check
-      const participantsRef = firebase.firestore().collection("participants");
-      const snapshot = await participantsRef.where("name", "==", name).get();
+      // Check participant in Firestore
+      const participantsRef = collection(db, "participants");
+      const q = query(participantsRef, where("name", "==", name));
+      const snapshot = await getDocs(q);
 
       if (snapshot.empty) {
         Swal.fire("Not Found", "No participant found with this name.", "error");
@@ -36,20 +41,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Load PDF template
       const res = await fetch("assets/healthcamp_certificate_template.pdf");
-      if (!res.ok) throw new Error("PDF template not found");
+      if (!res.ok) throw new Error("PDF template not found or path is incorrect");
       const templateBytes = await res.arrayBuffer();
 
       // Load PDF document
       const pdfDoc = await PDFLib.PDFDocument.load(templateBytes);
 
-      // Register fontkit
-      pdfDoc.registerFontkit(fontkit);
+      // Register fontkit for custom fonts
+      pdfDoc.registerFontkit(window.fontkit);
 
       // Embed custom font
-      const fontBytes = await fetch("assets/fonts/AlexBrush-Regular.ttf").then(r => r.arrayBuffer());
+      const fontBytes = await fetch("assets/fonts/AlexBrush-Regular.ttf").then(res => res.arrayBuffer());
       const customFont = await pdfDoc.embedFont(fontBytes);
 
-      // Get first page
+      // Get first page of PDF
       const [page] = pdfDoc.getPages();
 
       // Draw participant name
@@ -61,7 +66,9 @@ document.addEventListener("DOMContentLoaded", () => {
         color: PDFLib.rgb(0, 0, 0),
       });
 
+      // Save PDF
       generatedPdfBytes = await pdfDoc.save();
+
       Swal.fire("Success!", "Certificate generated! Click download to save.", "success");
 
     } catch (err) {
@@ -75,6 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
       Swal.fire("Error", "No certificate generated yet.", "warning");
       return;
     }
+
     const blob = new Blob([generatedPdfBytes], { type: "application/pdf" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
