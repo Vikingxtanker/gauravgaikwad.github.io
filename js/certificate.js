@@ -7,9 +7,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const input = document.getElementById("participantName");
   const verifyBtn = document.getElementById("verifyBtn");
   const container = document.getElementById("certificateContainer");
-  const downloadBtn = document.getElementById("downloadBtn");
   const canvas = document.getElementById("certificateCanvas");
   const ctx = canvas.getContext("2d");
+  const downloadBtn = document.getElementById("downloadBtn");
 
   let generatedPdfBytes = null;
 
@@ -30,11 +30,13 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const participantsRef = collection(db, "participants");
 
-      // Search by name first, then by phone
+      // Search by name first
       let snapshot = await getDocs(query(participantsRef, where("name", "==", inputValue)));
+      // If not found, search by phone
       if (snapshot.empty) {
         snapshot = await getDocs(query(participantsRef, where("phone", "==", inputValue)));
       }
+
       if (snapshot.empty) {
         Swal.fire("Not Found", "No participant found with this name or phone number.", "error");
         return;
@@ -50,6 +52,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Load PDF document
       const pdfDoc = await PDFLib.PDFDocument.load(templateBytes);
+
+      // Register fontkit (UMD)
       pdfDoc.registerFontkit(window.fontkit);
 
       // Embed custom font
@@ -65,26 +69,30 @@ document.addEventListener("DOMContentLoaded", () => {
       const pageWidth = page.getWidth();
       const textWidth = customFont.widthOfTextAtSize(text, 36);
       const x = (pageWidth - textWidth) / 2;
+      const y = 285.5;
 
-      page.drawText(text, { x, y: 285.5, size: 36, font: customFont, color: PDFLib.rgb(0,0,0) });
+      page.drawText(text, {
+        x,
+        y,
+        size: 36,
+        font: customFont,
+        color: PDFLib.rgb(0, 0, 0)
+      });
 
       generatedPdfBytes = await pdfDoc.save();
 
       // Render PDF to canvas using PDF.js
-      const pdfData = new Uint8Array(generatedPdfBytes);
-      const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
+      const pdf = await pdfjsLib.getDocument({ data: generatedPdfBytes }).promise;
       const pdfPage = await pdf.getPage(1);
-
-      const viewport = pdfPage.getViewport({ scale: canvas.width / pdfPage.getViewport({scale:1}).width });
+      const viewport = pdfPage.getViewport({ scale: canvas.width / pdfPage.getViewport({ scale: 1 }).width });
       canvas.height = viewport.height;
-
       const renderCtx = {
         canvasContext: ctx,
         viewport: viewport
       };
       await pdfPage.render(renderCtx).promise;
 
-      Swal.fire("Success!", "Certificate generated! You can see it above and download it.", "success");
+      Swal.fire("Success!", "Certificate generated! You can view it above and download.", "success");
     } catch (err) {
       console.error(err);
       Swal.fire("Error", err.message || "Could not generate certificate.", "error");
@@ -96,6 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
       Swal.fire("Error", "No certificate generated yet.", "warning");
       return;
     }
+
     const blob = new Blob([generatedPdfBytes], { type: "application/pdf" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
