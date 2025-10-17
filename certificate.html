@@ -15,18 +15,17 @@
       max-width: 900px;
       margin: auto;
       background-color: #f8f9fa;
-      padding: 30px 30px 20px;
+      padding: 30px;
+      padding-bottom: 20px;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    .alert-light {
-      background-color: #fffdf8;
-    }
+    .alert-light { background-color: #fffdf8; }
     #participantName::placeholder {
       font-size: 18px;
       color: #999494 !important;
       opacity: 1;
-    }    
+    }
   </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -66,12 +65,9 @@
 
     <div class="alert alert-light mt-3 text-start p-4 border rounded shadow-sm">
       <h5 class="fw-bold text-danger mb-3 text-center">💐 Heartfelt Thanks & Appreciation 💐</h5>
-      <p class="mb-2">
-        To every student who participated in the Health Camp 2025. Registration, Hemoglobin, Blood Sugar, Respiratory, Blood Pressure, and Counseling, each group gave their best efforts.
-      </p>
-      <p class="mb-2">
-        Even when the college internet connection was not stable, you used your own mobile hotspots to ensure all patient data got entered properly.
-      </p>
+      <p class="mb-2">To every student who participated in the Health Camp 2025. Registration, Hemoglobin, Blood Sugar, Respiratory, Blood Pressure, and Counseling, each groups gave their best efforts and provided excellent work collaboration.</p>
+      <p class="mb-2">Even when the college internet connection was not stable, you used your own mobile hotspots to ensure all the patient data got entered properly and no data was lost. This showed your excellent responsibility and dedication in the health camp.</p>
+      <p class="mb-2">This unity and collaborative effort led to such wonderful outcomes. Lets continue this same kind of efforts and collaboration in the future for even better results.</p>
       <p class="fw-semibold text-center mt-3 mb-1">Thanking and best wishes from Kumkum and Gaurav.</p>
       <p class="text-center text-warning fw-bold fs-5">✨ Happy Diwali! ✨</p>
       <hr class="my-3">
@@ -82,7 +78,7 @@
 
     <div class="row justify-content-center mt-3">
       <div class="col-md-6">
-        <input type="text" id="participantName" class="form-control form-control-lg text-center mb-3" placeholder="Enter your full name" />
+        <input type="text" id="participantName" class="form-control form-control-lg text-center mb-3" placeholder="Enter your full name or phone number" />
         <button class="btn btn-success btn-lg" id="verifyBtn">Verify & Generate Certificate</button>
       </div>
     </div>
@@ -96,15 +92,17 @@
   </div>
 </div>
 
+<!-- Footer -->
 <footer class="bg-light text-center py-3 shadow-sm mt-auto">
   <small class="text-muted">© 2025 Designed & Developed by Gaurav Gaikwad & Kumkum Bhenwal</small>
 </footer>
 
 <!-- Scripts -->
 <script type="module" src="js/firebase-config.js"></script>
+<script src="assets/libs/fontkit.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/fontkit/dist/fontkit.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="js/certificate.js"></script>
+<script type="module" src="js/certificate.js"></script>
+
 </body>
 </html>
