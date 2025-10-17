@@ -39,8 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const templateBytes = await res.arrayBuffer();
       const pdfDoc = await PDFLib.PDFDocument.load(templateBytes);
-      const font = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
-      const page = pdfDoc.getPages()[0];
+      const fontBytes = await fetch("assets/fonts/AlexBrush-Regular.ttf").then(res => res.arrayBuffer());
+      const customFont = await pdfDoc.embedFont(fontBytes);
 
       // Draw participant name (adjust X,Y as needed)
       page.drawText(participant.name.toUpperCase(), {
