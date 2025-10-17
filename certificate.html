@@ -107,5 +107,20 @@
 <!-- Certificate JS as module -->
 <script type="module" src="js/certificate.js"></script>
 
+<script>
+  // Adjust content spacing dynamically below the fixed navbar
+  window.addEventListener("load", adjustNavbarSpacing);
+  window.addEventListener("resize", adjustNavbarSpacing);
+
+  function adjustNavbarSpacing() {
+    const navbar = document.querySelector(".navbar");
+    const firstSection = document.querySelector(".section-padding");
+    if (navbar && firstSection) {
+      const navbarHeight = navbar.offsetHeight;
+      firstSection.style.marginTop = navbarHeight + 20 + "px"; // adds 20px extra gap
+    }
+  }
+</script>
+
 </body>
 </html>
