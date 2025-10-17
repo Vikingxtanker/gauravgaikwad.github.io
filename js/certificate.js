@@ -1,6 +1,8 @@
 // js/certificate.js
 import { db } from "./firebase-config.js";
 import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import * as PDFLib from "https://cdn.jsdelivr.net/npm/pdf-lib@1.18.2/dist/pdf-lib.min.js";
+import fontkit from "https://cdn.jsdelivr.net/npm/fontkit@1.8.1/dist/fontkit.umd.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const input = document.getElementById("participantName");
@@ -17,7 +19,12 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    Swal.fire({ title: "Verifying...", text: "Please wait...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+    Swal.fire({
+      title: "Verifying...",
+      text: "Please wait...",
+      allowOutsideClick: false,
+      didOpen: () => Swal.showLoading()
+    });
 
     try {
       // Check participant in Firestore
@@ -36,21 +43,31 @@ document.addEventListener("DOMContentLoaded", () => {
       // Load PDF template
       const res = await fetch("assets/healthcamp_certificate_template.pdf");
       if (!res.ok) throw new Error("PDF template not found or path is incorrect");
-
       const templateBytes = await res.arrayBuffer();
+
+      // Load PDF document
       const pdfDoc = await PDFLib.PDFDocument.load(templateBytes);
+
+      // Register fontkit for custom fonts
+      pdfDoc.registerFontkit(fontkit);
+
+      // Embed custom font
       const fontBytes = await fetch("assets/fonts/AlexBrush-Regular.ttf").then(res => res.arrayBuffer());
       const customFont = await pdfDoc.embedFont(fontBytes);
 
-      // Draw participant name (adjust X,Y as needed)
+      // Get first page of PDF
+      const [page] = pdfDoc.getPages();
+
+      // Draw participant name
       page.drawText(participant.name.toUpperCase(), {
-        x: 250,
-        y: 285.5,
+        x: 250,        // Adjust X position as needed
+        y: 285.5,      // Adjust Y position as needed
         size: 36,
-        font,
+        font: customFont,
         color: PDFLib.rgb(0, 0, 0),
       });
 
+      // Save PDF
       generatedPdfBytes = await pdfDoc.save();
 
       Swal.fire("Success!", "Certificate generated! Click download to save.", "success");
@@ -71,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `Certificate_${input.value}.pdf`;
+    a.download = `Certificate_${input.value.trim()}.pdf`;
     a.click();
   });
 });
