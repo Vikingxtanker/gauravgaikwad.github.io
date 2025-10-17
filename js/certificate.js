@@ -2,7 +2,6 @@
 import { db } from "./firebase-config.js";
 import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import Swal from "https://cdn.jsdelivr.net/npm/sweetalert2@11/+esm";
-import fontkit from "../assets/libs/fontkit.umd.js"; // local modular fontkit
 
 document.addEventListener("DOMContentLoaded", () => {
   const input = document.getElementById("participantName");
@@ -48,14 +47,14 @@ document.addEventListener("DOMContentLoaded", () => {
       // Load PDF document
       const pdfDoc = await PDFLib.PDFDocument.load(templateBytes);
 
-      // Register fontkit
-      pdfDoc.registerFontkit(fontkit);
+      // Register fontkit (UMD version from window)
+      pdfDoc.registerFontkit(window.fontkit);
 
       // Embed custom font
       const fontBytes = await fetch("assets/fonts/AlexBrush-Regular.ttf").then(res => res.arrayBuffer());
       const customFont = await pdfDoc.embedFont(fontBytes);
 
-      // Draw name
+      // Draw participant name
       const page = pdfDoc.getPages()[0];
       page.drawText(participant.name.toUpperCase(), {
         x: 250,
