@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const downloadBtn = document.getElementById("downloadBtn");
 
   let generatedPdfBytes = null;
+  let participantNameForFile = ""; // ✅ store name from Firestore
 
   verifyBtn.addEventListener("click", async () => {
     const inputValue = input.value.trim();
@@ -44,6 +45,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const participant = snapshot.docs[0].data();
       container.classList.remove("d-none");
+
+      // Save participant name for file download
+      participantNameForFile = participant.name;
 
       // Load PDF template
       const res = await fetch("assets/healthcamp_certificate_template.pdf");
@@ -105,7 +109,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `Certificate_${input.value.trim()}.pdf`;
+
+    // ✅ Use Firestore name for filename
+    a.download = `Certificate_${participantNameForFile}.pdf`;
     a.click();
   });
 });
