@@ -58,7 +58,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const page = pdfDoc.getPages()[0];
       const pageWidth = page.getWidth();
       const fontSize = 36;
-      const text = participant.name;
+      const prefix = participant.prefix ?? ""; // Fallback if no prefix
+      const text = `${prefix} ${participant.name}`.trim();
 
       // Measure text width
       const textWidth = customFont.widthOfTextAtSize(text, fontSize);
