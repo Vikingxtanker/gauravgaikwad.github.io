@@ -8,6 +8,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const verifyBtn = document.getElementById("verifyBtn");
   const container = document.getElementById("certificateContainer");
   const downloadBtn = document.getElementById("downloadBtn");
+  const canvas = document.getElementById("certificateCanvas");
+  const ctx = canvas.getContext("2d");
 
   let generatedPdfBytes = null;
 
@@ -28,14 +30,11 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const participantsRef = collection(db, "participants");
 
-      // First, try searching by name
+      // Search by name first, then by phone
       let snapshot = await getDocs(query(participantsRef, where("name", "==", inputValue)));
-
-      // If not found, try searching by phone number
       if (snapshot.empty) {
         snapshot = await getDocs(query(participantsRef, where("phone", "==", inputValue)));
       }
-
       if (snapshot.empty) {
         Swal.fire("Not Found", "No participant found with this name or phone number.", "error");
         return;
@@ -51,8 +50,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Load PDF document
       const pdfDoc = await PDFLib.PDFDocument.load(templateBytes);
-
-      // Register fontkit (UMD version from window)
       pdfDoc.registerFontkit(window.fontkit);
 
       // Embed custom font
@@ -69,17 +66,25 @@ document.addEventListener("DOMContentLoaded", () => {
       const textWidth = customFont.widthOfTextAtSize(text, 36);
       const x = (pageWidth - textWidth) / 2;
 
-      page.drawText(text, {
-        x,
-        y: 285.5,
-        size: 36,
-        font: customFont,
-        color: PDFLib.rgb(0, 0, 0)
-      });
+      page.drawText(text, { x, y: 285.5, size: 36, font: customFont, color: PDFLib.rgb(0,0,0) });
 
       generatedPdfBytes = await pdfDoc.save();
 
-      Swal.fire("Success!", "Certificate generated! Click download to save.", "success");
+      // Render PDF to canvas using PDF.js
+      const pdfData = new Uint8Array(generatedPdfBytes);
+      const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
+      const pdfPage = await pdf.getPage(1);
+
+      const viewport = pdfPage.getViewport({ scale: canvas.width / pdfPage.getViewport({scale:1}).width });
+      canvas.height = viewport.height;
+
+      const renderCtx = {
+        canvasContext: ctx,
+        viewport: viewport
+      };
+      await pdfPage.render(renderCtx).promise;
+
+      Swal.fire("Success!", "Certificate generated! You can see it above and download it.", "success");
     } catch (err) {
       console.error(err);
       Swal.fire("Error", err.message || "Could not generate certificate.", "error");
@@ -91,7 +96,6 @@ document.addEventListener("DOMContentLoaded", () => {
       Swal.fire("Error", "No certificate generated yet.", "warning");
       return;
     }
-
     const blob = new Blob([generatedPdfBytes], { type: "application/pdf" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
