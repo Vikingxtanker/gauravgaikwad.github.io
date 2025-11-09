@@ -5,102 +5,198 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Health Screening Test - Station Hub</title>
 
+  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
-
+  
 <body class="d-flex flex-column min-vh-100">
-  <!-- ✅ Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
-    <div class="container-fluid px-3 d-flex align-items-center justify-content-between">
-      <div class="d-flex align-items-center">
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
+  <div class="container-fluid px-3 d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center">
+      <a class="navbar-brand d-flex align-items-center" href="#">
         <img src="assets/DYP_LOGO_RED.jpg" alt="DYP Logo" height="50" class="me-2">
-        <div class="navbar-brand-text d-none d-md-block">
-          <strong>Dr. D.Y Patil Pratishthan’s</strong><br>
-          Dr. D.Y Patil College of Pharmacy Akurdi, Pune – 411044<br>
-          <small class="text-muted">Department of Pharmacy Practice (Pharm. D.)</small>
-        </div>
-      </div>
-      <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
-        <ul class="navbar-nav" id="navLinks">
-          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="appointment.html">Book Appointment</a></li>
-          <li class="nav-item"><a class="nav-link" href="register.html">Register</a></li>
-          <li class="nav-item"><a class="nav-link active" href="station.html">Station</a></li>
-          <li class="nav-item"><a class="nav-link" href="patient-report.html">Patient Report</a></li>
-          <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
-          <li class="nav-item"><span class="nav-link" id="loggedInfo"></span></li>
-          <li class="nav-item"><button class="btn btn-primary btn-sm" id="authBtn">Loading...</button></li>
-        </ul>
+      </a>
+      <div class="navbar-brand-text d-none d-md-block">
+        <strong>Dr. D.Y Patil Pratishthan’s</strong><br>
+        Dr. D.Y Patil College of Pharmacy Akurdi, Pune – 411044<br>
+        <small class="text-muted">Department of Pharmacy Practice (Pharm. D.)</small>
       </div>
     </div>
-  </nav>
 
-  <!-- ✅ Main Content -->
-  <div class="container form-container">
-    <h2 class="mb-4">Health Screening Test - Station Hub</h2>
+    <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse"
+      data-bs-target="#navbarContent" aria-controls="navbarContent"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-    <!-- Patient Verify -->
-    <form id="verifyForm">
-      <div class="mb-3">
-        <label for="patientID" class="form-label">Enter Patient ID:</label>
-        <input type="text" id="patientID" class="form-control" required>
-      </div>
-      <button type="submit" class="btn btn-primary">Verify</button>
-    </form>
-
-    <div id="stationSection" style="display:none; margin-top:20px;">
-      <p><strong>Name:</strong> <span id="patientName"></span></p>
-      <p><strong>Age:</strong> <span id="patientAge"></span></p>
-      <p><strong>Gender:</strong> <span id="patientGender"></span></p>
-
-      <div class="mb-3">
-        <label for="stationSelect" class="form-label">Select Test:</label>
-        <select id="stationSelect" class="form-select" required>
-          <option value="">-- Choose Test --</option>
-          <option value="hemoglobin">Hemoglobin</option>
-          <option value="rbg">Random Blood Glucose</option>
-          <option value="fev">FEV</option>
-          <option value="bp">Blood Pressure</option>
-          <option value="counseling_points">Counseling</option>
-        </select>
-      </div>
-
-      <div id="testFormSection" style="display:none;">
-        <h4 id="testFormTitle"></h4>
-        <form id="testForm">
-          <div id="testInputContainer"></div>
-          <button type="submit" class="btn btn-success mt-2">Save Test Entry</button>
-        </form>
-      </div>
-
-      <div id="testHistory" class="mt-4">
-        <h5>Previous Test Records</h5>
-        <table class="table table-bordered table-sm">
-          <thead class="table-light">
-            <tr>
-              <th>Date & Time</th>
-              <th>Test</th>
-              <th>Result</th>
-              <th>Unit</th>
-            </tr>
-          </thead>
-          <tbody id="historyTableBody"></tbody>
-        </table>
-      </div>
+    <div class="collapse navbar-collapse justify-content-end mt-2 mt-lg-0" id="navbarContent">
+      <ul class="navbar-nav" id="navLinks">
+        <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="appointment.html">Book Appointment</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="register.html">Register</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold active" href="station.html">Station</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="patient-report.html">Patient Report</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="dashboard.html">Dashboard</a></li>
+        <li class="nav-item"><span class="nav-link fw-semibold" id="loggedInfo"></span></li>
+        <li class="nav-item"><button class="btn btn-primary btn-sm" id="authBtn">Loading...</button></li>
+      </ul>
     </div>
   </div>
+</nav>
 
-  <footer class="bg-light text-center py-3 shadow-sm mt-auto">
-    <small class="text-muted">© 2025 Designed & Developed by Gaurav Gaikwad & Kumkum Bhenwal</small>
-  </footer>
+<!-- Main Content -->
+<div class="container form-container">
+  <h2 class="mb-4">Health Screening Test - Station Hub</h2>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script type="module" src="js/station-postgrest.js"></script>
+  <!-- Verify Patient -->
+  <form id="verifyForm">
+    <div class="mb-3">
+      <label for="patientID" class="form-label">Enter Patient ID:</label>
+      <input type="text" id="patientID" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Verify</button>
+  </form>
+
+  <!-- Station Section -->
+  <div id="stationSection" style="display:none; margin-top:20px;">
+    <p><strong>Name:</strong> <span id="patientName"></span></p>
+    <p><strong>Age:</strong> <span id="patientAge"></span></p>
+    <p><strong>Gender:</strong> <span id="patientGender"></span></p>
+
+    <div class="mb-3">
+      <label for="stationSelect" class="form-label">Select Test Type:</label>
+      <select id="stationSelect" class="form-select">
+        <option value="">-- Choose Test --</option>
+        <option value="Hemoglobin">Hemoglobin</option>
+        <option value="RBG">Random Blood Glucose</option>
+        <option value="FBS">Fasting Blood Sugar</option>
+        <option value="PPBS">Post-Prandial Blood Sugar</option>
+        <option value="HbA1c">HbA1c</option>
+        <option value="FEV">Forced Expiratory Volume</option>
+        <option value="BP">Blood Pressure</option>
+        <option value="Counseling">Patient Counseling</option>
+      </select>
+    </div>
+
+    <div id="testFormSection" style="display:none; margin-top:20px;">
+      <h4 id="testFormTitle"></h4>
+      <form id="testForm">
+        <div id="testInputContainer"></div>
+        <button type="submit" class="btn btn-success mt-2">Save Test Entry</button>
+      </form>
+    </div>
+
+    <!-- Collapsible Daily Summary -->
+    <div class="mt-4">
+      <button class="btn btn-outline-primary mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#dailySummaryCollapse" aria-expanded="false" aria-controls="dailySummaryCollapse" id="toggleSummaryBtn">+ Show Daily Summary Form</button>
+      <div class="collapse" id="dailySummaryCollapse">
+        <div class="card card-body shadow-sm">
+          <h4>Daily Summary Form</h4>
+          <form id="dailySummaryForm" class="mt-3">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Hemoglobin (g/dL)</label>
+                <input type="number" step="0.1" id="hemoglobin" class="form-control">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Random Blood Glucose (mg/dL)</label>
+                <input type="number" id="rbg" class="form-control">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Fasting Blood Sugar (mg/dL)</label>
+                <input type="number" id="fbs" class="form-control">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Post-Prandial Blood Sugar (mg/dL)</label>
+                <input type="number" id="ppbs" class="form-control">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">HbA1c (%)</label>
+                <input type="number" step="0.1" id="hba1c" class="form-control">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">FEV (Liters)</label>
+                <input type="number" step="0.01" id="fev" class="form-control">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Systolic (mmHg)</label>
+                <input type="number" id="bpSys" class="form-control">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Diastolic (mmHg)</label>
+                <input type="number" id="bpDia" class="form-control">
+              </div>
+              <div class="col-12">
+                <label class="form-label">Counseling Notes</label>
+                <textarea id="counseling" rows="3" class="form-control"></textarea>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-success mt-3">Save Daily Summary</button>
+          </form>
+        </div>
+      </div>
+    </div>
+	  <!-- Test History -->
+<div id="testHistory" style="margin-top:30px;">
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <h5 class="mb-0">Previous Test Records</h5>
+    <select id="dateFilter" class="form-select form-select-sm" style="width:180px;">
+      <option value="all" selected>All Records</option>
+      <option value="today">Today</option>
+      <option value="7days">Last 7 Days</option>
+      <option value="30days">Last 30 Days</option>
+    </select>
+  </div>
+
+  <table class="table table-bordered table-sm align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>Date & Time</th>
+        <th>Test Type</th>
+        <th>Result</th>
+        <th>Unit</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="historyTableBody">
+      <tr><td colspan="5" class="text-center text-muted">No data loaded</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- Change Patient -->
+    <div class="mt-3">
+      <button id="changePatientBtn" class="btn btn-secondary">Change Patient</button>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-light text-center py-3 shadow-sm mt-auto">
+  <small class="text-muted">© 2025 Designed & Developed by Gaurav Gaikwad & Kumkum Bhenwal</small>
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script type="module" src="js/station-postgrest.js"></script>
+
+<script>
+  function adjustFormMargin(){
+    const nav = document.querySelector(".navbar");
+    const cont = document.querySelector(".form-container");
+    if(nav && cont){
+      cont.style.marginTop = `${Math.max(90, nav.offsetHeight + 20)}px`;
+    }
+  }
+  window.addEventListener("load", adjustFormMargin);
+  window.addEventListener("resize", adjustFormMargin);
+</script>
+
 </body>
 </html>
