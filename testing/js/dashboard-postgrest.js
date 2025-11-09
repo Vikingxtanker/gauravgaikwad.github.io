@@ -53,7 +53,7 @@ if (!currentUser || currentUser.role !== "admin") {
     patientData = [];
 
     try {
-      const res = await fetch(`${POSTGREST_URL}/patients?order=timestamp.desc`, {
+      const res = await fetch(`${POSTGREST_URL}/patients?order=created_at.desc.nullslast`, {
         headers: { "Accept": "application/json" }
       });
 
