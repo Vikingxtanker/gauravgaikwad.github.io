@@ -62,12 +62,12 @@ if (!currentUser || currentUser.role !== "admin") {
 
       let srNo = 1;
       data.forEach(p => {
-        const formattedTimestamp = formatDate(p.timestamp);
+        const formattedTimestamp = formatDate(p.created_at);
 
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td>${srNo}</td>
-          <td>${p.patientid || ""}</td>
+          <td>${p.id || ""}</td>
           <td>${p.name || ""}</td>
           <td>${p.age || ""}</td>
           <td>${p.gender || ""}</td>
@@ -82,7 +82,7 @@ if (!currentUser || currentUser.role !== "admin") {
 
         patientData.push([
           srNo,
-          p.patientid || "",
+          p.id || "",
           p.name || "",
           p.age || "",
           p.gender || "",
