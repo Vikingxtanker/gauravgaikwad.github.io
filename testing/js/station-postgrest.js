@@ -14,7 +14,7 @@ if (!currentUser || (currentUser.role !== "admin" && currentUser.role !== "stati
   }).then(() => window.location.href = "health-screening.html");
 }
 
-// Navbar setup
+// ---------- NAVBAR DISPLAY ----------
 const loggedInfo = document.getElementById("loggedInfo");
 const authBtn = document.getElementById("authBtn");
 if (currentUser) {
@@ -24,18 +24,35 @@ if (currentUser) {
     localStorage.removeItem("currentUser");
     window.location.href = "health-screening.html";
   };
+} else {
+  loggedInfo.textContent = "";
+  authBtn.textContent = "Login";
 }
 
 // ---------- ELEMENTS ----------
 const verifyForm = document.getElementById("verifyForm");
 const patientIDInput = document.getElementById("patientID");
 const stationSection = document.getElementById("stationSection");
-const historyTableBody = document.getElementById("historyTableBody");
+const patientName = document.getElementById("patientName");
+const patientAge = document.getElementById("patientAge");
+const patientGender = document.getElementById("patientGender");
 const stationSelect = document.getElementById("stationSelect");
-const testFormSection = document.getElementById("testFormSection");
-const testFormTitle = document.getElementById("testFormTitle");
-const testInputContainer = document.getElementById("testInputContainer");
-const testForm = document.getElementById("testForm");
+
+const changePatientBtn = document.createElement("button");
+const verifyContainer = verifyForm.parentElement;
+changePatientBtn.textContent = "Change Patient";
+changePatientBtn.className = "btn btn-secondary my-3";
+changePatientBtn.style.display = "none";
+changePatientBtn.onclick = () => location.reload();
+verifyContainer.appendChild(changePatientBtn);
+
+const sections = {
+  hb: document.getElementById("hbFormSection"),
+  rbg: document.getElementById("rbgFormSection"),
+  fev: document.getElementById("fevFormSection"),
+  bp: document.getElementById("bpFormSection"),
+  counseling: document.getElementById("counselingFormSection")
+};
 
 let currentPatient = null;
 
@@ -46,7 +63,6 @@ verifyForm.addEventListener("submit", async (e) => {
   if (!id) return;
 
   try {
-    // Verify patient exists
     const res = await fetch(`${POSTGREST_URL}/patients?id=eq.${id}`, {
       headers: { Accept: "application/json" }
     });
@@ -58,24 +74,125 @@ verifyForm.addEventListener("submit", async (e) => {
     }
 
     currentPatient = data[0];
-    document.getElementById("patientName").textContent = currentPatient.name || "N/A";
-    document.getElementById("patientAge").textContent = currentPatient.age || "N/A";
-    document.getElementById("patientGender").textContent = currentPatient.gender || "N/A";
+    patientName.textContent = currentPatient.name || "N/A";
+    patientAge.textContent = currentPatient.age || "N/A";
+    patientGender.textContent = currentPatient.gender || "N/A";
 
     await Swal.fire("Patient Verified", "Patient ID is valid.", "success");
     stationSection.style.display = "block";
     verifyForm.style.display = "none";
+    changePatientBtn.style.display = "inline-block";
 
-    loadTestHistory();
+    loadTestHistory(); // Load all previous test records
   } catch (err) {
     console.error("Verification error:", err);
     Swal.fire("Error", "Something went wrong verifying the patient.", "error");
   }
 });
 
+// ---------- STATION SELECT ----------
+stationSelect.addEventListener("change", () => {
+  const selected = stationSelect.value;
+  Object.values(sections).forEach(s => s.style.display = "none");
+  if (!selected || !currentPatient) return;
+
+  sections[selected].style.display = "block";
+});
+
+// ---------- SAVE NEW TEST ENTRY ----------
+async function saveTestEntry(payload, successMsg) {
+  try {
+    const res = await fetch(`${POSTGREST_URL}/patient_tests`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Prefer": "return=representation"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      console.error("Server response:", errData);
+      throw new Error(`Server error ${res.status}`);
+    }
+
+    await res.json();
+    Swal.fire("Success", successMsg, "success");
+    loadTestHistory(); // Refresh history table
+  } catch (err) {
+    console.error("Error saving test entry:", err);
+    Swal.fire("Error", "Failed to save test entry.", "error");
+  }
+}
+
+// ---------- FORM HANDLERS ----------
+document.getElementById("hbForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const val = parseFloat(document.getElementById("hemoglobin").value);
+  const payload = { patient_id: currentPatient.id, hemoglobin: val };
+  saveTestEntry(payload, "Hemoglobin test saved!");
+  e.target.reset();
+});
+
+document.getElementById("rbgForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const val = parseInt(document.getElementById("rbg").value);
+  const payload = { patient_id: currentPatient.id, rbg: val };
+  saveTestEntry(payload, "RBG test saved!");
+  e.target.reset();
+});
+
+document.getElementById("fevForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const val = parseFloat(document.getElementById("fev").value);
+  const payload = { patient_id: currentPatient.id, fev: val };
+  saveTestEntry(payload, "FEV test saved!");
+  e.target.reset();
+});
+
+document.getElementById("bpForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const sys = parseInt(document.getElementById("systolic").value);
+  const dia = parseInt(document.getElementById("diastolic").value);
+  const payload = { patient_id: currentPatient.id, systolic: sys, diastolic: dia };
+  saveTestEntry(payload, "Blood Pressure test saved!");
+  e.target.reset();
+});
+
+document.getElementById("counselingForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const text = document.getElementById("counselingPoints").value.trim();
+  const payload = { patient_id: currentPatient.id, counseling_points: text };
+  saveTestEntry(payload, "Counseling saved!");
+  e.target.reset();
+});
+
 // ---------- LOAD TEST HISTORY ----------
 async function loadTestHistory() {
-  historyTableBody.innerHTML = "";
+  let historyTable = document.getElementById("testHistoryTable");
+  if (!historyTable) {
+    // Create table dynamically if it doesn't exist
+    historyTable = document.createElement("table");
+    historyTable.id = "testHistoryTable";
+    historyTable.className = "table table-bordered mt-4";
+    historyTable.innerHTML = `
+      <thead>
+        <tr>
+          <th>Date/Time</th>
+          <th>Test</th>
+          <th>Result</th>
+          <th>Unit</th>
+        </tr>
+      </thead>
+      <tbody id="testHistoryBody"></tbody>
+    `;
+    stationSection.appendChild(historyTable);
+  }
+
+  const historyBody = document.getElementById("testHistoryBody");
+  historyBody.innerHTML = "";
+
   try {
     const res = await fetch(`${POSTGREST_URL}/patient_tests?patient_id=eq.${currentPatient.id}&order=created_at.desc`, {
       headers: { Accept: "application/json" }
@@ -84,90 +201,31 @@ async function loadTestHistory() {
     const tests = await res.json();
 
     if (tests.length === 0) {
-      historyTableBody.innerHTML = `<tr><td colspan="4" class="text-center text-muted">No test records found</td></tr>`;
+      historyBody.innerHTML = `<tr><td colspan="4" class="text-center text-muted">No test records found</td></tr>`;
       return;
     }
 
     tests.forEach(t => {
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${new Date(t.created_at).toLocaleString()}</td>
-        <td>${t.test_type}</td>
-        <td>${t.value_numeric ?? t.value_text ?? "-"}</td>
-        <td>${t.unit ?? ""}</td>
-      `;
-      historyTableBody.appendChild(row);
+      const date = new Date(t.created_at).toLocaleString();
+
+      if (t.hemoglobin)
+        addRow(date, "Hemoglobin", t.hemoglobin, "g/dL");
+      if (t.rbg)
+        addRow(date, "Random Blood Glucose", t.rbg, "mg/dL");
+      if (t.fev)
+        addRow(date, "FEV", t.fev, "L");
+      if (t.systolic && t.diastolic)
+        addRow(date, "Blood Pressure", `${t.systolic}/${t.diastolic}`, "mmHg");
+      if (t.counseling_points)
+        addRow(date, "Counseling", t.counseling_points, "-");
     });
+
+    function addRow(date, test, value, unit) {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${date}</td><td>${test}</td><td>${value}</td><td>${unit}</td>`;
+      historyBody.appendChild(row);
+    }
   } catch (err) {
     console.error("Error loading test history:", err);
   }
 }
-
-// ---------- STATION SELECT ----------
-stationSelect.addEventListener("change", () => {
-  const selected = stationSelect.value;
-  testFormSection.style.display = "none";
-  testInputContainer.innerHTML = "";
-  if (!selected || !currentPatient) return;
-
-  testFormTitle.textContent = `${selected} Test Entry`;
-  testFormSection.style.display = "block";
-
-  if (selected === "Hemoglobin") {
-    testInputContainer.innerHTML = `<input type="number" step="0.1" id="testValue" class="form-control mb-2" placeholder="Hemoglobin (g/dL)" required>`;
-  } else if (selected === "RBG") {
-    testInputContainer.innerHTML = `<input type="number" id="testValue" class="form-control mb-2" placeholder="RBG (mg/dL)" required>`;
-  } else if (selected === "FEV") {
-    testInputContainer.innerHTML = `<input type="number" step="0.01" id="testValue" class="form-control mb-2" placeholder="FEV (L)" required>`;
-  } else if (selected === "BP") {
-    testInputContainer.innerHTML = `
-      <input type="number" id="sys" class="form-control mb-2" placeholder="Systolic (mmHg)" required>
-      <input type="number" id="dia" class="form-control mb-2" placeholder="Diastolic (mmHg)" required>
-    `;
-  } else if (selected === "Counseling") {
-    testInputContainer.innerHTML = `<textarea id="counselingText" rows="4" class="form-control mb-2" placeholder="Enter counseling points" required></textarea>`;
-  }
-});
-
-// ---------- SAVE NEW TEST ENTRY ----------
-testForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const type = stationSelect.value;
-  if (!type || !currentPatient) return;
-
-  let payload = { patient_id: currentPatient.id, test_type: type };
-
-  if (type === "Hemoglobin")
-    payload.value_numeric = parseFloat(document.getElementById("testValue").value), payload.unit = "g/dL";
-  if (type === "RBG")
-    payload.value_numeric = parseFloat(document.getElementById("testValue").value), payload.unit = "mg/dL";
-  if (type === "FEV")
-    payload.value_numeric = parseFloat(document.getElementById("testValue").value), payload.unit = "L";
-  if (type === "BP") {
-    const sys = document.getElementById("sys").value;
-    const dia = document.getElementById("dia").value;
-    payload.value_text = `${sys}/${dia}`;
-    payload.unit = "mmHg";
-  }
-  if (type === "Counseling")
-    payload.value_text = document.getElementById("counselingText").value.trim();
-
-  try {
-    const res = await fetch(`${POSTGREST_URL}/patient_tests`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Prefer: "return=representation"
-      },
-      body: JSON.stringify(payload)
-    });
-    if (!res.ok) throw new Error(`Server error ${res.status}`);
-    await res.json();
-    Swal.fire("Success", "Test entry added successfully!", "success");
-    testForm.reset();
-    loadTestHistory();
-  } catch (err) {
-    console.error("Error saving test entry:", err);
-    Swal.fire("Error", "Failed to save test entry.", "error");
-  }
-});
