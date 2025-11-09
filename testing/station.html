@@ -126,6 +126,48 @@
   </div>
 </div>
 
+  <div id="stationSection" style="display:none; margin-top:20px;">
+    <p><strong>Name:</strong> <span id="patientName"></span></p>
+    <p><strong>Age:</strong> <span id="patientAge"></span></p>
+    <p><strong>Gender:</strong> <span id="patientGender"></span></p>
+
+    <div class="mb-3">
+      <label for="stationSelect" class="form-label">Select Station:</label>
+      <select id="stationSelect" class="form-select" required>
+        <option value="">-- Choose Station --</option>
+        <option value="hb">Hemoglobin</option>
+        <option value="rbg">Random Blood Glucose</option>
+        <option value="fev">Forced Expiratory Volume</option>
+        <option value="bp">Blood Pressure</option>
+        <option value="counseling">Patient Counseling</option>
+      </select>
+    </div>
+
+    <!-- ✅ New Section: Patient Test History -->
+    <div id="testHistorySection" style="display:none; margin-top:30px;">
+      <h5>Previous Test Records</h5>
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped mt-2">
+          <thead class="table-dark">
+            <tr>
+              <th>Date & Time</th>
+              <th>Test Type</th>
+              <th>Hemoglobin</th>
+              <th>RBG</th>
+              <th>FEV</th>
+              <th>BP</th>
+              <th>Counseling</th>
+            </tr>
+          </thead>
+          <tbody id="testHistoryBody">
+            <!-- dynamically filled -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
 <!-- Footer -->
 <footer class="bg-light text-center py-3 shadow-sm mt-auto">
   <small class="text-muted">© 2025 Designed & Developed by Gaurav Gaikwad & Kumkum Bhenwal</small>
