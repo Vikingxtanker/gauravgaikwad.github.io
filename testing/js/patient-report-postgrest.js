@@ -1,0 +1,128 @@
+// js/patient-report-postgrest.js
+import Swal from "https://cdn.jsdelivr.net/npm/sweetalert2@11/+esm";
+
+const POSTGREST_URL = "https://postgrest-latest-iplb.onrender.com";
+
+document.addEventListener("DOMContentLoaded", () => {
+  const formContainer = document.querySelector(".form-container");
+  const form = document.getElementById("reportForm");
+  const patientIDInput = document.getElementById("patientID");
+  const reportSection = document.getElementById("reportSection");
+
+  const loggedInfo = document.getElementById("loggedInfo");
+  const authBtn = document.getElementById("authBtn");
+
+  // ---------- AUTH ----------
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  if (!currentUser || (currentUser.role !== "admin" && currentUser.role !== "documentation" && currentUser.role !== "station")) {
+    Swal.fire({
+      icon: "error",
+      title: "Access Denied",
+      text: "You must be logged in with Admin, Station, or Documentation role.",
+      confirmButtonText: "OK"
+    }).then(() => (window.location.href = "health-screening.html"));
+    return;
+  }
+
+  loggedInfo.textContent = `Logged in as ${currentUser.username} (${currentUser.role})`;
+  authBtn.textContent = "Logout";
+  authBtn.onclick = () => {
+    localStorage.removeItem("currentUser");
+    window.location.href = "health-screening.html";
+  };
+
+  formContainer.style.display = "block";
+
+  // ---------- FETCH PATIENT ----------
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const id = patientIDInput.value.trim().toLowerCase();
+    if (!id) return;
+
+    try {
+      const res = await fetch(`${POSTGREST_URL}/patients?id=eq.${id}`, {
+        headers: { Accept: "application/json" },
+      });
+      if (!res.ok) throw new Error(`Server error ${res.status}`);
+      const data = await res.json();
+
+      if (data.length === 0) {
+        Swal.fire("Invalid ID", "No patient found with this ID.", "error");
+        reportSection.style.display = "none";
+        return;
+      }
+
+      const p = data[0];
+      window.currentPatient = p;
+
+      await Swal.fire("Patient Verified", "Report loaded successfully.", "success");
+
+      document.getElementById("name").innerText = p.name ?? "N/A";
+      document.getElementById("age").innerText = p.age ?? "N/A";
+      document.getElementById("gender").innerText = p.gender ?? "N/A";
+      document.getElementById("phone").innerText = p.phone ?? "N/A";
+      document.getElementById("address").innerText = p.address ?? "N/A";
+      document.getElementById("bmi").innerText = p.bmi ?? "N/A";
+      document.getElementById("hemoglobin").innerText = p.hemoglobin ?? "Not Recorded";
+      document.getElementById("rbg").innerText = p.rbg ?? "Not Recorded";
+      document.getElementById("fev").innerText = p.fev ?? "Not Recorded";
+      document.getElementById("bp").innerText =
+        p.systolic && p.diastolic ? `${p.systolic}/${p.diastolic}` : "Not Recorded";
+      document.getElementById("counselingPoints").innerText = p.counseling_points ?? "Not Recorded";
+      document.getElementById("patientIdDisplay").innerText = p.id ?? id;
+
+      reportSection.style.display = "block";
+    } catch (err) {
+      console.error("Error fetching patient:", err);
+      Swal.fire("Error", "Failed to fetch patient data.", "error");
+    }
+  });
+
+  // ---------- PDF GENERATION ----------
+  document.getElementById("generatePDF").addEventListener("click", async () => {
+    const p = window.currentPatient;
+    if (!p) {
+      Swal.fire("Error", "No patient data available", "error");
+      return;
+    }
+
+    try {
+      const res = await fetch("report_hss.pdf");
+      if (!res.ok) throw new Error("PDF template not found");
+      const pdfBytes = await res.arrayBuffer();
+      const pdfDoc = await PDFLib.PDFDocument.load(pdfBytes);
+      const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+      const page = pdfDoc.getPages()[0];
+
+      const draw = (text, x, y) =>
+        page.drawText(text?.toString() ?? "", { x, y, size: 10, font });
+
+      draw(p.name ?? "", 126, 675);
+      draw(p.age ?? "", 408, 675);
+      draw(p.phone ?? "", 82, 657);
+      draw(p.gender ?? "", 423, 657);
+      draw(p.id ?? "", 106, 638);
+      draw(p.bmi ?? "", 409, 638);
+      draw(new Date().toLocaleDateString("en-GB"), 74, 619);
+      draw(p.hemoglobin ?? "N/A", 222.5, 535);
+      draw(p.fev ?? "N/A", 222.5, 422);
+      draw(p.rbg ?? "N/A", 222.5, 461);
+      draw(
+        p.systolic && p.diastolic ? `${p.systolic}/${p.diastolic}` : "N/A",
+        222.5,
+        385
+      );
+      draw(p.counseling_points ?? "N/A", 41, 245);
+
+      const finalPdf = await pdfDoc.save();
+      const blob = new Blob([finalPdf], { type: "application/pdf" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `Patient_Report_${p.id}.pdf`;
+      link.click();
+    } catch (err) {
+      console.error("PDF Generation Error:", err);
+      Swal.fire("Error", "Could not generate PDF report", "error");
+    }
+  });
+});
