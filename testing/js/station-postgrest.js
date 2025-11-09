@@ -14,7 +14,7 @@ if (!currentUser || (currentUser.role !== "admin" && currentUser.role !== "stati
   }).then(() => window.location.href = "health-screening.html");
 }
 
-// ---------- NAVBAR SETUP ----------
+// ---------- Navbar Setup ----------
 const loggedInfo = document.getElementById("loggedInfo");
 const authBtn = document.getElementById("authBtn");
 if (currentUser) {
@@ -29,7 +29,7 @@ if (currentUser) {
   authBtn.textContent = "Login";
 }
 
-// ---------- ELEMENTS ----------
+// ---------- Elements ----------
 const verifyForm = document.getElementById("verifyForm");
 const patientIDInput = document.getElementById("patientID");
 const stationSection = document.getElementById("stationSection");
@@ -39,13 +39,6 @@ const patientName = document.getElementById("patientName");
 const patientAge = document.getElementById("patientAge");
 const patientGender = document.getElementById("patientGender");
 const stationSelect = document.getElementById("stationSelect");
-
-const changePatientBtn = document.createElement("button");
-changePatientBtn.textContent = "Change Patient";
-changePatientBtn.className = "btn btn-secondary my-3";
-changePatientBtn.style.display = "none";
-changePatientBtn.onclick = () => location.reload();
-verifyForm.parentElement.appendChild(changePatientBtn);
 
 const sections = {
   hb: document.getElementById("hbFormSection"),
@@ -57,16 +50,14 @@ const sections = {
 
 let currentPatient = null;
 
-// ---------- VERIFY PATIENT ----------
+// ---------- Verify Patient ----------
 verifyForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const id = patientIDInput.value.trim();
   if (!id) return;
 
   try {
-    const res = await fetch(`${POSTGREST_URL}/patients?id=eq.${id}`, {
-      headers: { "Accept": "application/json" }
-    });
+    const res = await fetch(`${POSTGREST_URL}/patients?id=eq.${id}`);
     if (!res.ok) throw new Error(`Server error ${res.status}`);
     const data = await res.json();
     if (data.length === 0) {
@@ -83,62 +74,46 @@ verifyForm.addEventListener("submit", async (e) => {
 
     stationSection.style.display = "block";
     verifyForm.style.display = "none";
-    changePatientBtn.style.display = "inline-block";
 
-    // ✅ Load previous tests
-    loadTestHistory(currentPatient.id);
+    // Load previous test history
+    await loadTestHistory(id);
   } catch (err) {
     console.error("Verification error:", err);
     Swal.fire("Error", "Something went wrong verifying the patient.", "error");
   }
 });
 
-// ---------- STATION SELECT ----------
-stationSelect.addEventListener("change", () => {
-  const selected = stationSelect.value;
-  Object.values(sections).forEach(s => s.style.display = "none");
-  if (!selected || !currentPatient) return;
-  sections[selected].style.display = "block";
-});
-
-// ---------- LOAD TEST HISTORY ----------
+// ---------- Load Test History ----------
 async function loadTestHistory(patientId) {
   try {
-    const res = await fetch(`${POSTGREST_URL}/patient_tests?patient_id=eq.${patientId}&order=recorded_at.desc`, {
-      headers: { "Accept": "application/json" }
-    });
+    const res = await fetch(`${POSTGREST_URL}/patient_tests?patient_id=eq.${patientId}&order=test_timestamp.desc`);
     if (!res.ok) throw new Error(`Server error ${res.status}`);
     const tests = await res.json();
 
     if (tests.length === 0) {
-      testHistoryBody.innerHTML = `<tr><td colspan="7" class="text-center text-muted">No test records found.</td></tr>`;
+      testHistoryBody.innerHTML = "<tr><td colspan='6' class='text-center'>No test records found</td></tr>";
     } else {
-      testHistoryBody.innerHTML = "";
-      tests.forEach(t => {
-        const tr = document.createElement("tr");
-        const date = new Date(t.recorded_at).toLocaleString("en-GB");
-        tr.innerHTML = `
-          <td>${date}</td>
-          <td>${t.test_type || "N/A"}</td>
-          <td>${t.hemoglobin ?? ""}</td>
-          <td>${t.rbg ?? ""}</td>
-          <td>${t.fev ?? ""}</td>
-          <td>${t.systolic && t.diastolic ? `${t.systolic}/${t.diastolic}` : ""}</td>
-          <td>${t.counseling_points ?? ""}</td>
-        `;
-        testHistoryBody.appendChild(tr);
-      });
+      testHistoryBody.innerHTML = tests.map(t => `
+        <tr>
+          <td>${new Date(t.test_timestamp).toLocaleString()}</td>
+          <td>${t.hemoglobin ?? "-"}</td>
+          <td>${t.rbg ?? "-"}</td>
+          <td>${t.fev ?? "-"}</td>
+          <td>${t.systolic && t.diastolic ? `${t.systolic}/${t.diastolic}` : "-"}</td>
+          <td>${t.counseling_points ?? "-"}</td>
+        </tr>
+      `).join("");
     }
 
     testHistorySection.style.display = "block";
   } catch (err) {
-    console.error("Error loading test history:", err);
-    Swal.fire("Error", "Failed to load patient test history.", "error");
+    console.error("History load error:", err);
+    Swal.fire("Error", "Failed to load test history", "error");
   }
 }
 
-// ---------- ADD NEW TEST ENTRY ----------
-async function addTestEntry(payload, successMsg, errorMsg) {
+// ---------- Insert New Test ----------
+async function insertPatientTest(patientId, payload, successMsg, errorMsg) {
   try {
     const res = await fetch(`${POSTGREST_URL}/patient_tests`, {
       method: "POST",
@@ -146,61 +121,44 @@ async function addTestEntry(payload, successMsg, errorMsg) {
         "Content-Type": "application/json",
         "Prefer": "return=representation"
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({ patient_id: patientId, ...payload })
     });
-
     if (!res.ok) throw new Error(`Server error ${res.status}`);
-    Swal.fire("Success", successMsg, "success");
-    loadTestHistory(currentPatient.id); // ✅ Refresh table instantly
+    await Swal.fire("Success", successMsg, "success");
+    await loadTestHistory(patientId); // refresh history
   } catch (err) {
     console.error("Insert error:", err);
     Swal.fire("Error", errorMsg, "error");
   }
 }
 
-// ---------- FORM HANDLERS ----------
+// ---------- Form Submissions ----------
 document.getElementById("hbForm").addEventListener("submit", e => {
   e.preventDefault();
-  const val = parseFloat(document.getElementById("hemoglobin").value);
-  addTestEntry(
-    { patient_id: currentPatient.id, hemoglobin: val, test_type: "hemoglobin", recorded_at: new Date().toISOString() },
-    "Hemoglobin record saved!", "Failed to save Hemoglobin."
-  );
+  insertPatientTest(currentPatient.id, { hemoglobin: parseFloat(document.getElementById("hemoglobin").value) }, "Hemoglobin saved!", "Failed to save Hemoglobin.");
 });
 
 document.getElementById("rbgForm").addEventListener("submit", e => {
   e.preventDefault();
-  const val = parseFloat(document.getElementById("rbg").value);
-  addTestEntry(
-    { patient_id: currentPatient.id, rbg: val, test_type: "rbg", recorded_at: new Date().toISOString() },
-    "RBG record saved!", "Failed to save RBG."
-  );
+  insertPatientTest(currentPatient.id, { rbg: parseFloat(document.getElementById("rbg").value) }, "RBG saved!", "Failed to save RBG.");
 });
 
 document.getElementById("fevForm").addEventListener("submit", e => {
   e.preventDefault();
-  const val = parseFloat(document.getElementById("fev").value);
-  addTestEntry(
-    { patient_id: currentPatient.id, fev: val, test_type: "fev", recorded_at: new Date().toISOString() },
-    "FEV record saved!", "Failed to save FEV."
-  );
+  insertPatientTest(currentPatient.id, { fev: parseFloat(document.getElementById("fev").value) }, "FEV saved!", "Failed to save FEV.");
 });
 
 document.getElementById("bpForm").addEventListener("submit", e => {
   e.preventDefault();
-  const sys = parseInt(document.getElementById("systolic").value);
-  const dia = parseInt(document.getElementById("diastolic").value);
-  addTestEntry(
-    { patient_id: currentPatient.id, systolic: sys, diastolic: dia, test_type: "bp", recorded_at: new Date().toISOString() },
-    "BP record saved!", "Failed to save BP."
-  );
+  insertPatientTest(currentPatient.id, {
+    systolic: parseInt(document.getElementById("systolic").value),
+    diastolic: parseInt(document.getElementById("diastolic").value)
+  }, "Blood Pressure saved!", "Failed to save BP.");
 });
 
 document.getElementById("counselingForm").addEventListener("submit", e => {
   e.preventDefault();
-  const text = document.getElementById("counselingPoints").value.trim();
-  addTestEntry(
-    { patient_id: currentPatient.id, counseling_points: text, test_type: "counseling", recorded_at: new Date().toISOString() },
-    "Counseling record saved!", "Failed to save counseling points."
-  );
+  insertPatientTest(currentPatient.id, {
+    counseling_points: document.getElementById("counselingPoints").value.trim()
+  }, "Counseling saved!", "Failed to save counseling points.");
 });
