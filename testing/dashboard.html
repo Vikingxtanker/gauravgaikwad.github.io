@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Healthcamp – Dashboard</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
+  <div class="container-fluid px-3 d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center">
+      <a class="navbar-brand d-flex align-items-center" href="#">
+        <img src="assets/DYP_LOGO_RED.jpg" alt="DYP Logo" height="50" class="me-2">
+      </a>
+      <div class="navbar-brand-text d-none d-md-block">
+        <strong>Dr. D.Y Patil Pratishthan’s</strong><br>
+        Dr. D.Y Patil College of Pharmacy Akurdi, Pune – 411044<br>
+        <small class="text-muted">Department of Pharmacy Practice (Pharm. D.)</small>
+      </div>
+    </div>
+
+    <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+      aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-end mt-2 mt-lg-0" id="navbarContent">
+      <ul class="navbar-nav" id="navLinks">
+        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="appointment.html">Book Appointment</a></li>
+        <li class="nav-item"><a class="nav-link" href="register.html">Register</a></li>
+        <li class="nav-item"><a class="nav-link" href="station.html">Station</a></li>
+        <li class="nav-item"><a class="nav-link" href="patient-report.html">Patient Report</a></li>
+        <li class="nav-item"><a class="nav-link active" href="dashboard.html">Dashboard</a></li>
+
+        <!-- Auth display -->
+        <li class="nav-item">
+          <span class="nav-link fw-semibold" id="loggedInfo"></span>
+        </li>
+        <li class="nav-item">
+          <button class="btn btn-primary btn-sm" id="authBtn">Loading...</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Dashboard Body -->
+<main class="container" style="margin-top: 100px;">
+  <h2 class="mb-4 text-center">Patient Database</h2>
+
+  <div class="mb-3 text-end">
+    <button id="downloadCsvBtn" class="btn btn-primary">Download CSV</button>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered" id="patientsTable">
+      <thead class="table-dark">
+        <tr>
+          <th>Sr. No.</th>
+          <th>Patient ID</th>
+          <th>Name</th>
+          <th>Age</th>
+          <th>Gender</th>
+          <th>Phone</th>
+          <th>Hemoglobin</th>
+          <th>RBG</th>
+          <th>FEV</th>
+          <th>BP (Sys/Dia)</th>
+          <th>Last Updated</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Populated dynamically -->
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-light text-center py-3 shadow-sm mt-auto">
+  <small class="text-muted">© 2025 Designed & Developed by Gaurav Gaikwad & Kumkum Bhenwal</small>
+</footer>
+
+<!-- Bootstrap Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Dashboard JS -->
+<script type="module">
+import { db } from './js/firebase-config.js';
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import Swal from "https://cdn.jsdelivr.net/npm/sweetalert2@11/+esm";
+
+// Navbar elements
+const authBtn = document.getElementById('authBtn');
+const loggedInfo = document.getElementById('loggedInfo');
+
+// Load current user
+const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+// ----------- ADMIN CHECK -----------
+if (!currentUser || currentUser.role !== 'admin') {
+  Swal.fire({
+    icon: 'error',
+    title: 'Access Denied',
+    text: 'You must be logged in as admin to access this page.',
+    confirmButtonText: 'OK'
+  }).then(() => {
+    window.location.href = 'health-screening.html';
+  });
+} else {
+  // Update navbar info
+  loggedInfo.textContent = `Logged in as ${currentUser.username} (${currentUser.role})`;
+  authBtn.textContent = 'Logout';
+  authBtn.addEventListener('click', () => {
+    localStorage.removeItem('currentUser');
+    window.location.href = 'health-screening.html';
+  });
+
+  // Table + CSV export
+  const tableBody = document.querySelector('#patientsTable tbody');
+  let patientData = []; // store formatted rows for CSV
+
+  // Helper function to format Firestore timestamp
+  function formatDate(date) {
+    const options = {
+      day: '2-digit',
+      month: '2-digit',
+      year: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    };
+    return new Intl.DateTimeFormat('en-GB', options).format(date);
+  }
+
+  // Load patients from Firestore
+  const loadPatients = async () => {
+    tableBody.innerHTML = '';
+    patientData = [];
+    try {
+      const snapshot = await getDocs(collection(db, 'patients'));
+      let srNo = 1;
+      snapshot.forEach(doc => {
+        const p = doc.data();
+        const formattedTimestamp = p.timestamp ? formatDate(p.timestamp.toDate()) : '';
+
+        // Build table row
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${srNo}</td>
+          <td>${doc.id}</td>
+          <td>${p.name || ''}</td>
+          <td>${p.age || ''}</td>
+          <td>${p.gender || ''}</td>
+          <td>${p.phone || ''}</td>
+          <td>${p.hemoglobin || ''}</td>
+          <td>${p.rbg || ''}</td>
+          <td>${p.fev || ''}</td>
+          <td>${p.systolic || ''}/${p.diastolic || ''}</td>
+          <td>${formattedTimestamp}</td>
+        `;
+        tableBody.appendChild(tr);
+
+        // Push row data into array for CSV
+        patientData.push([
+          srNo,
+          doc.id,
+          p.name || '',
+          p.age || '',
+          p.gender || '',
+          p.phone || '',
+          p.hemoglobin || '',
+          p.rbg || '',
+          p.fev || '',
+          `${p.systolic || ''}/${p.diastolic || ''}`,
+          formattedTimestamp
+        ]);
+        srNo++;
+      });
+    } catch (err) {
+      console.error('Error loading patients:', err);
+      Swal.fire('Error', 'Failed to load patient data.', 'error');
+    }
+  };
+
+  loadPatients();
+
+  // CSV download (from patientData array)
+  document.getElementById('downloadCsvBtn').addEventListener('click', () => {
+    let csv = '';
+    const headers = [
+      "Sr. No.","Patient ID","Name","Age","Gender","Phone","Hemoglobin","RBG","FEV","BP (Sys/Dia)","Last Updated"
+    ];
+    csv += headers.join(',') + '\n';
+
+    patientData.forEach(row => {
+      csv += row.map(val => `"${val}"`).join(',') + '\n';
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'patients_database.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+}
+</script>
+
+</body>
+</html>

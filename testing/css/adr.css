@@ -1,0 +1,67 @@
+/* Reset page background */
+body {
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  color: #333;
+  font-family: Arial, sans-serif;
+}
+
+/* Main content layout */
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-top: 90px;  /* space for fixed navbar */
+  padding-bottom: 40px;
+}
+
+/* Section headings */
+h2, h3, h5, h6 {
+  color: #222;
+}
+
+/* Hero section */
+section.bg-light {
+  background-color: #f8f9fa !important;
+}
+
+/* Icons in steps */
+.bi {
+  color: #0d6efd; /* bootstrap primary blue */
+}
+
+/* Resource cards */
+section .border {
+  background: #fff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+section .border:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+section h3 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #0d6efd; /* Bootstrap blue */
+  margin-bottom: 10px;
+}
+
+
+/* Contact bar */
+.contact-bar {
+  background: #fff;
+  border-top: 1px solid #ddd;
+  font-size: 0.95rem;
+}
+
+/* Footer */
+footer {
+  background: #fff;
+  border-top: 1px solid #ddd;
+}
+footer small {
+  color: #666;
+}

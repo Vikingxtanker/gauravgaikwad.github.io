@@ -1,0 +1,336 @@
+/* ---------------------------------
+   General Fonts & Resets
+---------------------------------- */
+body {
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.6;
+  background-color: #f8f9fa;
+}
+
+/* ---------------------------------
+   Navbar
+---------------------------------- */
+.navbar-brand-text {
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
+.navbar-nav .nav-link {
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link:focus {
+  color: #5a3c8a;
+}
+
+/* ---------------------------------
+   Footer
+---------------------------------- */
+footer {
+  font-size: 0.85rem;
+}
+
+/* ---------------------------------
+   Hero Section
+---------------------------------- */
+.soft-glass {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+.hero-section {
+  position: relative;
+  width: 100%;
+  padding-top: 230px; /* adjusted spacing below navbar */
+}
+
+.hero-16-9 {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.hero-card {
+  max-width: 900px;
+  margin: auto;
+}
+
+.hero-title {
+  font-family: 'Roboto Slab', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #5a3c8a;
+}
+
+.hero-subtitle {
+  color: #555;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+}
+
+.hero-search-input {
+  padding-left: 40px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+/* ---------------------------------
+   Inputs, Buttons
+---------------------------------- */
+.gentle-input {
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  background: #fff;
+  transition: all 0.3s ease;
+}
+
+.gentle-input:focus {
+  border-color: #5a3c8a;
+  box-shadow: 0 0 0 0.2rem rgba(90, 60, 138, 0.25);
+}
+
+.soft-button {
+  background: #5a3c8a;
+  color: #fff;
+  border-radius: 12px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.soft-button:hover {
+  background: #7b55b3;
+  transform: scale(1.05);
+}
+
+/* ---------------------------------
+   Circular Tabs (Bigger)
+---------------------------------- */
+.circular-tabs {
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 20px;
+}
+
+.circular-tab {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background: #f0f0f0;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: #444;
+}
+
+.circular-tab .emoji {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.circular-tab .circular-label {
+  font-size: 1rem;
+  margin-top: 6px;
+  font-weight: 500;
+  color: #444;
+}
+
+.circular-tab.active,
+.circular-tab:hover {
+  border: 2px solid #5a3c8a;
+  background: #ede7f6;
+  color: #5a3c8a;
+  transform: scale(1.1);
+}
+
+.circular-tab.active .circular-label,
+.circular-tab:hover .circular-label {
+  color: #5a3c8a;
+}
+
+/* ---------------------------------
+   Tabs & Content
+---------------------------------- */
+.tab-wrapper {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.tab-content {
+  display: none;
+  animation: fadeIn 0.5s ease;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------------------------------
+   Cards
+---------------------------------- */
+.soft-card {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, opacity 0.8s ease;
+}
+
+.soft-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Gradients for cards */
+.mint-gradient { background: linear-gradient(135deg, #d4fc79, #96e6a1); }
+.sky-gradient { background: linear-gradient(135deg, #89f7fe, #66a6ff); }
+.lavender-gradient { background: linear-gradient(135deg, #e0c3fc, #8ec5fc); }
+.peach-gradient { background: linear-gradient(135deg, #ffecd2, #fcb69f); }
+.rose-gradient { background: linear-gradient(135deg, #fbc2eb, #a6c1ee); }
+
+/* ---------------------------------
+   News Section
+---------------------------------- */
+.news-popup {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  animation: slideUp 0.6s ease forwards;
+  opacity: 0;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(25px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.news-icon {
+  width: 50px;
+  height: 50px;
+  font-size: 1.5rem;
+}
+
+/* ---------------------------------
+   Stat Cards
+---------------------------------- */
+.stat-card {
+  border-radius: 16px;
+  font-weight: 600;
+}
+
+/* ---------------------------------
+   Old Dic.css (Welcome/Zigzag/Monograph Box)
+---------------------------------- */
+.dic-welcome-section {
+  height: 100vh;
+  padding-top: 70px;
+  text-align: center;
+  background: linear-gradient(135deg, #e5daf0, #f2ebf7);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.welcome-line {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #5a3c8a;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.drug-request-tab {
+  display: inline-block;
+  padding: 12px 25px;
+  margin-top: 30px;
+  background-color: #5a3c8a;
+  color: #fff;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-decoration: none;
+  border-radius: 30px;
+  transition: all 0.3s ease;
+}
+
+.drug-request-tab:hover {
+  background-color: #7b55b3;
+  transform: scale(1.05);
+}
+
+.dic-curved-section {
+  background: linear-gradient(to bottom, #e9e0f2, #c8b3d6);
+  padding: 80px 0;
+}
+
+/* Zigzag Container */
+.zigzag-container {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+}
+
+.zigzag-bg {
+  width: 100%;
+  height: auto;
+}
+
+/* Circles */
+.circle {
+  position: absolute;
+  width: 25%;
+  height: 25%;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  border: 2px solid #5a3c8a;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.circle:hover {
+  transform: scale(1.1);
+}
+
+.circle1 { top: 17%; left: 3%; background-image: url('../assets/drugreqform.png'); }
+.circle2 { top: 36%; right: 5%; background-image: url('../assets/patientcounseling.png'); }
+.circle3 { top: 49%; left: 3%; background-image: url('../assets/rxexpress.png'); }
+.circle4 { top: 69%; right: 3%; background-image: url('../assets/drugmon.png'); }
+
+/* Latest Monograph Box */
+.latest-monograph-box {
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* ---------------------------------
+   Responsive Fixes
+---------------------------------- */
+@media (max-width: 768px) {
+  .navbar-brand-text { font-size: 0.75rem; }
+  .zigzag-container { max-width: 200px; margin-bottom: 30px; }
+  .circle { width: 18%; height: 18%; }
+  .hero-title { font-size: 1.25rem; }
+  .circular-tab {
+    width: 90px;
+    height: 90px;
+  }
+}

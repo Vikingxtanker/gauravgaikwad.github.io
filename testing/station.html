@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Health Screening Test - Station Hub</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+</head>
+  
+<body class="d-flex flex-column min-vh-100">
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
+  <div class="container-fluid px-3 d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center">
+      <a class="navbar-brand d-flex align-items-center" href="#">
+        <img src="assets/DYP_LOGO_RED.jpg" alt="DYP Logo" height="50" class="me-2">
+      </a>
+      <div class="navbar-brand-text d-none d-md-block">
+        <strong>Dr. D.Y Patil Pratishthan’s</strong><br>
+        Dr. D.Y Patil College of Pharmacy Akurdi, Pune – 411044<br>
+        <small class="text-muted">Department of Pharmacy Practice (Pharm. D.)</small>
+      </div>
+    </div>
+
+    <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse"
+      data-bs-target="#navbarContent" aria-controls="navbarContent"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-end mt-2 mt-lg-0" id="navbarContent">
+      <ul class="navbar-nav" id="navLinks">
+        <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="appointment.html">Book Appointment</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="register.html">Register</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold active" href="station.html">Station</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="patient-report.html">Patient Report</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="dashboard.html">Dashboard</a></li>
+        <li class="nav-item">
+          <span class="nav-link fw-semibold" id="loggedInfo"></span>
+        </li>
+        <li class="nav-item">
+          <button class="btn btn-primary btn-sm" id="authBtn">Loading...</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container form-container">
+  <h2 class="mb-4">Health Screening Test - Station Hub</h2>
+
+  <!-- Verify Patient -->
+  <form id="verifyForm">
+    <div class="mb-3">
+      <label for="patientID" class="form-label">Enter Patient ID:</label>
+      <input type="text" id="patientID" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Verify</button>
+  </form>
+
+  <div id="stationSection" style="display:none; margin-top:20px;">
+    <p><strong>Name:</strong> <span id="patientName"></span></p>
+    <p><strong>Age:</strong> <span id="patientAge"></span></p>
+    <p><strong>Gender:</strong> <span id="patientGender"></span></p>
+
+    <div class="mb-3">
+      <label for="stationSelect" class="form-label">Select Station:</label>
+      <select id="stationSelect" class="form-select" required>
+        <option value="">-- Choose Station --</option>
+        <option value="hb">Hemoglobin</option>
+        <option value="rbg">Random Blood Glucose</option>
+        <option value="fev">Forced Expiratory Volume</option>
+        <option value="bp">Blood Pressure</option>
+        <option value="counseling">Patient Counseling</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Station Forms -->
+  <div id="hbFormSection" style="display:none; margin-top:15px;">
+    <h4>Hemoglobin Station</h4>
+    <form id="hbForm">
+      <input type="number" step="0.1" id="hemoglobin" class="form-control mb-2" placeholder="Hemoglobin (g/dL)" required>
+      <button type="submit" class="btn btn-success">Save Hemoglobin</button>
+    </form>
+  </div>
+
+  <div id="rbgFormSection" style="display:none; margin-top:15px;">
+    <h4>Random Blood Glucose</h4>
+    <form id="rbgForm">
+      <input type="number" id="rbg" class="form-control mb-2" placeholder="RBG (mg/dL)" required>
+      <button type="submit" class="btn btn-success">Save RBG</button>
+    </form>
+  </div>
+
+  <div id="fevFormSection" style="display:none; margin-top:15px;">
+    <h4>Forced Expiratory Volume</h4>
+    <form id="fevForm">
+      <input type="number" step="0.01" id="fev" class="form-control mb-2" placeholder="FEV (Liters)" required>
+      <button type="submit" class="btn btn-success">Save FEV</button>
+    </form>
+  </div>
+
+  <div id="bpFormSection" style="display:none; margin-top:15px;">
+    <h4>Blood Pressure</h4>
+    <form id="bpForm">
+      <input type="number" id="systolic" class="form-control mb-2" placeholder="Systolic (mmHg)" required>
+      <input type="number" id="diastolic" class="form-control mb-2" placeholder="Diastolic (mmHg)" required>
+      <button type="submit" class="btn btn-success">Save BP</button>
+    </form>
+  </div>
+
+  <div id="counselingFormSection" style="display:none; margin-top:15px;">
+    <h4>Patient Counseling</h4>
+    <form id="counselingForm">
+      <textarea id="counselingPoints" rows="5" class="form-control mb-2" placeholder="Enter counseling points..." required></textarea>
+      <button type="submit" class="btn btn-success">Save Counseling Points</button>
+    </form>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-light text-center py-3 shadow-sm mt-auto">
+  <small class="text-muted">© 2025 Designed & Developed by Gaurav Gaikwad & Kumkum Bhenwal</small>
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Firebase (compat) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+
+<script type="module">
+import { db } from './js/firebase-config.js';
+import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import Swal from "https://cdn.jsdelivr.net/npm/sweetalert2@11/+esm";
+
+// ---------- LOGIN CHECK ----------
+const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'station')) {
+  Swal.fire({
+    icon: 'error',
+    title: 'Access Denied',
+    text: 'You must be logged in to access this page.',
+    confirmButtonText: 'OK'
+  }).then(() => window.location.href = 'health-screening.html');
+}
+
+// Navbar display
+const loggedInfo = document.getElementById('loggedInfo');
+const authBtn = document.getElementById('authBtn');
+if (currentUser) {
+  loggedInfo.textContent = `Logged in as ${currentUser.username} (${currentUser.role})`;
+  authBtn.textContent = 'Logout';
+  authBtn.onclick = () => {
+    localStorage.removeItem('currentUser');
+    window.location.href = 'health-screening.html';
+  };
+} else {
+  loggedInfo.textContent = '';
+  authBtn.textContent = 'Login';
+  authBtn.onclick = () => Swal.fire('Error', 'Not logged in', 'error');
+}
+
+// ---------- STATION-HUB LOGIC ----------
+const dbRef = db;
+const verifyForm = document.getElementById("verifyForm");
+const patientIDInput = document.getElementById("patientID");
+const stationSection = document.getElementById("stationSection");
+const patientName = document.getElementById("patientName");
+const patientAge = document.getElementById("patientAge");
+const patientGender = document.getElementById("patientGender");
+const stationSelect = document.getElementById("stationSelect");
+const changePatientBtn = document.createElement("button");
+const verifyContainer = verifyForm.parentElement;
+
+const sections = {
+  hb: document.getElementById("hbFormSection"),
+  rbg: document.getElementById("rbgFormSection"),
+  fev: document.getElementById("fevFormSection"),
+  bp: document.getElementById("bpFormSection"),
+  counseling: document.getElementById("counselingFormSection")
+};
+
+let currentPatientId = null;
+patientIDInput.value = "";
+
+changePatientBtn.textContent = "Change Patient";
+changePatientBtn.className = "btn btn-secondary my-3";
+changePatientBtn.style.display = "none";
+changePatientBtn.onclick = () => location.reload();
+verifyContainer.appendChild(changePatientBtn);
+
+// -------- VERIFY PATIENT ----------
+verifyForm.addEventListener("submit", async e => {
+  e.preventDefault();
+  const id = patientIDInput.value.trim();
+  try {
+    const docSnap = await getDoc(doc(dbRef, "patients", id));
+    if (!docSnap.exists()) {
+      Swal.fire("Invalid ID", "No patient found with this ID.", "error");
+      return;
+    }
+    currentPatientId = id;
+    const data = docSnap.data();
+    patientName.textContent = data.name || "N/A";
+    patientAge.textContent = data.age || "N/A";
+    patientGender.textContent = data.gender || "N/A";
+    await Swal.fire("Patient Verified", "Patient ID is valid.", "success");
+    stationSection.style.display = "block";
+    verifyForm.style.display = "none";
+    changePatientBtn.style.display = "inline-block";
+  } catch (err) {
+    console.error(err);
+    Swal.fire("Error", "Something went wrong verifying the patient.", "error");
+  }
+});
+
+// -------- STATION SELECT ----------
+stationSelect.addEventListener("change", async () => {
+  const selected = stationSelect.value;
+  Object.values(sections).forEach(s => s.style.display = "none");
+  if (!selected || !currentPatientId) return;
+
+  sections[selected].style.display = "block";
+  const docSnap = await getDoc(doc(dbRef, "patients", currentPatientId));
+  const data = docSnap.data();
+
+  if (selected === "hb" && data.hemoglobin !== undefined)
+    document.getElementById("hemoglobin").value = data.hemoglobin;
+  if (selected === "rbg" && data.rbg !== undefined)
+    document.getElementById("rbg").value = data.rbg;
+  if (selected === "fev" && data.fev !== undefined)
+    document.getElementById("fev").value = data.fev;
+  if (selected === "bp" && data.systolic !== undefined && data.diastolic !== undefined) {
+    document.getElementById("systolic").value = data.systolic;
+    document.getElementById("diastolic").value = data.diastolic;
+  }
+  if (selected === "counseling" && data.counselingPoints !== undefined)
+    document.getElementById("counselingPoints").value = data.counselingPoints;
+});
+
+// -------- SAVE FORMS ----------
+const saveField = async (field, valObj, successMsg, errorMsg) => {
+  try {
+    await updateDoc(doc(dbRef, "patients", currentPatientId), valObj);
+    Swal.fire("Success", successMsg, "success");
+  } catch (err) {
+    console.error(err);
+    Swal.fire("Error", errorMsg, "error");
+  }
+};
+
+document.getElementById("hbForm").addEventListener("submit", e => {
+  e.preventDefault();
+  saveField("hemoglobin", { hemoglobin: parseFloat(document.getElementById("hemoglobin").value) }, "Hemoglobin saved!", "Failed to save Hemoglobin");
+});
+
+document.getElementById("rbgForm").addEventListener("submit", e => {
+  e.preventDefault();
+  saveField("rbg", { rbg: parseFloat(document.getElementById("rbg").value) }, "RBG saved!", "Failed to save RBG");
+});
+
+document.getElementById("fevForm").addEventListener("submit", e => {
+  e.preventDefault();
+  saveField("fev", { fev: parseFloat(document.getElementById("fev").value) }, "FEV saved!", "Failed to save FEV");
+});
+
+document.getElementById("bpForm").addEventListener("submit", e => {
+  e.preventDefault();
+  saveField("bp", {
+    systolic: parseInt(document.getElementById("systolic").value),
+    diastolic: parseInt(document.getElementById("diastolic").value)
+  }, "Blood Pressure saved!", "Failed to save BP");
+});
+
+document.getElementById("counselingForm").addEventListener("submit", e => {
+  e.preventDefault();
+  saveField("counselingPoints", { counselingPoints: document.getElementById("counselingPoints").value.trim() }, "Counseling points saved!", "Failed to save counseling points");
+});
+</script>
+
+<!-- Navbar spacing -->
+<script>
+  function adjustFormMargin(){
+    const nav=document.querySelector(".navbar");
+    const cont=document.querySelector(".form-container");
+    if(nav && cont){
+      cont.style.marginTop=`${Math.max(90,nav.offsetHeight+20)}px`;
+    }
+  }
+  window.addEventListener("load",adjustFormMargin);
+  window.addEventListener("resize",adjustFormMargin);
+</script>
+
+</body>
+</html>
