@@ -40,6 +40,7 @@ const patientAge = document.getElementById("patientAge");
 const patientGender = document.getElementById("patientGender");
 const stationSelect = document.getElementById("stationSelect");
 
+// Station form sections
 const sections = {
   hb: document.getElementById("hbFormSection"),
   rbg: document.getElementById("rbgFormSection"),
@@ -80,6 +81,17 @@ verifyForm.addEventListener("submit", async (e) => {
   } catch (err) {
     console.error("Verification error:", err);
     Swal.fire("Error", "Something went wrong verifying the patient.", "error");
+  }
+});
+
+// ---------- Station Select (show corresponding form) ----------
+stationSelect.addEventListener("change", () => {
+  const selected = stationSelect.value;
+  // Hide all
+  Object.values(sections).forEach(s => (s.style.display = "none"));
+  // Show selected
+  if (selected && sections[selected]) {
+    sections[selected].style.display = "block";
   }
 });
 
@@ -135,17 +147,23 @@ async function insertPatientTest(patientId, payload, successMsg, errorMsg) {
 // ---------- Form Submissions ----------
 document.getElementById("hbForm").addEventListener("submit", e => {
   e.preventDefault();
-  insertPatientTest(currentPatient.id, { hemoglobin: parseFloat(document.getElementById("hemoglobin").value) }, "Hemoglobin saved!", "Failed to save Hemoglobin.");
+  insertPatientTest(currentPatient.id, {
+    hemoglobin: parseFloat(document.getElementById("hemoglobin").value)
+  }, "Hemoglobin saved!", "Failed to save Hemoglobin.");
 });
 
 document.getElementById("rbgForm").addEventListener("submit", e => {
   e.preventDefault();
-  insertPatientTest(currentPatient.id, { rbg: parseFloat(document.getElementById("rbg").value) }, "RBG saved!", "Failed to save RBG.");
+  insertPatientTest(currentPatient.id, {
+    rbg: parseFloat(document.getElementById("rbg").value)
+  }, "RBG saved!", "Failed to save RBG.");
 });
 
 document.getElementById("fevForm").addEventListener("submit", e => {
   e.preventDefault();
-  insertPatientTest(currentPatient.id, { fev: parseFloat(document.getElementById("fev").value) }, "FEV saved!", "Failed to save FEV.");
+  insertPatientTest(currentPatient.id, {
+    fev: parseFloat(document.getElementById("fev").value)
+  }, "FEV saved!", "Failed to save FEV.");
 });
 
 document.getElementById("bpForm").addEventListener("submit", e => {
