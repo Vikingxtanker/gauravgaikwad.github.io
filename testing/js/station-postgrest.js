@@ -43,17 +43,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const historyBody = document.getElementById("historyTableBody");
   const changePatientBtn = document.getElementById("changePatientBtn");
 
-  const toggleSummaryBtn = document.getElementById("toggleSummaryBtn");
   const dailySummaryCollapse = document.getElementById("dailySummaryCollapse");
   const dailySummaryForm = document.getElementById("dailySummaryForm");
+  const toggleSummaryBtn = document.getElementById("toggleSummaryBtn");
 
   let currentPatient = null;
   let currentTest = null;
 
-  // ---------- Collapse Toggle Button ----------
+  // ---------- COLLAPSE TOGGLE ----------
   function setSummaryToggleText(expanded) {
     toggleSummaryBtn.textContent = expanded
-      ? "- Hide Daily Summary Form"
+      ? "− Hide Daily Summary Form"
       : "+ Show Daily Summary Form";
   }
   if (dailySummaryCollapse) {
@@ -126,8 +126,8 @@ document.addEventListener("DOMContentLoaded", () => {
           <td>${escapeHtml(String(value))}</td>
           <td>${escapeHtml(String(unit))}</td>
           <td class="text-nowrap">
-            <button class="btn btn-sm btn-outline-secondary me-1 edit-btn" data-id="${t.id}">?? Edit</button>
-            <button class="btn btn-sm btn-outline-danger delete-btn" data-id="${t.id}">??? Delete</button>
+            <button class="btn btn-sm btn-outline-secondary me-1 edit-btn" data-id="${t.id}">✏️ Edit</button>
+            <button class="btn btn-sm btn-outline-danger delete-btn" data-id="${t.id}">🗑️ Delete</button>
           </td>`;
         historyBody.appendChild(row);
       });
@@ -138,31 +138,41 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // ---------- TEST INPUT MAP ----------
-  const testFields = {
-    Hemoglobin: `<input type="number" step="0.1" id="testValue" class="form-control" placeholder="Hemoglobin (g/dL)" required>`,
-    RBG: `<input type="number" id="testValue" class="form-control" placeholder="Random Blood Glucose (mg/dL)" required>`,
-    FBS: `<input type="number" id="testValue" class="form-control" placeholder="Fasting Blood Sugar (mg/dL)" required>`,
-    PPBS: `<input type="number" id="testValue" class="form-control" placeholder="Post-Prandial Blood Sugar (mg/dL)" required>`,
-    OGTT: `<input type="number" id="testValue" class="form-control" placeholder="Oral Glucose Tolerance Test (mg/dL)" required>`,
-    HbA1c: `<input type="number" step="0.1" id="testValue" class="form-control" placeholder="HbA1c (%)" required>`,
-    FEV: `<input type="number" step="0.01" id="testValue" class="form-control" placeholder="FEV (Liters)" required>`,
-    BP: `
-      <input type="number" id="sys" class="form-control mb-2" placeholder="Systolic (mmHg)" required>
-      <input type="number" id="dia" class="form-control" placeholder="Diastolic (mmHg)" required>`,
-    Counseling: `<textarea id="testText" rows="3" class="form-control" placeholder="Enter counseling notes..." required></textarea>`
-  };
-
-  // ---------- STATION SELECT ----------
+  // ---------- TEST TYPE SELECTION ----------
   stationSelect.addEventListener("change", () => {
     const selected = stationSelect.value;
     currentTest = selected;
     testFormSection.style.display = "none";
     testInputContainer.innerHTML = "";
+
     if (!selected) return;
     testFormSection.style.display = "block";
     testFormTitle.textContent = `${selected} Test Entry`;
-    testInputContainer.innerHTML = testFields[selected] || "";
+
+    const tests = {
+      Hemoglobin: { unit: "g/dL", placeholder: "Hemoglobin (g/dL)" },
+      RBG: { unit: "mg/dL", placeholder: "Random Blood Glucose (mg/dL)" },
+      FBS: { unit: "mg/dL", placeholder: "Fasting Blood Sugar (mg/dL)" },
+      PPBS: { unit: "mg/dL", placeholder: "Post-Prandial Blood Sugar (mg/dL)" },
+      OGTT: { unit: "mg/dL", placeholder: "Oral Glucose Tolerance Test (mg/dL)" },
+      HbA1c: { unit: "%", placeholder: "HbA1c (%)" },
+      "Heart Rate": { unit: "/min", placeholder: "Heart Rate (/min)" },
+      Temperature: { unit: "°C", placeholder: "Body Temperature (°C)" },
+      SpO2: { unit: "%", placeholder: "Blood Oxygen (SpO₂ %)" },
+      "Target Weight": { unit: "kg", placeholder: "Target Weight (kg)" },
+      FEV: { unit: "L", placeholder: "FEV (Liters)" }
+    };
+
+    if (selected === "BP") {
+      testInputContainer.innerHTML = `
+        <input type="number" id="sys" class="form-control mb-2" placeholder="Systolic (mmHg)" required>
+        <input type="number" id="dia" class="form-control" placeholder="Diastolic (mmHg)" required>
+      `;
+    } else if (selected === "Counseling") {
+      testInputContainer.innerHTML = `<textarea id="testText" rows="3" class="form-control" placeholder="Enter counseling notes..." required></textarea>`;
+    } else if (tests[selected]) {
+      testInputContainer.innerHTML = `<input type="number" step="0.1" id="testValue" class="form-control" placeholder="${tests[selected].placeholder}" required>`;
+    }
   });
 
   // ---------- SAVE SINGLE TEST ----------
@@ -171,6 +181,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!currentPatient || !currentTest) return;
 
     let payload = { patient_id: currentPatient.id, test_type: currentTest };
+    const value = document.getElementById("testValue")?.value;
+    const textValue = document.getElementById("testText")?.value?.trim();
 
     if (currentTest === "BP") {
       const sys = document.getElementById("sys").value;
@@ -178,15 +190,24 @@ document.addEventListener("DOMContentLoaded", () => {
       payload.value_text = `${sys}/${dia}`;
       payload.unit = "mmHg";
     } else if (currentTest === "Counseling") {
-      payload.value_text = document.getElementById("testText").value.trim();
+      payload.value_text = textValue;
       payload.unit = "-";
     } else {
-      payload.value_numeric = parseFloat(document.getElementById("testValue").value);
+      payload.value_numeric = parseFloat(value);
       payload.unit =
-        currentTest === "Hemoglobin" ? "g/dL" :
-        ["RBG", "FBS", "PPBS", "OGTT"].includes(currentTest) ? "mg/dL" :
-        currentTest === "HbA1c" ? "%" :
-        currentTest === "FEV" ? "L" : "-";
+        {
+          Hemoglobin: "g/dL",
+          RBG: "mg/dL",
+          FBS: "mg/dL",
+          PPBS: "mg/dL",
+          OGTT: "mg/dL",
+          HbA1c: "%",
+          "Heart Rate": "/min",
+          Temperature: "°C",
+          SpO2: "%",
+          "Target Weight": "kg",
+          FEV: "L"
+        }[currentTest] || "-";
     }
 
     try {
@@ -205,37 +226,41 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     if (!currentPatient) return;
 
-    const tests = [];
-    const addTest = (type, numeric, text, unit) => {
-      if (numeric !== null && !isNaN(numeric))
-        tests.push({ patient_id: currentPatient.id, test_type: type, value_numeric: numeric, unit });
-      else if (text)
-        tests.push({ patient_id: currentPatient.id, test_type: type, value_text: text, unit });
+    const getVal = (id) => {
+      const el = document.getElementById(id);
+      return el && el.value ? parseFloat(el.value) : NaN;
     };
 
-    const hemo = parseFloat(document.getElementById("hemoglobin").value);
-    const rbg = parseFloat(document.getElementById("rbg").value);
-    const fbs = parseFloat(document.getElementById("fbs").value);
-    const ppbs = parseFloat(document.getElementById("ppbs").value);
-    const ogtt = parseFloat(document.getElementById("ogtt").value);
-    const hba1c = parseFloat(document.getElementById("hba1c").value);
-    const fev = parseFloat(document.getElementById("fev").value);
+    const tests = [];
+    const addTest = (type, value, text, unit) => {
+      if (!isNaN(value)) {
+        tests.push({ patient_id: currentPatient.id, test_type: type, value_numeric: value, unit });
+      } else if (text) {
+        tests.push({ patient_id: currentPatient.id, test_type: type, value_text: text, unit });
+      }
+    };
+
+    addTest("Hemoglobin", getVal("hemoglobin"), null, "g/dL");
+    addTest("RBG", getVal("rbg"), null, "mg/dL");
+    addTest("FBS", getVal("fbs"), null, "mg/dL");
+    addTest("PPBS", getVal("ppbs"), null, "mg/dL");
+    addTest("OGTT", getVal("ogtt"), null, "mg/dL");
+    addTest("HbA1c", getVal("hba1c"), null, "%");
+    addTest("Heart Rate", getVal("heartRate"), null, "/min");
+    addTest("Temperature", getVal("temperature"), null, "°C");
+    addTest("SpO2", getVal("spo2"), null, "%");
+    addTest("Target Weight", getVal("targetWeight"), null, "kg");
+    addTest("FEV", getVal("fev"), null, "L");
+
     const sys = document.getElementById("bpSys").value;
     const dia = document.getElementById("bpDia").value;
-    const counseling = document.getElementById("counseling").value.trim();
-
-    if (!isNaN(hemo)) addTest("Hemoglobin", hemo, null, "g/dL");
-    if (!isNaN(rbg)) addTest("RBG", rbg, null, "mg/dL");
-    if (!isNaN(fbs)) addTest("FBS", fbs, null, "mg/dL");
-    if (!isNaN(ppbs)) addTest("PPBS", ppbs, null, "mg/dL");
-    if (!isNaN(ogtt)) addTest("OGTT", ogtt, null, "mg/dL");
-    if (!isNaN(hba1c)) addTest("HbA1c", hba1c, null, "%");
-    if (!isNaN(fev)) addTest("FEV", fev, null, "L");
     if (sys && dia) addTest("BP", null, `${sys}/${dia}`, "mmHg");
+
+    const counseling = document.getElementById("counseling").value.trim();
     if (counseling) addTest("Counseling", null, counseling, "-");
 
     if (tests.length === 0) {
-      Swal.fire("No Data", "Please enter at least one value.", "info");
+      Swal.fire("No Data", "Please enter at least one test value.", "info");
       return;
     }
 
@@ -245,7 +270,7 @@ document.addEventListener("DOMContentLoaded", () => {
       e.target.reset();
       await loadTestHistory();
     } catch (err) {
-      console.error("Daily summary save error:", err);
+      console.error("Daily summary error:", err);
       Swal.fire("Error", "Failed to save daily summary.", "error");
     }
   });
@@ -277,15 +302,17 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // ---------- EDIT & DELETE ----------
+  // ---------- EDIT / DELETE ----------
   historyBody.addEventListener("click", async (e) => {
     const editBtn = e.target.closest(".edit-btn");
     const deleteBtn = e.target.closest(".delete-btn");
     if (!editBtn && !deleteBtn) return;
+
     const id = (editBtn || deleteBtn).getAttribute("data-id");
     if (!id) return;
-    if (deleteBtn) onDeleteRecord(id);
-    else if (editBtn) onEditRecord(id);
+
+    if (deleteBtn) return onDeleteRecord(id);
+    if (editBtn) return onEditRecord(id);
   });
 
   async function onEditRecord(recordId) {
@@ -296,6 +323,7 @@ document.addEventListener("DOMContentLoaded", () => {
         await loadTestHistory();
         return;
       }
+
       const { html, preConfirm } = buildEditDialog(rec);
       const result = await Swal.fire({
         title: `Edit ${rec.test_type}`,
@@ -305,15 +333,14 @@ document.addEventListener("DOMContentLoaded", () => {
         confirmButtonText: "Save Changes",
         preConfirm
       });
+
       if (!result.isConfirmed) return;
+
       const payload = result.value;
       ["value_numeric", "value_text", "unit"].forEach((k) => {
-        if (payload[k] === undefined || payload[k] === null || payload[k] === "") delete payload[k];
+        if (!payload[k]) delete payload[k];
       });
-      if (Object.keys(payload).length === 0) {
-        Swal.fire("No changes", "Nothing to update.", "info");
-        return;
-      }
+
       const ok = await patchTest(recordId, payload);
       if (!ok) throw new Error("Patch failed");
       Swal.fire("Updated", "Record updated successfully.", "success");
@@ -324,7 +351,58 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  async function onDeleteRecord(id) {
+  function buildEditDialog(rec) {
+    const safeUnit = rec.unit ?? "-";
+    if (rec.test_type === "BP") {
+      const { sys, dia } = parseBp(rec.value_text);
+      const html = `
+        <div class="text-start">
+          <label>Systolic (mmHg)</label>
+          <input type="number" id="editSys" class="swal2-input" value="${sys ?? ""}">
+          <label>Diastolic (mmHg)</label>
+          <input type="number" id="editDia" class="swal2-input" value="${dia ?? ""}">
+        </div>`;
+      const preConfirm = () => {
+        const s = document.getElementById("editSys").value;
+        const d = document.getElementById("editDia").value;
+        if (!s || !d) {
+          Swal.showValidationMessage("Please enter both systolic and diastolic.");
+          return;
+        }
+        return { value_text: `${s}/${d}`, unit: "mmHg" };
+      };
+      return { html, preConfirm };
+    } else if (rec.test_type === "Counseling") {
+      const html = `<textarea id="editText" class="swal2-textarea">${rec.value_text ?? ""}</textarea>`;
+      const preConfirm = () => {
+        const t = document.getElementById("editText").value.trim();
+        if (!t) {
+          Swal.showValidationMessage("Please enter notes.");
+          return;
+        }
+        return { value_text: t, unit: "-" };
+      };
+      return { html, preConfirm };
+    } else {
+      const html = `
+        <label>Value</label>
+        <input type="number" id="editNumeric" class="swal2-input" value="${rec.value_numeric ?? ""}">
+        <label>Unit</label>
+        <input type="text" id="editUnit" class="swal2-input" value="${safeUnit}">`;
+      const preConfirm = () => {
+        const v = document.getElementById("editNumeric").value;
+        const u = document.getElementById("editUnit").value.trim();
+        if (v === "" || isNaN(parseFloat(v))) {
+          Swal.showValidationMessage("Please enter valid value.");
+          return;
+        }
+        return { value_numeric: parseFloat(v), unit: u || "-" };
+      };
+      return { html, preConfirm };
+    }
+  }
+
+  async function onDeleteRecord(recordId) {
     const res = await Swal.fire({
       title: "Delete record?",
       text: "This action cannot be undone.",
@@ -333,8 +411,9 @@ document.addEventListener("DOMContentLoaded", () => {
       confirmButtonText: "Yes, delete"
     });
     if (!res.isConfirmed) return;
+
     try {
-      const ok = await deleteTest(id);
+      const ok = await deleteTest(recordId);
       if (!ok) throw new Error("Delete failed");
       Swal.fire("Deleted", "Record removed.", "success");
       await loadTestHistory();
@@ -394,8 +473,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function parseBp(text) {
     if (!text) return { sys: null, dia: null };
     const parts = String(text).split("/");
-    if (parts.length !== 2) return { sys: null, dia: null };
-    return { sys: parts[0].trim(), dia: parts[1].trim() };
+    return { sys: parts[0]?.trim(), dia: parts[1]?.trim() };
   }
 
   function escapeHtml(str) {
