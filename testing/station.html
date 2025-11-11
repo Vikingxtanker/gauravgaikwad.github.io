@@ -75,6 +75,7 @@
         <option value="RBG">Random Blood Glucose</option>
         <option value="FBS">Fasting Blood Sugar</option>
         <option value="PPBS">Post-Prandial Blood Sugar</option>
+        <option value="OGTT">Oral Glucose Tolerance Test (OGTT)</option>
         <option value="HbA1c">HbA1c</option>
         <option value="FEV">Forced Expiratory Volume</option>
         <option value="BP">Blood Pressure</option>
@@ -115,6 +116,10 @@
                 <input type="number" id="ppbs" class="form-control">
               </div>
               <div class="col-md-6">
+                <label class="form-label">Oral Glucose Tolerance Test (mg/dL)</label>
+                <input type="number" id="ogtt" class="form-control">
+              </div>
+              <div class="col-md-6">
                 <label class="form-label">HbA1c (%)</label>
                 <input type="number" step="0.1" id="hba1c" class="form-control">
               </div>
@@ -140,33 +145,24 @@
         </div>
       </div>
     </div>
-	  <!-- Test History -->
-<div id="testHistory" style="margin-top:30px;">
-  <div class="d-flex justify-content-between align-items-center mb-2">
-    <h5 class="mb-0">Previous Test Records</h5>
-    <select id="dateFilter" class="form-select form-select-sm" style="width:180px;">
-      <option value="all" selected>All Records</option>
-      <option value="today">Today</option>
-      <option value="7days">Last 7 Days</option>
-      <option value="30days">Last 30 Days</option>
-    </select>
-  </div>
 
-  <table class="table table-bordered table-sm align-middle">
-    <thead class="table-light">
-      <tr>
-        <th>Date & Time</th>
-        <th>Test Type</th>
-        <th>Result</th>
-        <th>Unit</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody id="historyTableBody">
-      <tr><td colspan="5" class="text-center text-muted">No data loaded</td></tr>
-    </tbody>
-  </table>
-</div>
+    <!-- Test History -->
+    <div id="testHistory" style="margin-top:30px;">
+      <h5>Previous Test Records</h5>
+      <table class="table table-bordered table-sm align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Date & Time</th>
+            <th>Test Type</th>
+            <th>Result</th>
+            <th>Unit</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="historyTableBody">
+          <tr><td colspan="5" class="text-center text-muted">No data loaded</td></tr>
+        </tbody>
+      </table>
     </div>
 
     <!-- Change Patient -->
