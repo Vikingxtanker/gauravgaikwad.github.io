@@ -8,26 +8,26 @@ const POSTGREST_URL = "https://postgrest-latest-iplb.onrender.com";
 
 /* PDF COORDS (tweak if needed) */
 const COORDS = {
-  name:   { x:126,  y:675 },
-  age:    { x:408,  y:675 },
-  phone:  { x:82,   y:655 },
-  gender: { x:423,  y:655 },
-  patientId: { x:106, y:635 },
-  pulse:  { x:230,  y:655 },
-  spo2:   { x:320,  y:655 },
-  bmi:    { x:409,  y:635 },
-  temp:   { x:300,  y:619 },
-  date:   { x:74,   y:619 },
+  name:   { x:126,  y:668 },
+  age:    { x:404,  y:668 },
+  phone:  { x:85,   y:647 },
+  gender: { x:423,  y:647 },
+  patientId: { x:109, y:626 },
+  pulse:  { x:105,  y:609 },
+  spo2:   { x:84,  y:591 },
+  bmi:    { x:410,  y:626 },
+  temp:   { x:418,  y:609 },
+  date:   { x:413,   y:591 },
 
-  fbs:  { x:200, y:540 },
-  rbs:  { x:200, y:506 },
-  ppbs: { x:200, y:472 },
+  fbs:  { x:219, y:500 },
+  rbs:  { x:219, y:457 },
+  ppbs: { x:219, y:426 },
 
-  bp:  { x:222.5, y:385 },
+  bp:  { x:219, y:373 },
 
-  counseling: { x:41, y:245 },
+  counseling: { x:40, y:235 },
 
-  textSize: 10,
+  textSize: 14,
   counselingLineHeight: 12
 };
 
