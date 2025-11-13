@@ -75,17 +75,31 @@
 
   <div id="reportSection" style="display:none;">
     <h3>Patient Details</h3>
+
     <p><strong>Name:</strong> <span id="name"></span></p>
     <p><strong>Age:</strong> <span id="age"></span></p>
     <p><strong>Gender:</strong> <span id="gender"></span></p>
     <p><strong>Phone:</strong> <span id="phone"></span></p>
     <p><strong>Address:</strong> <span id="address"></span></p>
     <p><strong>Patient ID:</strong> <span id="patientIdDisplay"></span></p>
+
     <p><strong>BMI:</strong> <span id="bmi"></span></p>
+
+    <!-- 🔴 NEW FIELDS ADDED (in PDF order) -->
+    <p><strong>Pulse Rate:</strong> <span id="pulseRate"></span></p>
+    <p><strong>Body Temperature:</strong> <span id="temp"></span></p>
+    <p><strong>SpO₂:</strong> <span id="spo2"></span></p>
+    <p><strong>Date:</strong> <span id="date"></span></p>
+    <p><strong>FBS:</strong> <span id="fbs"></span></p>
+    <p><strong>RBS:</strong> <span id="rbs"></span></p>
+    <p><strong>PPBS:</strong> <span id="ppbs"></span></p>
+    <!-- END NEW FIELDS -->
+
     <p><strong>Hemoglobin:</strong> <span id="hemoglobin"></span></p>
     <p><strong>Random Blood Glucose:</strong> <span id="rbg"></span></p>
     <p><strong>FEV1:</strong> <span id="fev"></span></p>
     <p><strong>Blood Pressure:</strong> <span id="bp"></span></p>
+
     <p><strong>Patient Counseling:</strong> <span id="counselingPoints"></span></p>
 
     <button id="generatePDF" class="btn btn-success mt-3">Generate PDF Report</button>
@@ -99,10 +113,10 @@
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- ✅ PDFLib CDN must be loaded before patient-report.js -->
+<!-- PDFLib -->
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
 
-<!-- ✅ Now using PostgREST version -->
+<!-- PostgREST Script -->
 <script type="module" src="js/patient-report-postgrest.js"></script>
 
 <script>
@@ -116,5 +130,6 @@
   window.addEventListener("load", adjustFormMargin);
   window.addEventListener("resize", adjustFormMargin);
 </script>
+
 </body>
 </html>
