@@ -1,4 +1,7 @@
 // js/station-postgrest.js
+// Modified to save Systolic and Diastolic as separate test_type entries
+// (and also saves BP combined as value_text for backward compatibility).
+
 import Swal from "https://cdn.jsdelivr.net/npm/sweetalert2@11/+esm";
 
 const POSTGREST_URL = "https://postgrest-latest-iplb.onrender.com";
@@ -154,66 +157,101 @@ document.addEventListener("DOMContentLoaded", () => {
       RBG: { unit: "mg/dL", placeholder: "Random Blood Glucose (mg/dL)" },
       FBS: { unit: "mg/dL", placeholder: "Fasting Blood Sugar (mg/dL)" },
       PPBS: { unit: "mg/dL", placeholder: "Post-Prandial Blood Sugar (mg/dL)" },
-      OGTT: { unit: "mg/dL", placeholder: "Oral Glucose Tolerance Test (mg/dL)" },
+      OGTT: { unit: "mg/dL", placeholder: "OGTT (mg/dL)" },
       HbA1c: { unit: "%", placeholder: "HbA1c (%)" },
       "Heart Rate": { unit: "/min", placeholder: "Heart Rate (/min)" },
-      Temperature: { unit: "°C", placeholder: "Body Temperature (°C)" },
-      SpO2: { unit: "%", placeholder: "Blood Oxygen (SpO₂ %)" },
+      Temperature: { unit: "°C", placeholder: "Temperature (°C)" },
+      SpO2: { unit: "%", placeholder: "SpO₂ (%)" },
       "Target Weight": { unit: "kg", placeholder: "Target Weight (kg)" },
-      FEV: { unit: "L", placeholder: "FEV (Liters)" }
+      FEV: { unit: "L", placeholder: "FEV (L)" },
+      BP: { unit: "mmHg", placeholder: "Systolic/Diastolic (mmHg)" },
+      Counseling: { unit: "-", placeholder: "Counseling / Notes" }
     };
 
+    const config = tests[selected];
+
     if (selected === "BP") {
+      // render separate systolic/diastolic inputs
       testInputContainer.innerHTML = `
-        <input type="number" id="sys" class="form-control mb-2" placeholder="Systolic (mmHg)" required>
-        <input type="number" id="dia" class="form-control" placeholder="Diastolic (mmHg)" required>
+        <div class="row g-2">
+          <div class="col-6">
+            <label class="form-label">Systolic (mmHg)</label>
+            <input id="sys" class="form-control" type="number" min="0" />
+          </div>
+          <div class="col-6">
+            <label class="form-label">Diastolic (mmHg)</label>
+            <input id="dia" class="form-control" type="number" min="0" />
+          </div>
+        </div>
       `;
     } else if (selected === "Counseling") {
-      testInputContainer.innerHTML = `<textarea id="testText" rows="3" class="form-control" placeholder="Enter counseling notes..." required></textarea>`;
-    } else if (tests[selected]) {
-      testInputContainer.innerHTML = `<input type="number" step="0.1" id="testValue" class="form-control" placeholder="${tests[selected].placeholder}" required>`;
+      testInputContainer.innerHTML = `
+        <div>
+          <label class="form-label">Notes</label>
+          <textarea id="testText" class="form-control" rows="3" placeholder="${escapeHtml(config.placeholder)}"></textarea>
+        </div>
+      `;
+    } else {
+      testInputContainer.innerHTML = `
+        <div>
+          <label class="form-label">Value (${escapeHtml(config.unit)})</label>
+          <input id="testNumeric" class="form-control" type="number" step="any" />
+        </div>
+      `;
     }
   });
 
-  // ---------- SAVE SINGLE TEST ----------
+  // ---------- SUBMIT SINGLE TEST ----------
   testForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    if (!currentPatient || !currentTest) return;
+    if (!currentPatient) return Swal.fire("No Patient","Verify a patient first","info");
 
-    let payload = { patient_id: currentPatient.id, test_type: currentTest };
-    const value = document.getElementById("testValue")?.value;
-    const textValue = document.getElementById("testText")?.value?.trim();
+    const payloads = [];
 
     if (currentTest === "BP") {
-      const sys = document.getElementById("sys").value;
-      const dia = document.getElementById("dia").value;
-      payload.value_text = `${sys}/${dia}`;
-      payload.unit = "mmHg";
+      const sys = document.getElementById("sys").value.trim();
+      const dia = document.getElementById("dia").value.trim();
+      if (!sys || !dia) return Swal.fire("Incomplete","Enter both systolic & diastolic","warning");
+      // Save separate numeric entries
+      payloads.push({ patient_id: currentPatient.id, test_type: "Systolic", value_numeric: parseFloat(sys), unit: "mmHg" });
+      payloads.push({ patient_id: currentPatient.id, test_type: "Diastolic", value_numeric: parseFloat(dia), unit: "mmHg" });
+      // Also save combined BP text for compatibility
+      payloads.push({ patient_id: currentPatient.id, test_type: "BP", value_text: `${sys}/${dia}`, unit: "mmHg" });
     } else if (currentTest === "Counseling") {
-      payload.value_text = textValue;
-      payload.unit = "-";
+      const text = document.getElementById("testText").value.trim();
+      if (!text) return Swal.fire("Empty","Please enter notes","warning");
+      payloads.push({ patient_id: currentPatient.id, test_type: "Counseling", value_text: text, unit: "-" });
     } else {
-      payload.value_numeric = parseFloat(value);
-      payload.unit =
-        {
-          Hemoglobin: "g/dL",
-          RBG: "mg/dL",
-          FBS: "mg/dL",
-          PPBS: "mg/dL",
-          OGTT: "mg/dL",
-          HbA1c: "%",
-          "Heart Rate": "/min",
-          Temperature: "°C",
-          SpO2: "%",
-          "Target Weight": "kg",
-          FEV: "L"
-        }[currentTest] || "-";
+      const val = document.getElementById("testNumeric").value;
+      if (val === "" || isNaN(parseFloat(val))) return Swal.fire("Invalid","Enter a valid numeric value","warning");
+      const configUnit = {
+        Hemoglobin: "g/dL",
+        RBG: "mg/dL",
+        FBS: "mg/dL",
+        PPBS: "mg/dL",
+        OGTT: "mg/dL",
+        HbA1c: "%",
+        "Heart Rate": "/min",
+        Temperature: "°C",
+        SpO2: "%",
+        "Target Weight": "kg",
+        FEV: "L"
+      }[currentTest] || "-";
+      payloads.push({
+        patient_id: currentPatient.id,
+        test_type: currentTest,
+        value_numeric: parseFloat(val),
+        unit: configUnit
+      });
     }
 
     try {
-      await saveTest(payload);
-      Swal.fire("Success", `${currentTest} entry saved!`, "success");
-      e.target.reset();
+      for (const p of payloads) {
+        const ok = await saveTest(p, false);
+        if (!ok) throw new Error("Save failed");
+      }
+      Swal.fire("Saved", `${currentTest} saved successfully`, "success");
+      testForm.reset();
       await loadTestHistory();
     } catch (err) {
       console.error("Error saving test:", err);
@@ -221,59 +259,63 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ---------- SAVE DAILY SUMMARY ----------
-  dailySummaryForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    if (!currentPatient) return;
+  // ---------- DAILY SUMMARY SAVE ----------
+  if (dailySummaryForm) {
+    dailySummaryForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!currentPatient) return Swal.fire("No Patient","Verify a patient first","info");
 
-    const getVal = (id) => {
-      const el = document.getElementById(id);
-      return el && el.value ? parseFloat(el.value) : NaN;
-    };
+      const getVal = (id) => {
+        const el = document.getElementById(id);
+        return el && el.value ? parseFloat(el.value) : NaN;
+      };
 
-    const tests = [];
-    const addTest = (type, value, text, unit) => {
-      if (!isNaN(value)) {
-        tests.push({ patient_id: currentPatient.id, test_type: type, value_numeric: value, unit });
-      } else if (text) {
-        tests.push({ patient_id: currentPatient.id, test_type: type, value_text: text, unit });
+      const testsToSave = [];
+      const addTest = (type, value, text, unit) => {
+        if (!isNaN(value)) testsToSave.push({ patient_id: currentPatient.id, test_type: type, value_numeric: value, unit });
+        else if (text) testsToSave.push({ patient_id: currentPatient.id, test_type: type, value_text: text, unit });
+      };
+
+      addTest("Hemoglobin", getVal("hemoglobin"), null, "g/dL");
+      addTest("RBG", getVal("rbg"), null, "mg/dL");
+      addTest("FBS", getVal("fbs"), null, "mg/dL");
+      addTest("PPBS", getVal("ppbs"), null, "mg/dL");
+      addTest("OGTT", getVal("ogtt"), null, "mg/dL");
+      addTest("HbA1c", getVal("hba1c"), null, "%");
+      addTest("Heart Rate", getVal("heartRate"), null, "/min");
+      addTest("Temperature", getVal("temperature"), null, "°C");
+      addTest("SpO2", getVal("spo2"), null, "%");
+      addTest("Target Weight", getVal("targetWeight"), null, "kg");
+      addTest("FEV", getVal("fev"), null, "L");
+
+      // BP: collect systolic & diastolic and save separately + combined BP
+      const sys = document.getElementById("bpSys").value.trim();
+      const dia = document.getElementById("bpDia").value.trim();
+      if (sys && dia) {
+        testsToSave.push({ patient_id: currentPatient.id, test_type: "Systolic", value_numeric: parseFloat(sys), unit: "mmHg" });
+        testsToSave.push({ patient_id: currentPatient.id, test_type: "Diastolic", value_numeric: parseFloat(dia), unit: "mmHg" });
+        testsToSave.push({ patient_id: currentPatient.id, test_type: "BP", value_text: `${sys}/${dia}`, unit: "mmHg" });
       }
-    };
 
-    addTest("Hemoglobin", getVal("hemoglobin"), null, "g/dL");
-    addTest("RBG", getVal("rbg"), null, "mg/dL");
-    addTest("FBS", getVal("fbs"), null, "mg/dL");
-    addTest("PPBS", getVal("ppbs"), null, "mg/dL");
-    addTest("OGTT", getVal("ogtt"), null, "mg/dL");
-    addTest("HbA1c", getVal("hba1c"), null, "%");
-    addTest("Heart Rate", getVal("heartRate"), null, "/min");
-    addTest("Temperature", getVal("temperature"), null, "°C");
-    addTest("SpO2", getVal("spo2"), null, "%");
-    addTest("Target Weight", getVal("targetWeight"), null, "kg");
-    addTest("FEV", getVal("fev"), null, "L");
+      const counseling = (document.getElementById("counseling")?.value || "").trim();
+      if (counseling) testsToSave.push({ patient_id: currentPatient.id, test_type: "Counseling", value_text: counseling, unit: "-" });
 
-    const sys = document.getElementById("bpSys").value;
-    const dia = document.getElementById("bpDia").value;
-    if (sys && dia) addTest("BP", null, `${sys}/${dia}`, "mmHg");
+      if (testsToSave.length === 0) {
+        Swal.fire("No Data", "Please enter at least one test value.", "info");
+        return;
+      }
 
-    const counseling = document.getElementById("counseling").value.trim();
-    if (counseling) addTest("Counseling", null, counseling, "-");
-
-    if (tests.length === 0) {
-      Swal.fire("No Data", "Please enter at least one test value.", "info");
-      return;
-    }
-
-    try {
-      for (const t of tests) await saveTest(t, false);
-      Swal.fire("Success", "All tests saved successfully!", "success");
-      e.target.reset();
-      await loadTestHistory();
-    } catch (err) {
-      console.error("Daily summary error:", err);
-      Swal.fire("Error", "Failed to save daily summary.", "error");
-    }
-  });
+      try {
+        for (const t of testsToSave) await saveTest(t, false);
+        Swal.fire("Success", "All tests saved successfully!", "success");
+        e.target.reset();
+        await loadTestHistory();
+      } catch (err) {
+        console.error("Daily summary error:", err);
+        Swal.fire("Error", "Failed to save daily summary.", "error");
+      }
+    });
+  }
 
   // ---------- CHANGE PATIENT ----------
   changePatientBtn.addEventListener("click", () => {
