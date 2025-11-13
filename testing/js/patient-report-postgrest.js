@@ -12,10 +12,10 @@ const COORDS = {
   age:    { x:404,  y:668 },
   phone:  { x:85,   y:647 },
   gender: { x:423,  y:647 },
-  patientId: { x:109, y:625 },
+  patientId: { x:109, y:623 },
   pulse:  { x:105,  y:607 },
   spo2:   { x:84,  y:591 },
-  bmi:    { x:410,  y:625 },
+  bmi:    { x:410,  y:623 },
   temp:   { x:418,  y:607 },
   date:   { x:413,   y:591 },
 
