@@ -13,21 +13,21 @@ const COORDS = {
   phone:  { x:85,   y:647 },
   gender: { x:423,  y:647 },
   patientId: { x:109, y:626 },
-  pulse:  { x:105,  y:609 },
+  pulse:  { x:105,  y:605 },
   spo2:   { x:84,  y:591 },
   bmi:    { x:410,  y:626 },
-  temp:   { x:418,  y:609 },
+  temp:   { x:418,  y:605 },
   date:   { x:413,   y:591 },
 
   fbs:  { x:219, y:500 },
   rbs:  { x:219, y:457 },
-  ppbs: { x:219, y:426 },
+  ppbs: { x:219, y:415 },
 
   bp:  { x:219, y:373 },
 
   counseling: { x:40, y:235 },
 
-  textSize: 14,
+  textSize: 12,
   counselingLineHeight: 12
 };
 
