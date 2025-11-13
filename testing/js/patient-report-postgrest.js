@@ -12,10 +12,10 @@ const COORDS = {
   age:    { x:404,  y:668 },
   phone:  { x:85,   y:647 },
   gender: { x:423,  y:647 },
-  patientId: { x:109, y:627 },
+  patientId: { x:109, y:625 },
   pulse:  { x:105,  y:607 },
   spo2:   { x:84,  y:591 },
-  bmi:    { x:410,  y:627 },
+  bmi:    { x:410,  y:625 },
   temp:   { x:418,  y:607 },
   date:   { x:413,   y:591 },
 
@@ -28,7 +28,7 @@ const COORDS = {
   counseling: { x:40, y:235 },
 
   textSize: 12,
-  counselingLineHeight: 12
+  counselingLineHeight: 15
 };
 
 const setText = (id, val) => {
