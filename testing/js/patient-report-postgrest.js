@@ -8,22 +8,22 @@ const POSTGREST_URL = "https://postgrest-latest-iplb.onrender.com";
 
 /* PDF COORDS (tweak if needed) */
 const COORDS = {
-  name:   { x:126,  y:668 },
+  name:   { x:126,  y:669 },
   age:    { x:404,  y:668 },
   phone:  { x:85,   y:647 },
   gender: { x:423,  y:647 },
-  patientId: { x:109, y:626 },
-  pulse:  { x:105,  y:605 },
+  patientId: { x:109, y:627 },
+  pulse:  { x:105,  y:607 },
   spo2:   { x:84,  y:591 },
-  bmi:    { x:410,  y:626 },
-  temp:   { x:418,  y:605 },
+  bmi:    { x:410,  y:627 },
+  temp:   { x:418,  y:607 },
   date:   { x:413,   y:591 },
 
   fbs:  { x:219, y:500 },
-  rbs:  { x:219, y:457 },
-  ppbs: { x:219, y:415 },
+  rbs:  { x:219, y:459 },
+  ppbs: { x:219, y:417 },
 
-  bp:  { x:219, y:373 },
+  bp:  { x:219, y:375 },
 
   counseling: { x:40, y:235 },
 
@@ -199,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!res.ok) throw new Error("PDF template not found (report_DMv3.pdf)");
       const pdfBytes = await res.arrayBuffer();
       const pdfDoc = await PDFLib.PDFDocument.load(pdfBytes);
-      const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+      const font = await pdfDoc.embedFont(PDFLib.StandardFonts.TimesRoman);
       const page = pdfDoc.getPages()[0];
 
       const draw = (value, coord, size = COORDS.textSize) => {
