@@ -1,15 +1,13 @@
 // js/patient-report-postgrest.js
-// Updated to draw: patient name, age, phone, gender, patient id, BMI, pulse, temp, SpO2, date,
-// FBS, RBS, PPBS, Blood Pressure, Counseling Point
-// Template PDF used: report_DMv3.pdf
-// (Adjust COORDS below as needed to align text visually on your template.)
+// Uses Neon/PostgREST schema (patients, patient_tests) — aligned with station-postgrest.js
+// Replace the previous file with this. Make sure report_DMv3.pdf is in the same public folder.
+// (Adjust COORDS for PDF positioning if needed.)
 
 import Swal from "https://cdn.jsdelivr.net/npm/sweetalert2@11/+esm";
 
 const POSTGREST_URL = "https://postgrest-latest-iplb.onrender.com";
 
-// --- Editable coordinates (x, y) for each field ---
-// You can change these numbers to align text on the PDF visually.
+// --- Editable coordinates (x, y) for each field on your PDF template ---
 const COORDS = {
   name:        { x: 126,  y: 675 },
   age:         { x: 408,  y: 675 },
@@ -22,34 +20,29 @@ const COORDS = {
   temp:        { x: 300,  y: 619 },
   date:        { x: 74,   y: 619 },
 
-  // Lab test positions (FBS / RBS / PPBS) — adjust vertical spacing if needed
   fbs:         { x: 200,  y: 540 },
   rbs:         { x: 200,  y: 506 },
   ppbs:        { x: 200,  y: 472 },
 
-  // Blood pressure (systolic/diastolic)
   bp:          { x: 222.5,y: 385 },
 
-  // Counseling (multi-line)
   counseling:  { x: 41,   y: 245 },
 
-  // text size and line height for multiline counseling
   textSize:    10,
   counselingLineHeight: 12
 };
 
+// Utility: escape HTML for table or text insertion if ever needed
+function escapeHtml(str) {
+  return String(str ?? "").replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-  const formContainer = document.querySelector(".form-container");
-  const form = document.getElementById("reportForm");
-  const patientIDInput = document.getElementById("patientID");
-  const reportSection = document.getElementById("reportSection");
-
-  const loggedInfo = document.getElementById("loggedInfo");
-  const authBtn = document.getElementById("authBtn");
-
   // ---------- AUTH ----------
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  if (!currentUser || (currentUser.role !== "admin" && currentUser.role !== "documentation" && currentUser.role !== "station")) {
+  if (!currentUser || (currentUser.role !== "admin" && currentUser.role !== "station" && currentUser.role !== "documentation")) {
     Swal.fire({
       icon: "error",
       title: "Access Denied",
@@ -59,73 +52,175 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  loggedInfo.textContent = `Logged in as ${currentUser.username} (${currentUser.role})`;
-  authBtn.textContent = "Logout";
-  authBtn.onclick = () => {
-    localStorage.removeItem("currentUser");
-    window.location.href = "health-screening.html";
+  // Navbar auth labels (same pattern as other pages)
+  const loggedInfo = document.getElementById("loggedInfo");
+  const authBtn = document.getElementById("authBtn");
+  if (loggedInfo) loggedInfo.textContent = `Logged in as ${currentUser.username} (${currentUser.role})`;
+  if (authBtn) {
+    authBtn.textContent = "Logout";
+    authBtn.onclick = () => {
+      localStorage.removeItem("currentUser");
+      window.location.href = "health-screening.html";
+    };
+  }
+
+  // ---------- Elements ----------
+  const formContainer = document.querySelector(".form-container");
+  const form = document.getElementById("reportForm");
+  const patientIDInput = document.getElementById("patientID");
+  const reportSection = document.getElementById("reportSection");
+
+  // Preview DOM fields (IDs must match those in patient-report.html)
+  const setIf = (id, value) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerText = (value === undefined || value === null) ? "N/A" : value;
   };
 
-  formContainer.style.display = "block";
+  formContainer && (formContainer.style.display = "block");
 
-  // ---------- FETCH PATIENT ----------
+  // ---------- FETCH PATIENT ----------  
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const id = patientIDInput.value.trim().toLowerCase();
-    if (!id) return;
+    const idRaw = patientIDInput.value.trim();
+    if (!idRaw) return;
+    const id = encodeURIComponent(idRaw);
 
     try {
+      // Fetch patient record (same as station)
       const res = await fetch(`${POSTGREST_URL}/patients?id=eq.${id}`, {
-        headers: { Accept: "application/json" },
+        headers: { Accept: "application/json" }
       });
       if (!res.ok) throw new Error(`Server error ${res.status}`);
-      const data = await res.json();
-
-      if (data.length === 0) {
+      const rows = await res.json();
+      if (!rows || rows.length === 0) {
         Swal.fire("Invalid ID", "No patient found with this ID.", "error");
         reportSection.style.display = "none";
         return;
       }
 
-      const p = data[0];
+      const p = rows[0];
       window.currentPatient = p;
 
-      await Swal.fire("Patient Verified", "Report loaded successfully.", "success");
-
-      // Populate whatever DOM fields exist (non-blocking if element missing)
-      const setIf = (id, value) => {
-        const el = document.getElementById(id);
-        if (el) el.innerText = value ?? "N/A";
-      };
-
+      // Basic patient fields (from patients table)
       setIf("name", p.name ?? "N/A");
       setIf("age", p.age ?? "N/A");
       setIf("gender", p.gender ?? "N/A");
-      setIf("phone", p.phone ?? "N/A");
+      setIf("phone", p.phone ?? p.mobile ?? "N/A");
       setIf("address", p.address ?? "N/A");
+      setIf("patientIdDisplay", p.id ?? idRaw);
       setIf("bmi", p.bmi ?? "N/A");
-      setIf("hemoglobin", p.hemoglobin ?? "Not Recorded");
-      setIf("rbg", p.rbg ?? p.rbs ?? "Not Recorded"); // backward tolerance
-      setIf("fev", p.fev ?? "Not Recorded");
-      setIf("bp", (p.systolic && p.diastolic) ? `${p.systolic}/${p.diastolic}` : "Not Recorded");
-      setIf("counselingPoints", p.counseling_points ?? p.counseling ?? "Not Recorded");
-      setIf("patientIdDisplay", p.id ?? id);
 
-      // store extra fields into window.currentPatient for PDF routine
-      // tolerate different field names: rbs/rbg, ppbs/ppg, pulse/heart_rate, temp/temperature, spo2/spo_2
-      p._pulse = p.pulse ?? p.heart_rate ?? p.pulse_rate ?? p.pulseRate ?? p.pulse_rate;
-      p._temp = p.temp ?? p.temperature ?? p.body_temp ?? p.bodyTemperature;
-      p._spo2 = p.spo2 ?? p.spO2 ?? p.sp_o2 ?? p.sp_o_2;
-      p._fbs = p.fbs ?? p.fasting_blood_sugar;
-      p._rbs = p.rbs ?? p.rbg ?? p.random_blood_sugar;
-      p._ppbs = p.ppbs ?? p.ppg ?? p.post_prandial_blood_sugar ?? p.postprandial;
+      // Default placeholders for tests until we fetch latest test entries
+      setIf("hemoglobin", "N/A");
+      setIf("rbg", "N/A");
+      setIf("fev", "N/A");
+      setIf("bp", "N/A");
+      setIf("counselingPoints", "N/A");
 
+      // NEW fields placeholders
+      setIf("pulseRate", "N/A");
+      setIf("temp", "N/A");
+      setIf("spo2", "N/A");
+      setIf("date", p.date ?? "N/A"); // p.date is used per your choice (Option B)
+      setIf("fbs", "N/A");
+      setIf("rbs", "N/A");
+      setIf("ppbs", "N/A");
+
+      // Show section
       reportSection.style.display = "block";
+      Swal.fire("Patient Verified", "Report loaded successfully.", "success");
+
+      // Now fetch latest patient_tests for this patient and populate preview values
+      await populateLatestTestsForPatient(p);
+
     } catch (err) {
-      console.error("Error fetching patient:", err);
+      console.error("Fetch patient error:", err);
       Swal.fire("Error", "Failed to fetch patient data.", "error");
+      reportSection.style.display = "none";
     }
   });
+
+  // ---------- Load latest tests and map them to preview fields ----------
+  async function populateLatestTestsForPatient(p) {
+    if (!p || !p.id) return;
+    try {
+      // Fetch all tests ordered descending by created_at (latest first)
+      const res = await fetch(
+        `${POSTGREST_URL}/patient_tests?patient_id=eq.${encodeURIComponent(p.id)}&order=created_at.desc`,
+        { headers: { Accept: "application/json" } }
+      );
+      if (!res.ok) throw new Error(`Server error ${res.status}`);
+      const tests = await res.json();
+
+      if (!tests || tests.length === 0) {
+        // No test entries found — leave placeholders
+        return;
+      }
+
+      // We will take the first (latest) entry for each test_type
+      const latest = {}; // map test_type -> record
+      for (const t of tests) {
+        const type = (t.test_type ?? "").trim();
+        if (!type) continue;
+        if (!latest[type]) latest[type] = t;
+      }
+
+      // Helper to read numeric / text values
+      const readValue = (rec) => {
+        if (!rec) return null;
+        if (rec.value_numeric !== undefined && rec.value_numeric !== null) return rec.value_numeric;
+        if (rec.value_text !== undefined && rec.value_text !== null) return rec.value_text;
+        return null;
+      };
+
+      // Map station test_type names -> preview fields
+      // Station uses: Hemoglobin, RBG, FBS, PPBS, Heart Rate, Temperature, SpO2, BP, FEV, Counseling, etc.
+      const map = {
+        Hemoglobin: () => setIf("hemoglobin", readValue(latest["Hemoglobin"]) ?? "N/A"),
+        RBG: () => setIf("rbg", readValue(latest["RBG"]) ?? "N/A"),
+        FBS: () => setIf("fbs", readValue(latest["FBS"]) ?? "N/A"),
+        PPBS: () => setIf("ppbs", readValue(latest["PPBS"]) ?? "N/A"),
+        "Heart Rate": () => setIf("pulseRate", readValue(latest["Heart Rate"]) ?? "N/A"),
+        Temperature: () => setIf("temp", readValue(latest["Temperature"]) ?? "N/A"),
+        SpO2: () => setIf("spo2", readValue(latest["SpO2"]) ?? "N/A"),
+        BP: () => {
+          const rec = latest["BP"];
+          const bpVal = rec?.value_text ?? readValue(rec) ?? "N/A";
+          setIf("bp", bpVal);
+        },
+        FEV: () => setIf("fev", readValue(latest["FEV"]) ?? "N/A"),
+        Counseling: () => setIf("counselingPoints", readValue(latest["Counseling"]) ?? "N/A"),
+        OGTT: () => {} // not used in preview, but present in station
+      };
+
+      // Run map functions for known keys found in latest
+      Object.keys(latest).forEach((k) => {
+        if (map[k]) map[k]();
+      });
+
+      // Some redundancy / alternative keys:
+      // Some records might be stored under other close names (e.g., "SpO₂" vs "SpO2"), try tolerant lookups:
+      if (!latest["SpO2"] && latest["SpO₂"]) {
+        setIf("spo2", readValue(latest["SpO₂"]) ?? "N/A");
+      }
+      if (!latest["Heart Rate"] && latest["HeartRate"]) {
+        setIf("pulseRate", readValue(latest["HeartRate"]) ?? "N/A");
+      }
+      // Also map RBG -> rbs fallback if necessary
+      if (!latest["RBS"] && latest["RBG"]) {
+        setIf("rbs", readValue(latest["RBG"]) ?? "N/A");
+      }
+
+      // If patient object contains a saved BMI or date, prioritize that (date: p.date per your choice)
+      if (p.bmi) setIf("bmi", p.bmi);
+      if (p.date) setIf("date", p.date);
+
+    } catch (err) {
+      console.error("Error loading tests:", err);
+      // leave placeholders; show error only in console
+    }
+  }
 
   // ---------- PDF GENERATION ----------
   document.getElementById("generatePDF").addEventListener("click", async () => {
@@ -144,13 +239,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
       const page = pdfDoc.getPages()[0];
 
-      // helper to draw simple single-line values
       const draw = (value, coord, size = COORDS.textSize) => {
         const text = (value === undefined || value === null) ? "" : String(value);
         page.drawText(text, { x: coord.x, y: coord.y, size, font });
       };
 
-      // helper to draw multi-line counseling text (wrap by newline; simple approach)
       const drawMultiline = (text, coord, size = COORDS.textSize, lineHeight = COORDS.counselingLineHeight) => {
         if (!text) return;
         const lines = String(text).split(/\r?\n/);
@@ -161,47 +254,46 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       };
 
-      // Draw fields using COORDS (fall back to "N/A" for empty clinical values if you want)
-      draw(p.name ?? "N/A", COORDS.name);
-      draw(p.age ?? "N/A", COORDS.age);
-      draw(p.phone ?? "N/A", COORDS.phone);
-      draw(p.gender ?? "N/A", COORDS.gender);
-      draw(p.id ?? p.patient_id ?? p.patientId ?? "N/A", COORDS.patientId);
+      // Gather preview values (read from DOM to make sure what user sees is exported)
+      const getDom = (id) => {
+        const el = document.getElementById(id);
+        return el ? (el.innerText || "") : "";
+      };
 
-      // vitals
-      draw(p._pulse ?? p.pulse ?? "N/A", COORDS.pulse);
-      draw(p._spo2 ?? p.spo2 ?? "N/A", COORDS.spo2);
-      draw(p.bmi ?? "N/A", COORDS.bmi);
-      draw(p._temp ?? p.temp ?? "N/A", COORDS.temp);
+      draw(getDom("name") || p.name || "N/A", COORDS.name);
+      draw(getDom("age") || p.age || "N/A", COORDS.age);
+      draw(getDom("phone") || p.phone || p.mobile || "N/A", COORDS.phone);
+      draw(getDom("gender") || p.gender || "N/A", COORDS.gender);
+      draw(getDom("patientIdDisplay") || p.id || "N/A", COORDS.patientId);
 
-      // date (format dd/mm/yyyy)
-      const dateStr = new Date().toLocaleDateString("en-GB");
-      draw(dateStr, COORDS.date);
+      draw(getDom("pulseRate") || "N/A", COORDS.pulse);
+      draw(getDom("spo2") || "N/A", COORDS.spo2);
+      draw(getDom("bmi") || p.bmi || "N/A", COORDS.bmi);
+      draw(getDom("temp") || "N/A", COORDS.temp);
 
-      // Lab tests (FBS, RBS, PPBS) - use prioritized fields if available
-      draw(p._fbs ?? p.fbs ?? "N/A", COORDS.fbs);
-      draw(p._rbs ?? p.rbs ?? p.rbg ?? "N/A", COORDS.rbs);
-      draw(p._ppbs ?? p.ppbs ?? "N/A", COORDS.ppbs);
+      const dateDom = getDom("date") || p.date || (new Date().toLocaleDateString("en-GB"));
+      draw(dateDom, COORDS.date);
 
-      // Blood pressure: prefer systolic/diastolic fields
-      const bpText = (p.systolic && p.diastolic) ? `${p.systolic}/${p.diastolic}` :
-                     p.bp ?? p.blood_pressure ?? "N/A";
-      draw(bpText, COORDS.bp);
+      draw(getDom("fbs") || "N/A", COORDS.fbs);
+      draw(getDom("rbs") || getDom("rbg") || "N/A", COORDS.rbs);
+      draw(getDom("ppbs") || "N/A", COORDS.ppbs);
 
-      // Counseling points (multi-line)
-      const counselingText = p.counseling_points ?? p.counseling ?? p.counselingPoints ?? "Results are subjected to clinical co-relation. Kindly contact your pharmacist or doctor for further suggestions.";
+      draw(getDom("bp") || "N/A", COORDS.bp);
+
+      const counselingText = getDom("counselingPoints") || p.counseling_points || p.counseling || "Results are subjected to clinical correlation. Please consult your physician/pharmacist.";
       drawMultiline(counselingText, COORDS.counseling, COORDS.textSize, COORDS.counselingLineHeight);
 
-      // finalize
+      // finalize & download
       const finalPdf = await pdfDoc.save();
       const blob = new Blob([finalPdf], { type: "application/pdf" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = `Patient_Report_${(p.id ?? p.patient_id ?? "report")}.pdf`;
+      link.download = `Patient_Report_${(p.id ?? "report")}.pdf`;
       link.click();
     } catch (err) {
       console.error("PDF Generation Error:", err);
       Swal.fire("Error", "Could not generate PDF report", "error");
     }
   });
-});
+
+}); // DOMContentLoaded end
