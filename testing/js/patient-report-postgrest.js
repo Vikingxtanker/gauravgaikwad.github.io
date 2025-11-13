@@ -239,7 +239,14 @@ document.addEventListener("DOMContentLoaded", () => {
         spo2: getDom("spo2") || "",
         bmi: getDom("bmi") || p.bmi || "",
         temp: getDom("temp") || "",
-        date: getDom("date") || p.date || (new Date().toLocaleDateString("en-GB")),
+		// Always current date for PDF (DD/MM/YYYY)
+		date: (() => {
+			const d = new Date();
+			const day = String(d.getDate()).padStart(2, "0");
+			const month = String(d.getMonth() + 1).padStart(2, "0");
+			const year = d.getFullYear();
+			return `${day}/${month}/${year}`;
+		})(),
         fbs: getDom("fbs") || "",
         rbs: getDom("rbs") || getDom("rbg") || "",
         ppbs: getDom("ppbs") || "",
