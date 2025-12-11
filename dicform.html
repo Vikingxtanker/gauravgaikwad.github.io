@@ -10,10 +10,54 @@
   <link rel="stylesheet" href="css/style.css">
 
   <style>
+    /* keep readonly inputs visually disabled */
     input[readonly] {
       cursor: not-allowed;
       background-color: #e9ecef;
     }
+
+    /* Keep form narrow (matches your project's style.css which used 600px) */
+    .form-container{
+      max-width: 600px;   /* ← set narrow */
+      margin: 0 auto;
+      padding: 1.25rem;
+    }
+
+    /* Minimal overrides so checkboxes stay square and labels don't force expansion.
+       These are intentionally small and specific so they don't change your overall layout. */
+    .form-check {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      /* DO NOT set width:100% here (that made the checkbox stretch previously) */
+    }
+
+    .form-check-input {
+      width: 1.15rem;
+      height: 1.15rem;
+      flex: 0 0 auto; /* don't let it grow */
+      margin-top: 0; /* vertical alignment with label */
+    }
+
+    .form-check-label {
+      margin-bottom: 0;
+      line-height: 1.2;
+      cursor: pointer;
+      /* allow label to wrap naturally without pushing the checkbox */
+      flex: 1 1 auto;
+    }
+
+    @media (max-width: 420px) {
+      .form-check-input {
+        width: 1rem;
+        height: 1rem;
+      }
+    }
+
+    /* small visual spacing for headings and groups */
+    h5 { font-weight: 600; }
+    .text-start label { font-weight: 500; display:block; margin-bottom: .25rem; }
   </style>
 </head>
 <body>
@@ -38,9 +82,9 @@
     <div class="collapse navbar-collapse justify-content-end mt-2 mt-lg-0" id="navbarContent">
       <ul class="navbar-nav">
         <li class="nav-item"><a class="nav-link fw-semibold" href="dic.html">DIC Home</a></li>
-        <li class="nav-item"><a class="nav-link fw-semibold" href="#">Register</a></li>
-        <li class="nav-item"><a class="nav-link fw-semibold" href="#">Guidelines</a></li>
-        <li class="nav-item"><a class="nav-link fw-semibold" href="#">About Us</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="dicform.html">Register</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="dic-guidelines.html">Guidelines</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="dic-about-us.html">About Us</a></li>
       </ul>
     </div>
   </div>
@@ -58,66 +102,86 @@
     <h5 class="mb-3">Drug Information Requesting Form</h5>
 
     <div class="row mb-3 text-start">
-      <label for="requesterName">Name:</label>
-      <input type="text" id="requesterName" class="form-control" required>
+      <div class="col-12">
+        <label for="requesterName">Name:</label>
+        <input type="text" id="requesterName" class="form-control" required>
+      </div>
     </div>
 
     <div class="row mb-3 text-start">
-      <label for="designation">Designation:</label>
-      <input type="text" id="designation" class="form-control" required>
+      <div class="col-12">
+        <label for="designation">Designation:</label>
+        <input type="text" id="designation" class="form-control" required>
+      </div>
     </div>
 
     <div class="row mb-3 text-start">
-      <label for="deptUnit">Dept/Unit:</label>
-      <input type="text" id="deptUnit" class="form-control" required>
+      <div class="col-12">
+        <label for="deptUnit">Dept/Unit:</label>
+        <input type="text" id="deptUnit" class="form-control" required>
+      </div>
     </div>
 
     <div class="row mb-3 text-start">
-      <label for="contactNo">Contact No:</label>
-      <input type="tel" id="contactNo" class="form-control" pattern="[0-9]{10}" required>
+      <div class="col-12">
+        <label for="contactNo">Contact No:</label>
+        <input type="tel" id="contactNo" class="form-control" pattern="[0-9]{10}" required>
+      </div>
     </div>
 
     <div class="row mb-3 text-start">
-      <label for="communicationMode">Mode of Communication:</label>
-      <select id="communicationMode" class="form-select" required>
-        <option value="">--Select--</option>
-        <option>Phone</option>
-        <option>Email</option>
-        <option>In-Person</option>
-      </select>
+      <div class="col-12">
+        <label for="communicationMode">Mode of Communication:</label>
+        <select id="communicationMode" class="form-select" required>
+          <option value="">--Select--</option>
+          <option>Phone</option>
+          <option>Email</option>
+          <option>In-Person</option>
+        </select>
+      </div>
     </div>
 
     <!-- Patient Information -->
     <h5 class="mt-4 mb-3">Patient Information</h5>
 
     <div class="row mb-3 text-start">
-      <label for="patientAge">Age:</label>
-      <input type="number" id="patientAge" class="form-control" required>
+      <div class="col-12">
+        <label for="patientAge">Age:</label>
+        <input type="number" id="patientAge" class="form-control" required>
+      </div>
     </div>
 
     <div class="row mb-3 text-start">
-      <label for="patientGender">Gender:</label>
-      <select id="patientGender" class="form-select" required>
-        <option value="">--Select--</option>
-        <option>Male</option>
-        <option>Female</option>
-        <option>Other</option>
-      </select>
+      <div class="col-12">
+        <label for="patientGender">Gender:</label>
+        <select id="patientGender" class="form-select" required>
+          <option value="">--Select--</option>
+          <option>Male</option>
+          <option>Female</option>
+          <option>Other</option>
+        </select>
+      </div>
     </div>
 
     <div class="row mb-3 text-start">
-      <label for="diagnosis">Diagnosis:</label>
-      <textarea id="diagnosis" class="form-control" rows="2"></textarea>
+      <div class="col-12">
+        <label for="diagnosis">Diagnosis:</label>
+        <textarea id="diagnosis" class="form-control" rows="2"></textarea>
+      </div>
     </div>
 
     <div class="row mb-3 text-start">
-      <label for="currentMedication">Current Medication:</label>
-      <textarea id="currentMedication" class="form-control" rows="2"></textarea>
+      <div class="col-12">
+        <label for="currentMedication">Current Medication:</label>
+        <textarea id="currentMedication" class="form-control" rows="2"></textarea>
+      </div>
     </div>
 
     <div class="row mb-3 text-start">
-      <label for="relevantHistory">Relevant History:</label>
-      <textarea id="relevantHistory" class="form-control" rows="2"></textarea>
+      <div class="col-12">
+        <label for="relevantHistory">Relevant History:</label>
+        <textarea id="relevantHistory" class="form-control" rows="2"></textarea>
+      </div>
     </div>
 
     <!-- Query Category -->
@@ -128,100 +192,128 @@
           <input class="form-check-input" type="checkbox" id="category1" value="Drug Dosage & Administration">
           <label class="form-check-label" for="category1">Drug Dosage & Administration</label>
         </div>
+
         <div class="form-check">
           <input class="form-check-input" type="checkbox" id="category2" value="ADR">
           <label class="form-check-label" for="category2">ADR</label>
         </div>
+
         <div class="form-check">
           <input class="form-check-input" type="checkbox" id="category3" value="Drug Therapeutics Use">
           <label class="form-check-label" for="category3">Drug Therapeutics Use</label>
         </div>
+
         <div class="form-check">
           <input class="form-check-input" type="checkbox" id="category4" value="Contraindication/Precaution">
           <label class="form-check-label" for="category4">Contraindication / Precaution</label>
         </div>
       </div>
+
       <div class="col-md-6">
         <div class="form-check">
           <input class="form-check-input" type="checkbox" id="category5" value="Identification of Drug">
           <label class="form-check-label" for="category5">Identification of Drug</label>
         </div>
+
         <div class="form-check">
           <input class="form-check-input" type="checkbox" id="category6" value="Pharmacokinetics">
           <label class="form-check-label" for="category6">Pharmacokinetics</label>
         </div>
+
         <div class="form-check">
           <input class="form-check-input" type="checkbox" id="category7" value="Availability/Brand Name">
           <label class="form-check-label" for="category7">Availability / Brand Name</label>
         </div>
+
         <div class="form-check">
           <input class="form-check-input" type="checkbox" id="category8" value="Others">
           <label class="form-check-label" for="category8">Others</label>
         </div>
+
         <input type="text" id="otherCategory" class="form-control mt-2" placeholder="Specify if others">
       </div>
     </div>
 
     <!-- Specific Question -->
     <div class="row mb-3 text-start">
-      <label for="specificQuery">Specific Question/Query:</label>
-      <textarea id="specificQuery" class="form-control" rows="3" required></textarea>
+      <div class="col-12">
+        <label for="specificQuery">Specific Question/Query:</label>
+        <textarea id="specificQuery" class="form-control" rows="3" required></textarea>
+      </div>
     </div>
 
     <!-- Level of Urgency -->
     <div class="row mb-3 text-start">
-      <label for="urgencyLevel">Level of Urgency:</label>
-      <select id="urgencyLevel" class="form-select" required>
-        <option value="">--Select--</option>
-        <option>Routine (Reply within 24-48 hours)</option>
-        <option>Urgent (Reply within 2-4 hours)</option>
-        <option>Emergency</option>
-      </select>
+      <div class="col-12">
+        <label for="urgencyLevel">Level of Urgency:</label>
+        <select id="urgencyLevel" class="form-select" required>
+          <option value="">--Select--</option>
+          <option>Routine (Reply within 24-48 hours)</option>
+          <option>Urgent (Reply within 2-4 hours)</option>
+          <option>Emergency</option>
+        </select>
+      </div>
     </div>
 
     <!-- Date & Time -->
     <div class="row mb-3 text-start">
-      <label for="requestDateTime">Date & Time of Request:</label>
-      <input type="datetime-local" id="requestDateTime" class="form-control" required>
+      <div class="col-12">
+        <label for="requestDateTime">Date & Time of Request:</label>
+        <input type="datetime-local" id="requestDateTime" class="form-control" required>
+      </div>
     </div>
 
     <!-- Sign -->
     <div class="row mb-3 text-start">
-      <label for="sign">Sign (optional):</label>
-      <input type="text" id="sign" class="form-control">
+      <div class="col-12">
+        <label for="sign">Sign (optional):</label>
+        <input type="text" id="sign" class="form-control">
+      </div>
     </div>
 
     <!-- DIC Use Only Section -->
     <h5 class="mt-4 mb-3">For DIC Use Only</h5>
 
     <div class="row mb-3 text-start">
-      <label for="receivedBy">Received By:</label>
-      <input type="text" id="receivedBy" class="form-control">
+      <div class="col-12">
+        <label for="receivedBy">Received By:</label>
+        <input type="text" id="receivedBy" class="form-control">
+      </div>
     </div>
 
     <div class="row mb-3 text-start">
-      <label for="dicCommMode">Mode of Communication:</label>
-      <input type="text" id="dicCommMode" class="form-control">
+      <div class="col-12">
+        <label for="dicCommMode">Mode of Communication:</label>
+        <input type="text" id="dicCommMode" class="form-control">
+      </div>
     </div>
 
     <div class="row mb-3 text-start">
-      <label for="assuredDateTime">Date/Time Assured:</label>
-      <input type="datetime-local" id="assuredDateTime" class="form-control">
+      <div class="col-12">
+        <label for="assuredDateTime">Date/Time Assured:</label>
+        <input type="datetime-local" id="assuredDateTime" class="form-control">
+      </div>
     </div>
 
     <div class="row mb-3 text-start">
-      <label for="answeredBy">Answered By:</label>
-      <input type="text" id="answeredBy" class="form-control">
+      <div class="col-12">
+        <label for="answeredBy">Answered By:</label>
+        <input type="text" id="answeredBy" class="form-control">
+      </div>
     </div>
 
     <div class="row mb-3 text-start">
-      <label for="sources">Sources of Information:</label>
-      <textarea id="sources" class="form-control" rows="2"></textarea>
+      <div class="col-12">
+        <label for="sources">Sources of Information:</label>
+        <textarea id="sources" class="form-control" rows="2"></textarea>
+      </div>
     </div>
 
     <div class="row mb-3 text-start">
-      <label for="remark">Remark:</label>
-      <textarea id="remark" class="form-control" rows="2"></textarea>
+      <div class="col-12">
+        <label for="remark">Remark:</label>
+        <textarea id="remark" class="form-control" rows="2"></textarea>
+      </div>
     </div>
 
     <button type="submit" class="btn btn-primary mt-3">Submit</button>
