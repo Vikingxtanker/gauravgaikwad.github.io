@@ -13,6 +13,15 @@
 
   <style>
     #logoutBtn { color: red !important; }
+	/* ensure modal background is dim but image area looks clean */
+.modal-backdrop.show { opacity: 0.6; }
+
+/* when modal-content is transparent we still want pointer events only on the close button and image */
+.modal-content { background: transparent; }
+
+/* make sure modal image is centered and never larger than viewport */
+#modalImage { display: block; max-width: 98vw; height: auto; }
+
   </style>
 </head>
 
@@ -113,34 +122,54 @@
           </div>
         </a>
       </div>
-      <div class="col-md-4 col-sm-6">
-        <a href="#" class="text-decoration-none">
-          <div class="info-box text-center p-4 rounded shadow-sm h-100">
-            <h5 class="fw-bold text-dark">Newsletter</h5>
-            <p class="text-muted">Stay updated with our latest newsletters.</p>
-          </div>
-        </a>
-      </div>
-      <div class="col-md-4 col-sm-6">
-        <a href="#" class="text-decoration-none">
-          <div class="info-box text-center p-4 rounded shadow-sm h-100">
-            <h5 class="fw-bold text-dark">Awareness Tab</h5>
-            <p class="text-muted">Awareness programs and health initiatives.</p>
-          </div>
-        </a>
-      </div>
-      <div class="col-md-4 col-sm-6">
-        <a href="#" class="text-decoration-none">
-          <div class="info-box text-center p-4 rounded shadow-sm h-100">
-            <h5 class="fw-bold text-dark">Weekly Updates</h5>
-            <p class="text-muted">Check out weekly updates and new announcements.</p>
-          </div>
-        </a>
-      </div>
+      <!-- Newsletter -->
+<div class="col-md-4 col-sm-6">
+  <a href="#" class="text-decoration-none open-image-modal" data-img="assets/newsletter.jpg" role="button" aria-label="Open Newsletter image">
+    <div class="info-box text-center p-4 rounded shadow-sm h-100">
+      <h5 class="fw-bold text-dark">Newsletter</h5>
+      <p class="text-muted">Stay updated with our latest newsletters.</p>
+    </div>
+  </a>
+</div>
+
+<!-- Awareness -->
+<div class="col-md-4 col-sm-6">
+  <a href="#" class="text-decoration-none open-image-modal" data-img="assets/awareness.jpg" role="button" aria-label="Open Awareness image">
+    <div class="info-box text-center p-4 rounded shadow-sm h-100">
+      <h5 class="fw-bold text-dark">Awareness Tab</h5>
+      <p class="text-muted">Awareness programs and health initiatives.</p>
+    </div>
+  </a>
+</div>
+
+<!-- Weekly Updates -->
+<div class="col-md-4 col-sm-6">
+  <a href="#" class="text-decoration-none open-image-modal" data-img="assets/weekly.jpg" role="button" aria-label="Open Weekly Updates image">
+    <div class="info-box text-center p-4 rounded shadow-sm h-100">
+      <h5 class="fw-bold text-dark">Weekly Updates</h5>
+      <p class="text-muted">Check out weekly updates and new announcements.</p>
+    </div>
+  </a>
+</div>
 
     </div>
   </div>
 </section>
+
+<!-- Image Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
+    <div class="modal-content bg-transparent border-0">
+      <!-- close button (visible on top-right) -->
+      <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+
+      <div class="modal-body d-flex justify-content-center align-items-center p-2">
+        <!-- image fits screen keeping aspect ratio -->
+        <img id="modalImage" src="" alt="" class="img-fluid" style="max-height: calc(100vh - 120px); width: auto; object-fit: contain;">
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Footer -->
 <footer class="bg-light text-center py-3 shadow-sm mt-auto">
@@ -172,6 +201,36 @@
     document.getElementById('info-section').scrollIntoView({ behavior: 'smooth' });
   });
 </script>
+
+<script>
+  (function() {
+    const modalEl = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+
+    // open modal and set image src
+    document.querySelectorAll('.open-image-modal').forEach(btn => {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        const src = this.getAttribute('data-img');
+        const alt = this.querySelector('h5')?.innerText || '';
+        if (!src) return;
+        modalImage.src = src;
+        modalImage.alt = alt;
+        // show bootstrap modal
+        const bsModal = new bootstrap.Modal(modalEl);
+        bsModal.show();
+      });
+    });
+
+    // clear src on hide to free memory and avoid flash of previous img
+    modalEl.addEventListener('hidden.bs.modal', function () {
+      modalImage.src = '';
+    });
+
+    // optional: allow closing modal on Esc handled by bootstrap by default
+  })();
+</script>
+
 
 </body>
 </html>
