@@ -25,48 +25,6 @@
 /* make sure modal image is centered and never larger than viewport */
 #modalImage { display: block; max-width: 98vw; height: auto; }
 
-/* Gallery adjustments */
-#hst-gallery h2 { letter-spacing: 0.2px; }
-#hst-gallery h5 { font-weight: 600; color: #333; }
-
-/* Swiper slide sizing and look */
-.hst-swiper { position: relative; }
-.hst-slide { display:flex; justify-content:center; align-items:center; padding:8px; }
-.hst-slide img { width:100%; height:220px; object-fit:cover; border-radius:8px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
-
-/* Responsive image height */
-@media (min-width: 992px) {
-  .hst-slide img { height:260px; }
-}
-@media (min-width: 1400px) {
-  .hst-slide img { height:320px; }
-}
-
-/* custom arrow buttons */
-.swiper-button-prev-custom, .swiper-button-next-custom {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 20;
-  background: rgba(255,255,255,0.9);
-  border-radius: 50%;
-  width:44px;
-  height:44px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-  cursor: pointer;
-}
-.swiper-button-prev-custom { left: 8px; }
-.swiper-button-next-custom { right: 8px; }
-
-/* adjust pagination */
-.hst-swiper .swiper-pagination { margin-top: 12px; text-align:center; }
-
-/* spacing */
-#hst-gallery .container { max-width: 1150px; }
-
 
   </style>
 </head>
@@ -217,51 +175,55 @@
   </div>
 </div>
 
-<!-- Gallery Section (Health Screening) -->
-<section id="hst-gallery" class="py-5 bg-light">
+<!-- ✅ Gallery Section (health-screening: same formatting as index.html) -->
+<section id="gallery" class="py-5 bg-light">
   <div class="container">
     <h2 class="text-center mb-4">Gallery</h2>
 
-    <!-- Subtitle 1 -->
+    <!-- Health Check-up Camp 2025 -->
     <h5 class="text-center mb-3">Health Check-up Camp 2025</h5>
-    <div class="swiper hst-swiper hst-swiper-healthcamp mb-4">
+    <div class="swiper tranding-slider mb-4">
       <div class="swiper-wrapper">
-        <div class="swiper-slide hst-slide"><img src="assets/hst1.jpg" alt="Health Camp 1" class="img-fluid rounded"></div>
-        <div class="swiper-slide hst-slide"><img src="assets/hst2.jpg" alt="Health Camp 2" class="img-fluid rounded"></div>
-        <div class="swiper-slide hst-slide"><img src="assets/hst3.jpg" alt="Health Camp 3" class="img-fluid rounded"></div>
-        <div class="swiper-slide hst-slide"><img src="assets/hst4.jpg" alt="Health Camp 4" class="img-fluid rounded"></div>
-        <div class="swiper-slide hst-slide"><img src="assets/hst5.jpg" alt="Health Camp 5" class="img-fluid rounded"></div>
-		<div class="swiper-slide hst-slide"><img src="assets/hst6.jpg" alt="Health Camp 6" class="img-fluid rounded"></div>
-		<div class="swiper-slide hst-slide"><img src="assets/hst7.jpg" alt="Health Camp 7" class="img-fluid rounded"></div>
-		<div class="swiper-slide hst-slide"><img src="assets/hst8.jpg" alt="Health Camp 8" class="img-fluid rounded"></div>
+        <div class="swiper-slide tranding-slide"><img src="assets/hst1.jpg" alt="Health Camp 1" class="img-fluid rounded"/></div>
+        <div class="swiper-slide tranding-slide"><img src="assets/hst2.jpg" alt="Health Camp 2" class="img-fluid rounded"/></div>
+        <div class="swiper-slide tranding-slide"><img src="assets/hst3.jpg" alt="Health Camp 3" class="img-fluid rounded"/></div>
+        <div class="swiper-slide tranding-slide"><img src="assets/hst4.jpg" alt="Health Camp 4" class="img-fluid rounded"/></div>
+        <div class="swiper-slide tranding-slide"><img src="assets/hst5.jpg" alt="Health Camp 5" class="img-fluid rounded"/></div>
+		<div class="swiper-slide tranding-slide"><img src="assets/hst6.jpg" alt="Health Camp 6" class="img-fluid rounded"/></div>
+		<div class="swiper-slide tranding-slide"><img src="assets/hst7.jpg" alt="Health Camp 7" class="img-fluid rounded"/></div>
+		<div class="swiper-slide tranding-slide"><img src="assets/hst8.jpg" alt="Health Camp 8" class="img-fluid rounded"/></div>
       </div>
 
-      <!-- navigation / pagination -->
-      <div class="swiper-button-prev-custom hst-prev-health" role="button" aria-label="Previous slide">
-        <i class="bi bi-chevron-left fs-4"></i>
+      <div class="swiper-button-prev-custom slider-arrow">
+        <ion-icon name="chevron-back-outline"></ion-icon>
       </div>
-      <div class="swiper-button-next-custom hst-next-health" role="button" aria-label="Next slide">
-        <i class="bi bi-chevron-right fs-4"></i>
+      <div class="swiper-button-next-custom slider-arrow">
+        <ion-icon name="chevron-forward-outline"></ion-icon>
       </div>
-      <div class="swiper-pagination hst-pagination-health"></div>
+      <div class="swiper-pagination"></div>
     </div>
 
-    <!-- Subtitle 2 -->
+    <!-- World Diabetes Day 2025 -->
     <h5 class="text-center mb-3">World Diabetes Day 2025</h5>
-    <div class="swiper hst-swiper hst-swiper-diabetes mb-4">
+    <div class="swiper tranding-slider mb-4">
       <div class="swiper-wrapper">
-        <div class="swiper-slide hst-slide"><img src="assets/hst1.jpg" alt="Diabetes Day 1" class="img-fluid rounded"></div>
-        <div class="swiper-slide hst-slide"><img src="assets/hst2.jpg" alt="Diabetes Day 2" class="img-fluid rounded"></div>
+        <div class="swiper-slide tranding-slide"><img src="assets/dm1.jpg" alt="Diabetes Day 1" class="img-fluid rounded"/></div>
+        <div class="swiper-slide tranding-slide"><img src="assets/dm2.jpg" alt="Diabetes Day 2" class="img-fluid rounded"/></div>
+        <div class="swiper-slide tranding-slide"><img src="assets/dm3.jpg" alt="Diabetes Day 3" class="img-fluid rounded"/></div>
+        <div class="swiper-slide tranding-slide"><img src="assets/dm4.jpg" alt="Diabetes Day 4" class="img-fluid rounded"/></div>
+        <div class="swiper-slide tranding-slide"><img src="assets/dm5.jpg" alt="Diabetes Day 5" class="img-fluid rounded"/></div>
+        <div class="swiper-slide tranding-slide"><img src="assets/dm6.jpg" alt="Diabetes Day 6" class="img-fluid rounded"/></div>
+        <div class="swiper-slide tranding-slide"><img src="assets/dm7.jpg" alt="Diabetes Day 7" class="img-fluid rounded"/></div>
+        <div class="swiper-slide tranding-slide"><img src="assets/dm8.jpg" alt="Diabetes Day 8" class="img-fluid rounded"/></div>
       </div>
 
-      <!-- navigation / pagination -->
-      <div class="swiper-button-prev-custom hst-prev-diabetes" role="button" aria-label="Previous slide">
-        <i class="bi bi-chevron-left fs-4"></i>
+      <div class="swiper-button-prev-custom slider-arrow">
+        <ion-icon name="chevron-back-outline"></ion-icon>
       </div>
-      <div class="swiper-button-next-custom hst-next-diabetes" role="button" aria-label="Next slide">
-        <i class="bi bi-chevron-right fs-4"></i>
+      <div class="swiper-button-next-custom slider-arrow">
+        <ion-icon name="chevron-forward-outline"></ion-icon>
       </div>
-      <div class="swiper-pagination hst-pagination-diabetes"></div>
+      <div class="swiper-pagination"></div>
     </div>
 
   </div>
@@ -328,55 +290,12 @@
   })();
 </script>
 
-<!-- Swiper JS -->
+<!-- Swiper JS (same as index.html) -->
 <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
 
-<script>
-  // initialize both swipers
-  (function(){
-    // common options
-    const baseOptions = {
-      loop: true,
-      spaceBetween: 16,
-      slidesPerView: 1.2,
-      centeredSlides: false,
-      pagination: { clickable: true },
-      breakpoints: {
-        576: { slidesPerView: 1.3 },
-        768: { slidesPerView: 2 },
-        992: { slidesPerView: 3 },
-        1400: { slidesPerView: 4 }
-      }
-    };
+<!-- your existing swiper.js (must be the same file from index.html) -->
+<script src="js/swiper.js"></script>
 
-    // Health Check-up Camp swiper
-    const hc = new Swiper('.hst-swiper-healthcamp', {
-      ...baseOptions,
-      navigation: {
-        nextEl: '.hst-next-health',
-        prevEl: '.hst-prev-health'
-      },
-      pagination: {
-        el: '.hst-pagination-health',
-        clickable: true
-      }
-    });
-
-    // World Diabetes Day swiper
-    const wd = new Swiper('.hst-swiper-diabetes', {
-      ...baseOptions,
-      navigation: {
-        nextEl: '.hst-next-diabetes',
-        prevEl: '.hst-prev-diabetes'
-      },
-      pagination: {
-        el: '.hst-pagination-diabetes',
-        clickable: true
-      }
-    });
-
-  })();
-</script>
 
 
 </body>
