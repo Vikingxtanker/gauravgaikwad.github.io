@@ -8,6 +8,10 @@
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
 <body class="d-flex flex-column min-vh-100">
 
@@ -38,13 +42,49 @@
   </div>
 </nav>
 
-<!-- ✅ Closed Message Section -->
-<div class="container text-center form-container">
-  <div class="card shadow p-5">
-    <h2 class="mb-3 text-danger">Appointments Closed</h2>
-    <p class="lead">The Health Screening Camp was held on <strong>25 September 2025</strong>.</p>
-    <p class="text-muted">Thank you for your interest. No further bookings are being accepted.</p>
-  </div>
+<!-- ✅ Form Section -->
+<div class="container form-container">
+  <h2 class="mb-4">Health Screening Test Appointment</h2>
+
+  <form id="appointmentForm" class="form-controls">
+    <div class="mb-3">
+      <label for="name" class="form-label">Name:</label>
+      <input type="text" id="name" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="email" class="form-label">Email Address:</label>
+      <input type="email" id="email" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="phone" class="form-label">Phone Number:</label>
+      <input type="tel" id="phone" class="form-control" pattern="[0-9]{10}" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="organization" class="form-label">Organization / Firm:</label>
+      <input type="text" id="organization" class="form-control" required>
+    </div>
+
+    <!-- ✅ Fixed Date (25th Sept 2025) -->
+    <div class="mb-3">
+      <label for="appointmentDate" class="form-label">Date of Appointment:</label>
+      <input type="date" id="appointmentDate" class="form-control" value="2025-09-25" disabled>
+      <div class="form-text text-muted">Health Camp: 25 September 2025</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="timeslot" class="form-label">Select Time Slot:</label>
+      <select id="timeslot" class="form-select" required>
+        <option value="">-- Choose Slot --</option>
+        <option value="Morning (10:30 AM - 1:30 PM)">Morning (10:30 AM - 1:30 PM)</option>
+        <option value="Afternoon (2 PM - 4:30 PM)">Afternoon (2 PM - 4:30 PM)</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit Appointment</button>
+  </form>
 </div>
 
 <!-- ✅ Sticky Footer -->
@@ -54,6 +94,10 @@
 
 <!-- ✅ Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script src="js/firebase-config.js"></script>
+<script type="module" src="js/appointment.js"></script>
 
 <!-- ✅ Navbar Spacing Script -->
 <script>
@@ -62,7 +106,7 @@
     const formContainer = document.querySelector(".form-container");
     if (navbar && formContainer) {
       const navHeight = navbar.offsetHeight;
-      formContainer.style.marginTop = `${navHeight + 40}px`;
+      formContainer.style.marginTop = `${navHeight + 20}px`;
     }
   }
   window.addEventListener("load", adjustFormMargin);
