@@ -18,21 +18,22 @@ document.addEventListener("DOMContentLoaded", () => {
      🟢 GOOGLE SHEETS LOGGER
      =============================== */
   function logCertificateDownload(name) {
-    fetch(
-      "https://script.google.com/macros/s/AKfycbyLBUxjwhqFL-IWx4NPef17vfIwOVNJ96ogjHNQLdsT2cdk77yadYWkDLKRcYfKhY8/exec",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: name,
-          event: "World Diabetes Day 2025",
-          userAgent: navigator.userAgent
-        })
-      }
-    ).catch(err => {
-      console.error("Google Sheets logging failed:", err);
-    });
-  }
+  fetch(
+    "https://script.google.com/macros/s/AKfycbyLBUxjwhqFL-IWx4NPef17vfIwOVNJ96ogjHNQLdsT2cdk77yadYWkDLKRcYfKhY8/exec",
+    {
+      method: "POST",
+      mode: "no-cors", // 🔥 THIS FIXES EVERYTHING
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name: name,
+        event: "World Diabetes Day 2025",
+        userAgent: navigator.userAgent
+      })
+    }
+  );
+}
 
   /* ===============================
      🔵 VERIFY & GENERATE CERTIFICATE
