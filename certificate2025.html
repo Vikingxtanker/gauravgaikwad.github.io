@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Certificate of Participation - Health Camp 2025</title>
+
+  <!-- Bootstrap & SweetAlert CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+
+  <style>
+    body { background-color: #f8f9fa; }
+
+    #participantName::placeholder {
+      font-size: 18px;
+      color: #999494 !important;
+      opacity: 1;
+    }
+
+    .alert-light { background-color: #fffdf8; }
+
+    /* ---------- Canvas + Overlay ---------- */
+    #certificateCanvas {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+    }
+
+    .canvas-wrapper {
+      position: relative;
+      display: inline-block;
+      line-height: 0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .canvas-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.10);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .overlay-text {
+      color: #fff;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 12px 20px;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.25);
+      text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+    }
+
+    .section-padding { padding: 30px 15px; }
+  </style>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
+  <div class="container-fluid px-3 d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center">
+      <img src="assets/DYP_LOGO_RED.jpg" height="50" class="me-2">
+      <div class="d-none d-md-block">
+        <strong>Dr. D.Y Patil Pratishthan’s</strong><br>
+        Dr. D.Y Patil College of Pharmacy Akurdi, Pune – 411044<br>
+        <small class="text-muted">Department of Pharmacy Practice (Pharm. D.)</small>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="container section-padding text-center">
+  <h2 class="mb-3 text-primary fw-bold">Health Camp 2025 Participation Certificate</h2>
+
+  <div class="alert alert-light mt-3 text-start p-4 border rounded shadow-sm">
+    <h5 class="fw-bold text-danger mb-3 text-center">💐 Heartfelt Thanks & Appreciation 💐</h5>
+
+    <p>
+      To every student who participated in the Health Camp 2025. Registration, Hemoglobin, Blood Sugar,
+      Respiratory, Blood Pressure, and Counseling — each group gave their best efforts.
+    </p>
+
+    <p>
+      Even when the college internet connection was unstable, you ensured that no data was lost.
+      This showed your responsibility and dedication.
+    </p>
+
+    <p class="fw-semibold text-center mt-3 mb-1">
+      Thank you and best wishes from Kumkum and Gaurav.
+    </p>
+
+    <p class="text-center text-warning fw-bold fs-5">✨ Happy Diwali! ✨</p>
+    <hr>
+    <p class="fw-semibold text-center mb-0">Download your certificate below 👇</p>
+  </div>
+
+  <p class="text-muted mt-4">
+    Enter your name or phone number as in the list to verify and download your certificate.
+  </p>
+
+  <div class="row justify-content-center mt-3">
+    <div class="col-md-6">
+      <input id="participantName" class="form-control form-control-lg text-center mb-3"
+             placeholder="Enter your name or phone number">
+      <button class="btn btn-success btn-lg" id="verifyBtn">
+        Verify & Generate Certificate
+      </button>
+    </div>
+  </div>
+
+  <div id="certificateContainer" class="mt-4 d-none text-center">
+    <div class="canvas-wrapper">
+      <canvas id="certificateCanvas" class="border shadow-sm"></canvas>
+      <div class="canvas-overlay">
+        <div class="overlay-text">Scroll below to download your certificate ⬇️</div>
+      </div>
+    </div>
+
+    <div class="mt-3">
+      <button class="btn btn-primary btn-lg" id="downloadBtn">
+        Download Certificate
+      </button>
+    </div>
+  </div>
+</div>
+
+<footer class="bg-light text-center py-3 shadow-sm mt-auto">
+  <small class="text-muted">© 2025 Designed & Developed by Gaurav Gaikwad & Kumkum Bhenwal</small>
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
+<script src="assets/libs/fontkit.umd.js"></script>
+<script src="assets/libs/pdf.min.js"></script>
+<script>pdfjsLib.GlobalWorkerOptions.workerSrc = "assets/libs/pdf.worker.min.js";</script>
+
+<script type="module" src="js/certificate.js"></script>
+</body>
+</html>

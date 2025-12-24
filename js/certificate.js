@@ -14,17 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let generatedPdfBytes = null;
   let verifiedName = "";
 
-  // ✅ Helper: Adjust canvas scale to fit screen
-  function fitCanvasToContainer() {
-    const maxWidth = window.innerWidth * 0.9;
-    const scale = Math.min(maxWidth / 1000, 1);
-    canvas.style.width = `${1000 * scale}px`;
-    canvas.style.height = `${700 * scale}px`;
-  }
-
-  window.addEventListener("resize", fitCanvasToContainer);
-  fitCanvasToContainer();
-
   verifyBtn.addEventListener("click", async () => {
     const inputValue = input.value.trim();
     if (!inputValue) {
@@ -40,19 +29,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     try {
-      const participantsRef = collection(db, "participants");
-      const snapshot = await getDocs(participantsRef);
-
+      const snapshot = await getDocs(collection(db, "participants"));
       let participant = null;
       const inputLower = inputValue.toLowerCase();
 
-      // ✅ Case-insensitive match by name or phone
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        const dbName = data.name?.toLowerCase().trim();
-        const dbPhone = data.phone?.trim();
-        if (dbName === inputLower || dbPhone === inputValue) {
-          participant = data;
+      snapshot.forEach(doc => {
+        const d = doc.data();
+        if (d.name?.toLowerCase() === inputLower || d.phone === inputValue) {
+          participant = d;
         }
       });
 
@@ -64,56 +48,57 @@ document.addEventListener("DOMContentLoaded", () => {
       verifiedName = `${participant.prefix ?? ""} ${participant.name}`.trim();
       container.classList.remove("d-none");
 
-      // ✅ Load PDF template
       const res = await fetch("assets/healthcamp_certificate_template.pdf");
-      if (!res.ok) throw new Error("PDF template not found");
-      const templateBytes = await res.arrayBuffer();
-
-      // ✅ Load PDF using PDF-lib
-      const pdfDoc = await PDFLib.PDFDocument.load(templateBytes);
-
-      // Register fontkit
+      const pdfDoc = await PDFLib.PDFDocument.load(await res.arrayBuffer());
       pdfDoc.registerFontkit(window.fontkit);
 
-      // ✅ Embed custom font (Alex Brush)
-      const fontBytes = await fetch("assets/fonts/AlexBrush-Regular.ttf").then(res => res.arrayBuffer());
-      const customFont = await pdfDoc.embedFont(fontBytes);
+      const font = await pdfDoc.embedFont(
+        await fetch("assets/fonts/AlexBrush-Regular.ttf").then(r => r.arrayBuffer())
+      );
 
-      // ✅ Draw participant name in center
       const page = pdfDoc.getPages()[0];
-      const pageWidth = page.getWidth();
       const fontSize = 36;
-      const textWidth = customFont.widthOfTextAtSize(verifiedName, fontSize);
-      const x = (pageWidth - textWidth) / 2;
-      const y = 285.5;
+      const textWidth = font.widthOfTextAtSize(verifiedName, fontSize);
+      const x = (page.getWidth() - textWidth) / 2;
 
       page.drawText(verifiedName, {
         x,
-        y,
+        y: 285.5,
         size: fontSize,
-        font: customFont,
-        color: PDFLib.rgb(0, 0, 0),
+        font,
+        color: PDFLib.rgb(0, 0, 0)
       });
 
       generatedPdfBytes = await pdfDoc.save();
 
-      // ✅ Render PDF to canvas using PDF.js
+      /* ---------- High-DPI Canvas Render ---------- */
       const pdf = await pdfjsLib.getDocument({ data: generatedPdfBytes }).promise;
       const pdfPage = await pdf.getPage(1);
-      const viewport = pdfPage.getViewport({ scale: canvas.width / pdfPage.getViewport({ scale: 1 }).width });
+
+      const dpr = window.devicePixelRatio || 1;
+      const base = pdfPage.getViewport({ scale: 1 });
+      const cssWidth = Math.min(window.innerWidth * 0.9, 1000);
+      const scale = cssWidth / base.width;
+
+      const viewport = pdfPage.getViewport({ scale: scale * dpr });
+
+      canvas.width = viewport.width;
       canvas.height = viewport.height;
+      canvas.style.width = `${viewport.width / dpr}px`;
+      canvas.style.height = `${viewport.height / dpr}px`;
+
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
       await pdfPage.render({ canvasContext: ctx, viewport }).promise;
 
-      fitCanvasToContainer();
-
       Swal.fire("Success!", "Certificate generated successfully!", "success");
+
     } catch (err) {
       console.error(err);
       Swal.fire("Error", err.message || "Could not generate certificate.", "error");
     }
   });
 
-  // ✅ Download certificate
+  /* ---------- Download + Popup ---------- */
   downloadBtn.addEventListener("click", () => {
     if (!generatedPdfBytes) {
       Swal.fire("Error", "No certificate generated yet.", "warning");
@@ -123,9 +108,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const blob = new Blob([generatedPdfBytes], { type: "application/pdf" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    const safeName = verifiedName.replace(/\s+/g, "_") || "Participant";
+
     a.href = url;
-    a.download = `Certificate_${safeName}.pdf`;
+    a.download = `Certificate_${verifiedName.replace(/\s+/g, "_")}.pdf`;
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    Swal.fire({
+      icon: "success",
+      title: "Certificate downloaded successfully!",
+      text: "Please check your downloads on your device.",
+      confirmButtonColor: "#198754"
+    });
   });
 });
