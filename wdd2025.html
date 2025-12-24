@@ -45,34 +45,22 @@
 
     /* subtle black 10% overlay over the canvas */
     .canvas-overlay {
-      position: absolute;
-      inset: 0; /* top:0; right:0; bottom:0; left:0; */
-      background: rgba(0, 0, 0, 0.10); /* 10% black */
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none; /* allow clicks through */
-      opacity: 0;
-      transition: opacity 300ms ease;
-      z-index: 2;
-    }
+  background: rgba(0, 0, 0, 0.10); /* 10% black stays */
+}
 
-    /* visible when certificateContainer becomes visible */
-    #certificateContainer .canvas-overlay {
-      opacity: 1;
-    }
+.canvas-overlay .overlay-text {
+  color: #ffffff;                 /* 100% white */
+  opacity: 1;                     /* FULL opacity */
+  font-weight: 600;
+  font-size: 1rem;
+  text-align: center;
+  text-shadow: 
+    0 2px 6px rgba(0, 0, 0, 0.8);  /* strong contrast */
+  padding: 12px 20px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.25); /* optional: darker pill behind text */
+}
 
-    .canvas-overlay .overlay-text {
-      color: #ffffff;
-      font-weight: 600;
-      font-size: 1rem;
-      text-align: center;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.45);
-      padding: 12px 18px;
-      border-radius: 6px;
-      background: rgba(0,0,0,0.05); /* tiny inner tint to help readability */
-      pointer-events: none; /* still non-blocking */
-    }
 
     .section-padding { padding: 30px 15px; }
 
