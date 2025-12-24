@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const fontSize = 36;
       const textWidth = customFont.widthOfTextAtSize(verifiedName, fontSize);
       const x = (pageWidth - textWidth) / 2;
-      const y = 303.5; // Adjust if template layout changes
+      const y = 300; // Adjust if template layout changes
 
       page.drawText(verifiedName, {
         x,
