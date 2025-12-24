@@ -12,26 +12,60 @@
 
   <style>
     body {
-      background-color: #f8f9fa;
+      background: linear-gradient(180deg, #e8f4ff 0%, #f8f9fa 60%);
     }
+
+    h2 {
+      color: #0077c8; /* Diabetes Day blue */
+    }
+
+    .alert-wdd {
+      background: #ffffff;
+      border-left: 6px solid #0077c8;
+    }
+
+    .alert-wdd h5 {
+      color: #0077c8;
+    }
+
     #participantName::placeholder {
       font-size: 18px;
-      color: #999494 !important;
+      color: #8a8a8a !important;
       opacity: 1;
     }
-    .alert-light { background-color: #fffdf8; }
+
     #certificateCanvas {
       max-width: 100%;
       height: auto;
     }
+
     .section-padding {
       padding: 30px 15px;
     }
+
+    .btn-wdd {
+  background-color: #ffffff;
+  color: #0077c8;            /* Diabetes Day blue */
+  border: 2px solid #0077c8;
+  font-weight: 600;
+}
+
+.btn-wdd:hover {
+  background-color: #0077c8;
+  color: #ffffff;
+  border-color: #0077c8;
+}
+
+
+    footer {
+      background-color: #f1f7fc;
+    }
   </style>
 </head>
+
 <body class="d-flex flex-column min-vh-100">
 
-<!-- Navbar (same structure as certificate.html) -->
+<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
   <div class="container-fluid px-3 d-flex align-items-center justify-content-between">
     <div class="d-flex align-items-center">
@@ -44,10 +78,11 @@
         <small class="text-muted">Department of Pharmacy Practice (Pharm. D.)</small>
       </div>
     </div>
-    <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
-      aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+
+    <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse justify-content-end mt-2 mt-lg-0" id="navbarContent">
       <ul class="navbar-nav">
         <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
@@ -59,69 +94,90 @@
 </nav>
 
 <div class="container section-padding text-center">
-  <h2 class="mb-3 text-primary fw-bold">World Diabetes Day 2025 - Participation Certificate</h2>
+  <h2 class="mb-3 fw-bold">World Diabetes Day 2025 – Participation Certificate</h2>
 
-  <!-- Appreciation Message for participants & decoration team -->
-  <div class="alert alert-light mt-3 text-start p-4 border rounded shadow-sm">
-    <h5 class="fw-bold text-danger mb-3 text-center">🌟 Thank you for supporting World Diabetes Day 2025 🌟</h5>
-    <p class="mb-2">
-      To all participants and the decoration team: your energy, teamwork and dedication made WDD 2025 a meaningful and memorable event.
-      From registration to awareness activities and beautiful decorations — every contribution mattered.
+  <!-- Appreciation Message -->
+  <div class="alert alert-wdd mt-3 text-start p-4 rounded shadow-sm">
+    <h5 class="fw-bold text-center mb-3">
+      🌟 Thank you for supporting World Diabetes Day 2025 🌟
+    </h5>
+
+    <p>
+      To all participants and the decoration team: your enthusiasm, teamwork, and commitment made World Diabetes Day 2025
+      a truly meaningful and successful event. From registrations and awareness activities to the thoughtful and creative
+      decorations, every contribution played an important role in spreading awareness about diabetes care and prevention.
     </p>
-    <p class="mb-2">
-      Your punctuality, diligence, and creative efforts helped the event run smoothly and left a positive impression on every visitor.
-      We truly appreciate your time and hard work.
+
+    <p>
+      Your punctuality, discipline, and dedication ensured that the event ran smoothly and created a positive impact on
+      everyone who attended. We sincerely appreciate the time and effort you invested in making this initiative a success.
     </p>
-    <p class="fw-semibold text-center mt-3 mb-1">With gratitude, Kumkum and Gaurav.</p>
+
+    <p class="mt-3">
+      As we celebrate this season of joy and togetherness, we wish you a
+      <strong>Merry Christmas</strong> and a
+      <strong>Happy New Year</strong> filled with good health, happiness, and success.
+    </p>
+
+    <p class="fw-semibold text-center mt-4 mb-1">
+      With gratitude,<br>
+      <strong>Kumkum & Gaurav</strong>
+    </p>
+
     <hr class="my-3">
-    <p class="fw-semibold text-center mb-0">Download your certificate below 👇</p>
+
+    <p class="fw-semibold text-center mb-0">
+      Download your certificate below 👇
+    </p>
   </div>
 
-  <p class="text-muted mt-4">Enter your name or phone number (as in the event list) to verify and download your certificate.</p>
+  <p class="text-muted mt-4">
+    Enter your name or phone number (as in the event list) to verify and download your certificate.
+  </p>
 
   <div class="row justify-content-center mt-3">
     <div class="col-md-6">
-      <input type="text" id="participantName" class="form-control form-control-lg text-center mb-3" placeholder="Enter your name or phone number" />
-      <button class="btn btn-success btn-lg" id="verifyBtn">Verify & Generate Certificate</button>
+      <input
+        type="text"
+        id="participantName"
+        class="form-control form-control-lg text-center mb-3"
+        placeholder="Enter your name or phone number" />
+      <button class="btn btn-wdd btn-lg" id="verifyBtn">
+        Verify & Generate Certificate
+      </button>
     </div>
   </div>
 
   <div id="certificateContainer" class="mt-4 d-none text-center">
     <canvas id="certificateCanvas" class="border rounded shadow-sm"></canvas>
     <div class="mt-3">
-      <button class="btn btn-primary btn-lg" id="downloadBtn">Download Certificate</button>
+      <button class="btn btn-success btn-lg" id="downloadBtn">
+        Download Certificate
+      </button>
     </div>
   </div>
 </div>
 
-<footer class="bg-light text-center py-3 shadow-sm mt-auto">
-  <small class="text-muted">© 2025 Designed & Developed by Gaurav Gaikwad & Kumkum Bhenwal</small>
+<footer class="text-center py-3 shadow-sm mt-auto">
+  <small class="text-muted">
+    © 2025 Designed & Developed by Gaurav Gaikwad & Kumkum Bhenwal
+  </small>
 </footer>
 
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- PDF-lib (CDN, non-module) -->
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
-
-<!-- Local Fontkit UMD -->
 <script src="assets/libs/fontkit.umd.js"></script>
-
-<!-- Local PDF.js -->
 <script src="assets/libs/pdf.min.js"></script>
+
 <script>
   pdfjsLib.GlobalWorkerOptions.workerSrc = "assets/libs/pdf.worker.min.js";
 </script>
 
-<!--
-  Set a global variable with the WDD collection name BEFORE importing your existing module (certificate.js).
-  certificate.js in your project is already included as a module in certificate.html; here we set the collection name
-  so the same module can use it for World Diabetes Day participants.
--->
+<!-- WDD 2025 Logic -->
 <script type="module" src="js/wdd2025.js"></script>
 
 <script>
-  // Adjust content spacing dynamically below the fixed navbar (same as certificate.html)
   window.addEventListener("load", adjustNavbarSpacing);
   window.addEventListener("resize", adjustNavbarSpacing);
 
@@ -129,8 +185,7 @@
     const navbar = document.querySelector(".navbar");
     const firstSection = document.querySelector(".section-padding");
     if (navbar && firstSection) {
-      const navbarHeight = navbar.offsetHeight;
-      firstSection.style.marginTop = navbarHeight + 20 + "px"; // adds 20px extra gap
+      firstSection.style.marginTop = navbar.offsetHeight + 20 + "px";
     }
   }
 </script>
