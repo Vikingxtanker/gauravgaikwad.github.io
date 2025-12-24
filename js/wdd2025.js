@@ -14,17 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let generatedPdfBytes = null;
   let verifiedName = "";
 
-  // ✅ Helper: Adjust canvas scale to fit screen
-  function fitCanvasToContainer() {
-    const maxWidth = window.innerWidth * 0.9;
-    const scale = Math.min(maxWidth / 1000, 1);
-    canvas.style.width = `${1000 * scale}px`;
-    canvas.style.height = `${700 * scale}px`;
-  }
-
-  window.addEventListener("resize", fitCanvasToContainer);
-  fitCanvasToContainer();
-
   verifyBtn.addEventListener("click", async () => {
     const inputValue = input.value.trim();
     if (!inputValue) {
@@ -40,7 +29,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     try {
-      // 🔵 WDD 2025 collection
+      /* ===============================
+         🔵 FIRESTORE VERIFICATION
+         =============================== */
       const participantsRef = collection(db, "wddparticipants2025");
       const snapshot = await getDocs(participantsRef);
 
@@ -51,7 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const data = doc.data();
         const dbName = data.name?.toLowerCase().trim();
         const dbPhone = data.phone?.trim();
-
         if (dbName === inputLower || dbPhone === inputValue) {
           participant = data;
         }
@@ -65,7 +55,9 @@ document.addEventListener("DOMContentLoaded", () => {
       verifiedName = `${participant.prefix ?? ""} ${participant.name}`.trim();
       container.classList.remove("d-none");
 
-      // 🔵 WDD 2025 PDF template
+      /* ===============================
+         🔵 LOAD WDD 2025 PDF TEMPLATE
+         =============================== */
       const res = await fetch("assets/wdd2025_certificate_template.pdf");
       if (!res.ok) throw new Error("WDD 2025 certificate template not found");
       const templateBytes = await res.arrayBuffer();
@@ -81,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const fontSize = 36;
       const textWidth = customFont.widthOfTextAtSize(verifiedName, fontSize);
       const x = (pageWidth - textWidth) / 2;
-      const y = 285.5; // adjust if WDD template layout differs
+      const y = 285.5; // Adjust if template layout changes
 
       page.drawText(verifiedName, {
         x,
@@ -93,22 +85,52 @@ document.addEventListener("DOMContentLoaded", () => {
 
       generatedPdfBytes = await pdfDoc.save();
 
+      /* ===============================
+         🔵 CRISP CANVAS PREVIEW FIX
+         (DevicePixelRatio aware)
+         =============================== */
       const pdf = await pdfjsLib.getDocument({ data: generatedPdfBytes }).promise;
       const pdfPage = await pdf.getPage(1);
-      const viewport = pdfPage.getViewport({ scale: canvas.width / pdfPage.getViewport({ scale: 1 }).width });
+
+      const dpr = window.devicePixelRatio || 1;
+
+      const baseViewport = pdfPage.getViewport({ scale: 1 });
+
+      // Desired CSS width (matches your design)
+      const cssWidth = Math.min(window.innerWidth * 0.9, 1000);
+      const scale = cssWidth / baseViewport.width;
+
+      const viewport = pdfPage.getViewport({
+        scale: scale * dpr
+      });
+
+      // Set internal resolution
+      canvas.width = viewport.width;
       canvas.height = viewport.height;
 
-      await pdfPage.render({ canvasContext: ctx, viewport }).promise;
-      fitCanvasToContainer();
+      // Set CSS size
+      canvas.style.width = `${viewport.width / dpr}px`;
+      canvas.style.height = `${viewport.height / dpr}px`;
+
+      // Reset transform before rendering
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+      await pdfPage.render({
+        canvasContext: ctx,
+        viewport
+      }).promise;
 
       Swal.fire("Success!", "World Diabetes Day 2025 certificate generated!", "success");
+
     } catch (err) {
       console.error(err);
       Swal.fire("Error", err.message || "Could not generate certificate.", "error");
     }
   });
 
-  // ✅ Download
+  /* ===============================
+     🔵 DOWNLOAD PDF
+     =============================== */
   downloadBtn.addEventListener("click", () => {
     if (!generatedPdfBytes) {
       Swal.fire("Error", "No certificate generated yet.", "warning");
@@ -122,5 +144,6 @@ document.addEventListener("DOMContentLoaded", () => {
     a.href = url;
     a.download = `WDD2025_Certificate_${safeName}.pdf`;
     a.click();
+    URL.revokeObjectURL(url);
   });
 });
