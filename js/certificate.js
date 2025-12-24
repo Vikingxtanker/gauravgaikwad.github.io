@@ -153,8 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
       icon: "success",
       title: "Certificate Downloaded!",
       text: "Please check your downloads on your device.",
-      timer: 2500,
-      showConfirmButton: false
+      confirmButtonColor: "#0077c8"
     });
   });
 });
