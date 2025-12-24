@@ -11,7 +11,9 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
 
   <style>
-    body { background-color: #f8f9fa; }
+    body {
+      background-color: #f8f9fa;
+    }
 
     #participantName::placeholder {
       font-size: 18px;
@@ -21,9 +23,13 @@
 
     .alert-light { background-color: #fffdf8; }
 
-    /* ---------- Canvas + Overlay ---------- */
+    .section-padding {
+      padding: 30px 15px;
+    }
+
+    /* ---------- Canvas + Overlay styles (matching WDD behavior) ---------- */
     #certificateCanvas {
-      display: block;
+      display: block;       /* removes baseline gap under canvas */
       max-width: 100%;
       height: auto;
       border-radius: 10px;
@@ -31,49 +37,72 @@
 
     .canvas-wrapper {
       position: relative;
-      display: inline-block;
-      line-height: 0;
+      display: inline-block; /* shrink-wrap to canvas CSS size */
+      line-height: 0;        /* IMPORTANT: prevents overlay slipping below canvas */
       border-radius: 10px;
-      overflow: hidden;
+      overflow: hidden;      /* keeps overlay and rounded corners aligned */
+      max-width: 100%;
     }
 
+    /* subtle black 10% overlay over the canvas */
     .canvas-overlay {
       position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.10);
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.10); /* 10% black */
       display: flex;
       align-items: center;
       justify-content: center;
-      pointer-events: none;
+      pointer-events: none; /* allow clicks through */
       z-index: 2;
     }
 
-    .overlay-text {
-      color: #fff;
+    .canvas-overlay .overlay-text {
+      color: #ffffff;              /* full opacity text */
+      opacity: 1;
       font-weight: 600;
       font-size: 1rem;
-      padding: 12px 20px;
-      border-radius: 8px;
-      background: rgba(0,0,0,0.25);
-      text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+      text-align: center;
+      padding: 12px 18px;
+      border-radius: 6px;
+      background: rgba(0,0,0,0.25); /* subtle pill behind text for readability */
+      text-shadow: 0 1px 2px rgba(0,0,0,0.45);
+      pointer-events: none;
     }
 
-    .section-padding { padding: 30px 15px; }
+    /* keep existing look for the alert block */
+    .alert-light h5 {
+      color: #dc3545; /* bootstrap danger color to keep same text-danger look */
+    }
   </style>
 </head>
-
 <body class="d-flex flex-column min-vh-100">
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
   <div class="container-fluid px-3 d-flex align-items-center justify-content-between">
     <div class="d-flex align-items-center">
-      <img src="assets/DYP_LOGO_RED.jpg" height="50" class="me-2">
-      <div class="d-none d-md-block">
+      <a class="navbar-brand d-flex align-items-center" href="#">
+        <img src="assets/DYP_LOGO_RED.jpg" alt="DYP Logo" height="50" class="me-2">
+      </a>
+      <div class="navbar-brand-text d-none d-md-block">
         <strong>Dr. D.Y Patil Pratishthan’s</strong><br>
         Dr. D.Y Patil College of Pharmacy Akurdi, Pune – 411044<br>
         <small class="text-muted">Department of Pharmacy Practice (Pharm. D.)</small>
       </div>
+    </div>
+    <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+      aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end mt-2 mt-lg-0" id="navbarContent">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link fw-semibold" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="health-screening.html">Health Screening</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="about-us.html">About Us</a></li>
+      </ul>
     </div>
   </div>
 </nav>
@@ -81,54 +110,46 @@
 <div class="container section-padding text-center">
   <h2 class="mb-3 text-primary fw-bold">Health Camp 2025 Participation Certificate</h2>
 
+  <!-- Appreciation Message -->
   <div class="alert alert-light mt-3 text-start p-4 border rounded shadow-sm">
     <h5 class="fw-bold text-danger mb-3 text-center">💐 Heartfelt Thanks & Appreciation 💐</h5>
-
-    <p>
-      To every student who participated in the Health Camp 2025. Registration, Hemoglobin, Blood Sugar,
-      Respiratory, Blood Pressure, and Counseling — each group gave their best efforts.
+    <p class="mb-2">
+      To every student who participated in the Health Camp 2025. Registration, Hemoglobin, Blood Sugar, Respiratory, Blood Pressure, and Counseling, each group gave their best efforts and provided excellent collaboration.
     </p>
-
-    <p>
-      Even when the college internet connection was unstable, you ensured that no data was lost.
-      This showed your responsibility and dedication.
+    <p class="mb-2">
+      Even when the college internet connection was not stable, you used your own mobile hotspots to ensure all patient data got entered properly and no data was lost. This showed your responsibility and dedication.
     </p>
-
-    <p class="fw-semibold text-center mt-3 mb-1">
-      Thank you and best wishes from Kumkum and Gaurav.
+    <p class="mb-2">
+      This unity and collaborative effort led to such wonderful outcomes. Lets continue this same effort in the future for even better results.
     </p>
-
+    <p class="fw-semibold text-center mt-3 mb-1">Thank you and best wishes from Kumkum and Gaurav.</p>
     <p class="text-center text-warning fw-bold fs-5">✨ Happy Diwali! ✨</p>
-    <hr>
+    <hr class="my-3">
     <p class="fw-semibold text-center mb-0">Download your certificate below 👇</p>
   </div>
 
-  <p class="text-muted mt-4">
-    Enter your name or phone number as in the list to verify and download your certificate.
-  </p>
+  <p class="text-muted mt-4">Enter your name or phone number as in the list to verify and download your certificate.</p>
 
   <div class="row justify-content-center mt-3">
     <div class="col-md-6">
-      <input id="participantName" class="form-control form-control-lg text-center mb-3"
-             placeholder="Enter your name or phone number">
-      <button class="btn btn-success btn-lg" id="verifyBtn">
-        Verify & Generate Certificate
-      </button>
+      <input type="text" id="participantName" class="form-control form-control-lg text-center mb-3" placeholder="Enter your name or phone number" />
+      <button class="btn btn-success btn-lg" id="verifyBtn">Verify & Generate Certificate</button>
     </div>
   </div>
 
   <div id="certificateContainer" class="mt-4 d-none text-center">
+    <!-- wrapper ensures overlay aligns with canvas CSS size -->
     <div class="canvas-wrapper">
-      <canvas id="certificateCanvas" class="border shadow-sm"></canvas>
-      <div class="canvas-overlay">
+      <canvas id="certificateCanvas" class="border rounded shadow-sm"></canvas>
+
+      <!-- subtle black overlay with instruction text (non-blocking) -->
+      <div class="canvas-overlay" aria-hidden="true">
         <div class="overlay-text">Scroll below to download your certificate ⬇️</div>
       </div>
     </div>
 
     <div class="mt-3">
-      <button class="btn btn-primary btn-lg" id="downloadBtn">
-        Download Certificate
-      </button>
+      <button class="btn btn-primary btn-lg" id="downloadBtn">Download Certificate</button>
     </div>
   </div>
 </div>
@@ -139,11 +160,36 @@
 
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
-<script src="assets/libs/fontkit.umd.js"></script>
-<script src="assets/libs/pdf.min.js"></script>
-<script>pdfjsLib.GlobalWorkerOptions.workerSrc = "assets/libs/pdf.worker.min.js";</script>
 
+<!-- PDF-lib (CDN, non-module) -->
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
+
+<!-- Local Fontkit UMD -->
+<script src="assets/libs/fontkit.umd.js"></script>
+
+<!-- Local PDF.js -->
+<script src="assets/libs/pdf.min.js"></script>
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "assets/libs/pdf.worker.min.js";
+</script>
+
+<!-- Certificate JS as module (it should include DPR canvas rendering + download popup) -->
 <script type="module" src="js/certificate.js"></script>
+
+<script>
+  // Adjust content spacing dynamically below the fixed navbar
+  window.addEventListener("load", adjustNavbarSpacing);
+  window.addEventListener("resize", adjustNavbarSpacing);
+
+  function adjustNavbarSpacing() {
+    const navbar = document.querySelector(".navbar");
+    const firstSection = document.querySelector(".section-padding");
+    if (navbar && firstSection) {
+      const navbarHeight = navbar.offsetHeight;
+      firstSection.style.marginTop = navbarHeight + 20 + "px"; // adds 20px extra gap
+    }
+  }
+</script>
+
 </body>
 </html>

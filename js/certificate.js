@@ -14,6 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let generatedPdfBytes = null;
   let verifiedName = "";
 
+  /* =========================================
+     🔵 VERIFY & GENERATE CERTIFICATE
+     ========================================= */
   verifyBtn.addEventListener("click", async () => {
     const inputValue = input.value.trim();
     if (!inputValue) {
@@ -29,14 +32,19 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     try {
-      const snapshot = await getDocs(collection(db, "participants"));
+      /* ---------- Firestore Verification ---------- */
+      const participantsRef = collection(db, "participants");
+      const snapshot = await getDocs(participantsRef);
+
       let participant = null;
       const inputLower = inputValue.toLowerCase();
 
-      snapshot.forEach(doc => {
-        const d = doc.data();
-        if (d.name?.toLowerCase() === inputLower || d.phone === inputValue) {
-          participant = d;
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const dbName = data.name?.toLowerCase().trim();
+        const dbPhone = data.phone?.trim();
+        if (dbName === inputLower || dbPhone === inputValue) {
+          participant = data;
         }
       });
 
@@ -48,47 +56,68 @@ document.addEventListener("DOMContentLoaded", () => {
       verifiedName = `${participant.prefix ?? ""} ${participant.name}`.trim();
       container.classList.remove("d-none");
 
+      /* ---------- Load PDF Template ---------- */
       const res = await fetch("assets/healthcamp_certificate_template.pdf");
-      const pdfDoc = await PDFLib.PDFDocument.load(await res.arrayBuffer());
+      if (!res.ok) throw new Error("Certificate template not found");
+      const templateBytes = await res.arrayBuffer();
+
+      const pdfDoc = await PDFLib.PDFDocument.load(templateBytes);
       pdfDoc.registerFontkit(window.fontkit);
 
-      const font = await pdfDoc.embedFont(
-        await fetch("assets/fonts/AlexBrush-Regular.ttf").then(r => r.arrayBuffer())
-      );
+      const fontBytes = await fetch("assets/fonts/AlexBrush-Regular.ttf")
+        .then(res => res.arrayBuffer());
+      const customFont = await pdfDoc.embedFont(fontBytes);
 
+      /* ---------- Draw Name ---------- */
       const page = pdfDoc.getPages()[0];
+      const pageWidth = page.getWidth();
       const fontSize = 36;
-      const textWidth = font.widthOfTextAtSize(verifiedName, fontSize);
-      const x = (page.getWidth() - textWidth) / 2;
+      const textWidth = customFont.widthOfTextAtSize(verifiedName, fontSize);
+      const x = (pageWidth - textWidth) / 2;
+      const y = 285.5;
 
       page.drawText(verifiedName, {
         x,
-        y: 285.5,
+        y,
         size: fontSize,
-        font,
-        color: PDFLib.rgb(0, 0, 0)
+        font: customFont,
+        color: PDFLib.rgb(0, 0, 0),
       });
 
       generatedPdfBytes = await pdfDoc.save();
 
-      /* ---------- High-DPI Canvas Render ---------- */
+      /* =========================================
+         🔵 CRISP CANVAS RENDER (NO BLUR)
+         DevicePixelRatio–aware
+         ========================================= */
       const pdf = await pdfjsLib.getDocument({ data: generatedPdfBytes }).promise;
       const pdfPage = await pdf.getPage(1);
 
       const dpr = window.devicePixelRatio || 1;
-      const base = pdfPage.getViewport({ scale: 1 });
+      const baseViewport = pdfPage.getViewport({ scale: 1 });
+
       const cssWidth = Math.min(window.innerWidth * 0.9, 1000);
-      const scale = cssWidth / base.width;
+      const scale = cssWidth / baseViewport.width;
 
-      const viewport = pdfPage.getViewport({ scale: scale * dpr });
+      const viewport = pdfPage.getViewport({
+        scale: scale * dpr
+      });
 
+      // Internal resolution
       canvas.width = viewport.width;
       canvas.height = viewport.height;
+
+      // CSS size
       canvas.style.width = `${viewport.width / dpr}px`;
       canvas.style.height = `${viewport.height / dpr}px`;
 
+      // Reset transform before render
       ctx.setTransform(1, 0, 0, 1, 0, 0);
-      await pdfPage.render({ canvasContext: ctx, viewport }).promise;
+
+      await pdfPage.render({
+        canvasContext: ctx,
+        viewport
+      }).promise;
 
       Swal.fire("Success!", "Certificate generated successfully!", "success");
 
@@ -98,7 +127,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /* ---------- Download + Popup ---------- */
+  /* =========================================
+     🔵 DOWNLOAD CERTIFICATE + POPUP
+     ========================================= */
   downloadBtn.addEventListener("click", () => {
     if (!generatedPdfBytes) {
       Swal.fire("Error", "No certificate generated yet.", "warning");
@@ -107,20 +138,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const blob = new Blob([generatedPdfBytes], { type: "application/pdf" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
 
+    const a = document.createElement("a");
+    const safeName = verifiedName.replace(/\s+/g, "_") || "Participant";
     a.href = url;
-    a.download = `Certificate_${verifiedName.replace(/\s+/g, "_")}.pdf`;
+    a.download = `HealthCamp2025_Certificate_${safeName}.pdf`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
+    // ✅ Download confirmation popup
     Swal.fire({
       icon: "success",
-      title: "Certificate downloaded successfully!",
+      title: "Certificate Downloaded!",
       text: "Please check your downloads on your device.",
-      confirmButtonColor: "#198754"
+      timer: 2500,
+      showConfirmButton: false
     });
   });
 });
