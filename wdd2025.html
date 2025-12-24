@@ -19,17 +19,61 @@
     h2 { color: #0077c8; /* Diabetes Day blue */ }
 
     .alert-wdd {
-  box-shadow:
-    0 6px 20px rgba(0, 119, 200, 0.08),
-    inset 0 0 0 1px rgba(0, 119, 200, 0.05);
-}
-
+      box-shadow:
+        0 6px 20px rgba(0, 119, 200, 0.08),
+        inset 0 0 0 1px rgba(0, 119, 200, 0.05);
+    }
 
     .alert-wdd h5 { color: #0077c8; }
 
     #participantName::placeholder { font-size: 18px; color: #8a8a8a !important; opacity: 1; }
 
-    #certificateCanvas { max-width: 100%; height: auto; }
+    /* Certificate canvas styling */
+    #certificateCanvas {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 10px;
+    }
+
+    .canvas-wrapper {
+      display: inline-block; /* shrink-wrap to canvas CSS size */
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden; /* keeps overlay and rounded corners aligned */
+    }
+
+    /* subtle black 10% overlay over the canvas */
+    .canvas-overlay {
+      position: absolute;
+      inset: 0; /* top:0; right:0; bottom:0; left:0; */
+      background: rgba(0, 0, 0, 0.10); /* 10% black */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none; /* allow clicks through */
+      opacity: 0;
+      transition: opacity 300ms ease;
+      z-index: 2;
+    }
+
+    /* visible when certificateContainer becomes visible */
+    #certificateContainer .canvas-overlay {
+      opacity: 1;
+    }
+
+    .canvas-overlay .overlay-text {
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 1rem;
+      text-align: center;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.45);
+      padding: 12px 18px;
+      border-radius: 6px;
+      background: rgba(0,0,0,0.05); /* tiny inner tint to help readability */
+      pointer-events: none; /* still non-blocking */
+    }
+
     .section-padding { padding: 30px 15px; }
 
     .btn-wdd {
@@ -139,7 +183,16 @@
   </div>
 
   <div id="certificateContainer" class="mt-4 d-none text-center">
-    <canvas id="certificateCanvas" class="border rounded shadow-sm"></canvas>
+    <!-- wrapper ensures overlay aligns with canvas CSS size -->
+    <div class="canvas-wrapper">
+      <canvas id="certificateCanvas" class="border rounded shadow-sm"></canvas>
+
+      <!-- subtle black overlay with instruction text (non-blocking) -->
+      <div class="canvas-overlay" aria-hidden="true">
+        <div class="overlay-text">Scroll below to download your certificate ⬇️</div>
+      </div>
+    </div>
+
     <div class="mt-3">
       <button class="btn btn-success btn-lg" id="downloadBtn">Download Certificate</button>
     </div>
@@ -199,31 +252,29 @@
 
     // create new flake
     function createFlake(startOnScreen = false) {
-  const x = Math.random() * window.innerWidth;
+      const x = Math.random() * window.innerWidth;
 
-  // 🔵 START IMMEDIATELY VISIBLE
-  const y = startOnScreen
-    ? Math.random() * window.innerHeight
-    : Math.random() * -window.innerHeight;
+      // 🔵 START IMMEDIATELY VISIBLE
+      const y = startOnScreen
+        ? Math.random() * window.innerHeight
+        : Math.random() * -window.innerHeight;
 
-  const size = MIN_SIZE + Math.random() * (MAX_SIZE - MIN_SIZE);
-  const speed = (0.5 + Math.random()) * FALL_SPEED * (size / 3);
-  const sway = (Math.random() - 0.5) * WIND_RANGE;
-  const opacity = 0.6 + Math.random() * 0.4;
+      const size = MIN_SIZE + Math.random() * (MAX_SIZE - MIN_SIZE);
+      const speed = (0.5 + Math.random()) * FALL_SPEED * (size / 3);
+      const sway = (Math.random() - 0.5) * WIND_RANGE;
+      const opacity = 0.6 + Math.random() * 0.4;
 
-  return { x, y, vx: sway, vy: speed, size, opacity };
-}
-
+      return { x, y, vx: sway, vy: speed, size, opacity };
+    }
 
     // init flakes array
     function initFlakes() {
       flakes = [];
       const count = getDensity();
       for (let i = 0; i < count; i++) {
-  // 70% start instantly on screen
-  flakes.push(createFlake(i < count * 0.7));
-}
-;
+        // 70% start instantly on screen
+        flakes.push(createFlake(i < count * 0.7));
+      }
     }
 
     // animation loop
