@@ -14,6 +14,29 @@ document.addEventListener("DOMContentLoaded", () => {
   let generatedPdfBytes = null;
   let verifiedName = "";
 
+  /* ===============================
+     🟢 GOOGLE SHEETS LOGGER
+     =============================== */
+  function logCertificateDownload(name) {
+    fetch(
+      "https://script.google.com/macros/s/AKfycbyLBUxjwhqFL-IWx4NPef17vfIwOVNJ96ogjHNQLdsT2cdk77yadYWkDLKRcYfKhY8/exec",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name,
+          event: "World Diabetes Day 2025",
+          userAgent: navigator.userAgent
+        })
+      }
+    ).catch(err => {
+      console.error("Google Sheets logging failed:", err);
+    });
+  }
+
+  /* ===============================
+     🔵 VERIFY & GENERATE CERTIFICATE
+     =============================== */
   verifyBtn.addEventListener("click", async () => {
     const inputValue = input.value.trim();
     if (!inputValue) {
@@ -29,9 +52,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     try {
-      /* ===============================
-         🔵 FIRESTORE VERIFICATION
-         =============================== */
       const participantsRef = collection(db, "wddparticipants2025");
       const snapshot = await getDocs(participantsRef);
 
@@ -56,16 +76,16 @@ document.addEventListener("DOMContentLoaded", () => {
       container.classList.remove("d-none");
 
       /* ===============================
-         🔵 LOAD WDD 2025 PDF TEMPLATE
+         🔵 LOAD PDF TEMPLATE
          =============================== */
       const res = await fetch("assets/wdd2025_certificate_template.pdf");
-      if (!res.ok) throw new Error("WDD 2025 certificate template not found");
-      const templateBytes = await res.arrayBuffer();
+      if (!res.ok) throw new Error("Certificate template not found");
 
+      const templateBytes = await res.arrayBuffer();
       const pdfDoc = await PDFLib.PDFDocument.load(templateBytes);
       pdfDoc.registerFontkit(window.fontkit);
 
-      const fontBytes = await fetch("assets/fonts/AlexBrush-Regular.ttf").then(res => res.arrayBuffer());
+      const fontBytes = await fetch("assets/fonts/AlexBrush-Regular.ttf").then(r => r.arrayBuffer());
       const customFont = await pdfDoc.embedFont(fontBytes);
 
       const page = pdfDoc.getPages()[0];
@@ -73,52 +93,39 @@ document.addEventListener("DOMContentLoaded", () => {
       const fontSize = 36;
       const textWidth = customFont.widthOfTextAtSize(verifiedName, fontSize);
       const x = (pageWidth - textWidth) / 2;
-      const y = 300; // Adjust if template layout changes
+      const y = 300;
 
       page.drawText(verifiedName, {
         x,
         y,
         size: fontSize,
         font: customFont,
-        color: PDFLib.rgb(0, 0, 0),
+        color: PDFLib.rgb(0, 0, 0)
       });
 
       generatedPdfBytes = await pdfDoc.save();
 
       /* ===============================
-         🔵 CRISP CANVAS PREVIEW FIX
-         (DevicePixelRatio aware)
+         🔵 CRISP CANVAS PREVIEW
          =============================== */
       const pdf = await pdfjsLib.getDocument({ data: generatedPdfBytes }).promise;
       const pdfPage = await pdf.getPage(1);
 
       const dpr = window.devicePixelRatio || 1;
-
       const baseViewport = pdfPage.getViewport({ scale: 1 });
-
-      // Desired CSS width (matches your design)
       const cssWidth = Math.min(window.innerWidth * 0.9, 1000);
       const scale = cssWidth / baseViewport.width;
 
-      const viewport = pdfPage.getViewport({
-        scale: scale * dpr
-      });
+      const viewport = pdfPage.getViewport({ scale: scale * dpr });
 
-      // Set internal resolution
       canvas.width = viewport.width;
       canvas.height = viewport.height;
-
-      // Set CSS size
       canvas.style.width = `${viewport.width / dpr}px`;
       canvas.style.height = `${viewport.height / dpr}px`;
 
-      // Reset transform before rendering
       ctx.setTransform(1, 0, 0, 1, 0, 0);
 
-      await pdfPage.render({
-        canvasContext: ctx,
-        viewport
-      }).promise;
+      await pdfPage.render({ canvasContext: ctx, viewport }).promise;
 
       Swal.fire("Success!", "World Diabetes Day 2025 certificate generated!", "success");
 
@@ -129,32 +136,34 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ===============================
-     🔵 DOWNLOAD PDF
+     🔵 DOWNLOAD & LOG
      =============================== */
   downloadBtn.addEventListener("click", () => {
-  if (!generatedPdfBytes) {
-    Swal.fire("Error", "No certificate generated yet.", "warning");
-    return;
-  }
+    if (!generatedPdfBytes) {
+      Swal.fire("Error", "No certificate generated yet.", "warning");
+      return;
+    }
 
-  const blob = new Blob([generatedPdfBytes], { type: "application/pdf" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  const safeName = verifiedName.replace(/\s+/g, "_") || "Participant";
+    const blob = new Blob([generatedPdfBytes], { type: "application/pdf" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const safeName = verifiedName.replace(/\s+/g, "_") || "Participant";
 
-  a.href = url;
-  a.download = `WDD2025_Certificate_${safeName}.pdf`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+    a.href = url;
+    a.download = `WDD2025_Certificate_${safeName}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 
-  // ✅ Success popup after download
-  Swal.fire({
-    icon: "success",
-    title: "Certificate downloaded successfully!",
-    text: "Please check your downloads on your device.",
-    confirmButtonColor: "#0077c8"
+    // 🟢 LOG TO GOOGLE SHEETS (SUCCESS ONLY)
+    logCertificateDownload(verifiedName);
+
+    Swal.fire({
+      icon: "success",
+      title: "Certificate downloaded successfully!",
+      text: "Please check your downloads on your device.",
+      confirmButtonColor: "#0077c8"
+    });
   });
-});
 });
