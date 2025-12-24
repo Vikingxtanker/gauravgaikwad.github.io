@@ -11,59 +11,64 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
 
   <style>
+    /* Page theme */
     body {
-      background: linear-gradient(180deg, #e8f4ff 0%, #f8f9fa 60%);
+      background: linear-gradient(180deg, #dcefff 0%, #eef6ff 40%, #f7fbff 100%);
     }
 
-    h2 {
-      color: #0077c8; /* Diabetes Day blue */
-    }
+    h2 { color: #0077c8; /* Diabetes Day blue */ }
 
     .alert-wdd {
-      background: #ffffff;
-      border-left: 6px solid #0077c8;
-    }
+  box-shadow:
+    0 6px 20px rgba(0, 119, 200, 0.08),
+    inset 0 0 0 1px rgba(0, 119, 200, 0.05);
+}
 
-    .alert-wdd h5 {
-      color: #0077c8;
-    }
 
-    #participantName::placeholder {
-      font-size: 18px;
-      color: #8a8a8a !important;
-      opacity: 1;
-    }
+    .alert-wdd h5 { color: #0077c8; }
 
-    #certificateCanvas {
-      max-width: 100%;
-      height: auto;
-    }
+    #participantName::placeholder { font-size: 18px; color: #8a8a8a !important; opacity: 1; }
 
-    .section-padding {
-      padding: 30px 15px;
-    }
+    #certificateCanvas { max-width: 100%; height: auto; }
+    .section-padding { padding: 30px 15px; }
 
     .btn-wdd {
-  background-color: #ffffff;
-  color: #0077c8;            /* Diabetes Day blue */
-  border: 2px solid #0077c8;
-  font-weight: 600;
-}
+      background-color: #ffffff;
+      color: #0077c8;            /* Diabetes Day blue */
+      border: 2px solid #0077c8;
+      font-weight: 600;
+    }
+    .btn-wdd:hover {
+      background-color: #0077c8;
+      color: #ffffff;
+      border-color: #0077c8;
+    }
 
-.btn-wdd:hover {
-  background-color: #0077c8;
-  color: #ffffff;
-  border-color: #0077c8;
-}
+    footer { background-color: #f1f7fc; }
 
+    /* ---------- Snowfall canvas overlay ---------- */
+    #snow-canvas {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none; /* allow clicks through the snowfall */
+      z-index: 1050; /* above content but below modals if needed; adjust as required */
+      mix-blend-mode: normal;
+    }
 
-    footer {
-      background-color: #f1f7fc;
+    /* small optimization: reduce density on small screens */
+    @media (max-width: 575px) {
+      :root { --snow-density: 0.4; }
     }
   </style>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
+
+<!-- Snow canvas (overlay) -->
+<canvas id="snow-canvas" aria-hidden="true"></canvas>
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
@@ -98,14 +103,12 @@
 
   <!-- Appreciation Message -->
   <div class="alert alert-wdd mt-3 text-start p-4 rounded shadow-sm">
-    <h5 class="fw-bold text-center mb-3">
-      🌟 Thank you for supporting World Diabetes Day 2025 🌟
-    </h5>
+    <h5 class="fw-bold text-center mb-3">🌟 Thank you for supporting World Diabetes Day 2025 🌟</h5>
 
     <p>
       To all participants and the decoration team: your enthusiasm, teamwork, and commitment made World Diabetes Day 2025
       a truly meaningful and successful event. From registrations and awareness activities to the thoughtful and creative
-      decorations, every contribution played an important role in spreading awareness about diabetes care and prevention.
+      decorations — every contribution played an important role in spreading awareness about diabetes care and prevention.
     </p>
 
     <p>
@@ -114,54 +117,37 @@
     </p>
 
     <p class="mt-3">
-      As we celebrate this season of joy and togetherness, we wish you a
-      <strong>Merry Christmas</strong> and a
-      <strong>Happy New Year</strong> filled with good health, happiness, and success.
+      As we celebrate this season of joy and togetherness on <strong>24 December 2025</strong>, we wish you a
+      <strong>Merry Christmas 🎄</strong> and a <strong>Happy New Year 🎉</strong> may the coming year bring you good health and happiness.
     </p>
 
     <p class="fw-semibold text-center mt-4 mb-1">
-      With gratitude,<br>
-      <strong>Kumkum & Gaurav</strong>
+      With gratitude,<br><strong>Kumkum & Gaurav</strong>
     </p>
 
     <hr class="my-3">
-
-    <p class="fw-semibold text-center mb-0">
-      Download your certificate below 👇
-    </p>
+    <p class="fw-semibold text-center mb-0">Download your certificate below 👇</p>
   </div>
 
-  <p class="text-muted mt-4">
-    Enter your name or phone number (as in the event list) to verify and download your certificate.
-  </p>
+  <p class="text-muted mt-4">Enter your name or phone number (as in the event list) to verify and download your certificate.</p>
 
   <div class="row justify-content-center mt-3">
     <div class="col-md-6">
-      <input
-        type="text"
-        id="participantName"
-        class="form-control form-control-lg text-center mb-3"
-        placeholder="Enter your name or phone number" />
-      <button class="btn btn-wdd btn-lg" id="verifyBtn">
-        Verify & Generate Certificate
-      </button>
+      <input type="text" id="participantName" class="form-control form-control-lg text-center mb-3" placeholder="Enter your name or phone number" />
+      <button class="btn btn-wdd btn-lg" id="verifyBtn">Verify & Generate Certificate</button>
     </div>
   </div>
 
   <div id="certificateContainer" class="mt-4 d-none text-center">
     <canvas id="certificateCanvas" class="border rounded shadow-sm"></canvas>
     <div class="mt-3">
-      <button class="btn btn-success btn-lg" id="downloadBtn">
-        Download Certificate
-      </button>
+      <button class="btn btn-success btn-lg" id="downloadBtn">Download Certificate</button>
     </div>
   </div>
 </div>
 
 <footer class="text-center py-3 shadow-sm mt-auto">
-  <small class="text-muted">
-    © 2025 Designed & Developed by Gaurav Gaikwad & Kumkum Bhenwal
-  </small>
+  <small class="text-muted">© 2025 Designed & Developed by Gaurav Gaikwad & Kumkum Bhenwal</small>
 </footer>
 
 <!-- Scripts -->
@@ -177,7 +163,130 @@
 <!-- WDD 2025 Logic -->
 <script type="module" src="js/wdd2025.js"></script>
 
+<!-- ---------- Simple Canvas Snowfall Script (self-contained) ---------- -->
 <script>
+  (function() {
+    // Config
+    const SNOW_COLOR = '255,255,255';          // white
+    const MAX_FLakes = 140;                   // base density on large screens
+    const MIN_SIZE = 1.5;
+    const MAX_SIZE = 5.5;
+    const WIND_RANGE = 0.5;                   // horizontal drift per frame
+    const FALL_SPEED = 0.6;                   // base vertical speed multiplier
+
+    // Responsive density adjustment
+    function getDensity() {
+      const w = window.innerWidth;
+      if (w < 576) return Math.round(MAX_FLakes * 0.35); // small screens
+      if (w < 992) return Math.round(MAX_FLakes * 0.6);  // medium
+      return MAX_FLakes;                                // large
+    }
+
+    const canvas = document.getElementById('snow-canvas');
+    const ctx = canvas.getContext('2d');
+    let flakes = [];
+    let rafId = null;
+
+    // resize handling (account for devicePixelRatio)
+    function resizeCanvas() {
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      canvas.width = Math.floor(window.innerWidth * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    // create new flake
+    function createFlake(startOnScreen = false) {
+  const x = Math.random() * window.innerWidth;
+
+  // 🔵 START IMMEDIATELY VISIBLE
+  const y = startOnScreen
+    ? Math.random() * window.innerHeight
+    : Math.random() * -window.innerHeight;
+
+  const size = MIN_SIZE + Math.random() * (MAX_SIZE - MIN_SIZE);
+  const speed = (0.5 + Math.random()) * FALL_SPEED * (size / 3);
+  const sway = (Math.random() - 0.5) * WIND_RANGE;
+  const opacity = 0.6 + Math.random() * 0.4;
+
+  return { x, y, vx: sway, vy: speed, size, opacity };
+}
+
+
+    // init flakes array
+    function initFlakes() {
+      flakes = [];
+      const count = getDensity();
+      for (let i = 0; i < count; i++) {
+  // 70% start instantly on screen
+  flakes.push(createFlake(i < count * 0.7));
+}
+;
+    }
+
+    // animation loop
+    function updateAndDraw() {
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      for (let i = 0; i < flakes.length; i++) {
+        const f = flakes[i];
+        f.x += f.vx + Math.sin((Date.now() / 1000) + f.size) * 0.3; // subtle oscillation
+        f.y += f.vy;
+
+        // wrap horizontally
+        if (f.x > window.innerWidth + 20) f.x = -20;
+        if (f.x < -20) f.x = window.innerWidth + 20;
+
+        // recycle when below screen
+        if (f.y > window.innerHeight + 20) {
+          flakes[i] = createFlake();
+          flakes[i].y = -10;
+        }
+
+        // draw: soft circle using shadow for gentle glow
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(' + SNOW_COLOR + ', ' + f.opacity + ')';
+        ctx.arc(f.x, f.y, f.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      rafId = requestAnimationFrame(updateAndDraw);
+    }
+
+    // start snowfall
+    function start() {
+      cancelAnimationFrame(rafId);
+      resizeCanvas();
+      initFlakes();
+      updateAndDraw();
+    }
+
+    // responsiveness - restart with new density on resize/orientation change
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        start();
+      }, 250);
+    });
+
+    // Start on load
+    window.addEventListener('load', start);
+
+    // Expose toggle (optional) for debugging: window.toggleSnow(false)
+    window.toggleSnow = function(enabled) {
+      if (!enabled) {
+        cancelAnimationFrame(rafId);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      } else {
+        start();
+      }
+    };
+  })();
+</script>
+
+<script>
+  // Adjust content spacing below fixed navbar
   window.addEventListener("load", adjustNavbarSpacing);
   window.addEventListener("resize", adjustNavbarSpacing);
 
