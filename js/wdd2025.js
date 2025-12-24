@@ -132,18 +132,29 @@ document.addEventListener("DOMContentLoaded", () => {
      🔵 DOWNLOAD PDF
      =============================== */
   downloadBtn.addEventListener("click", () => {
-    if (!generatedPdfBytes) {
-      Swal.fire("Error", "No certificate generated yet.", "warning");
-      return;
-    }
+  if (!generatedPdfBytes) {
+    Swal.fire("Error", "No certificate generated yet.", "warning");
+    return;
+  }
 
-    const blob = new Blob([generatedPdfBytes], { type: "application/pdf" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    const safeName = verifiedName.replace(/\s+/g, "_") || "Participant";
-    a.href = url;
-    a.download = `WDD2025_Certificate_${safeName}.pdf`;
-    a.click();
-    URL.revokeObjectURL(url);
+  const blob = new Blob([generatedPdfBytes], { type: "application/pdf" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const safeName = verifiedName.replace(/\s+/g, "_") || "Participant";
+
+  a.href = url;
+  a.download = `WDD2025_Certificate_${safeName}.pdf`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  // ✅ Success popup after download
+  Swal.fire({
+    icon: "success",
+    title: "Certificate downloaded successfully!",
+    text: "Please check your downloads on your device.",
+    confirmButtonColor: "#0077c8"
   });
+});
 });
