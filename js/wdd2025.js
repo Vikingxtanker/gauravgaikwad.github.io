@@ -178,7 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
       Swal.fire({
         icon: "success",
         title: "Certificate downloaded successfully!",
-        text: "Your certificate download has been recorded.",
+        text: "Please check your downloads on your device.",
         confirmButtonColor: "#0077c8"
       });
     } else {
