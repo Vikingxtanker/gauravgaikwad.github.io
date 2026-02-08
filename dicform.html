@@ -184,55 +184,71 @@
       </div>
     </div>
 
-    <!-- Query Category -->
-    <h5 class="mt-4 mb-2">Query Category (Select all that apply)</h5>
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="category1" value="Drug Dosage & Administration">
-          <label class="form-check-label" for="category1">Drug Dosage & Administration</label>
-        </div>
-
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="category2" value="ADR">
-          <label class="form-check-label" for="category2">ADR</label>
-        </div>
-
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="category3" value="Drug Therapeutics Use">
-          <label class="form-check-label" for="category3">Drug Therapeutics Use</label>
-        </div>
-
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="category4" value="Contraindication/Precaution">
-          <label class="form-check-label" for="category4">Contraindication / Precaution</label>
-        </div>
-      </div>
-
-      <div class="col-md-6">
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="category5" value="Identification of Drug">
-          <label class="form-check-label" for="category5">Identification of Drug</label>
-        </div>
-
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="category6" value="Pharmacokinetics">
-          <label class="form-check-label" for="category6">Pharmacokinetics</label>
-        </div>
-
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="category7" value="Availability/Brand Name">
-          <label class="form-check-label" for="category7">Availability / Brand Name</label>
-        </div>
-
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="category8" value="Others">
-          <label class="form-check-label" for="category8">Others</label>
-        </div>
-
-        <input type="text" id="otherCategory" class="form-control mt-2" placeholder="Specify if others">
-      </div>
+<!-- DIC categories container (replace your existing checkbox block) -->
+<div id="categorySection" style="padding:12px;border:1px solid #e0e0e0;border-radius:8px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,0.03);max-width:980px;margin:12px 0;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+    <div style="font-weight:600;font-size:15px;color:#111;">Select query categories</div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button id="selectAllBtn" type="button" style="border:1px solid #2d8cf0;background:#2d8cf0;color:#fff;padding:6px 10px;border-radius:6px;font-size:13px;cursor:pointer;">
+        Select all
+      </button>
+      <button id="clearAllChkBtn" type="button" style="border:1px solid #ccc;background:#fff;color:#333;padding:6px 10px;border-radius:6px;font-size:13px;cursor:pointer;">
+        Clear
+      </button>
     </div>
+  </div>
+
+  <!-- grid of checkbox "chips" -->
+  <div id="categoryGrid" style="display:flex;flex-wrap:wrap;gap:10px;">
+    <!-- each label acts like a selectable card/chip; input kept for form submission -->
+    <label style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid #ddd;background:#fafafa;cursor:pointer;user-select:none;min-width:180px;" >
+      <input type="checkbox" id="category1" name="categories" value="Drug Interaction" style="width:18px;height:18px;cursor:pointer;" />
+      <span style="font-size:14px;color:#222;">Drug Interaction</span>
+    </label>
+
+    <label style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid #ddd;background:#fafafa;cursor:pointer;user-select:none;min-width:180px;">
+      <input type="checkbox" id="category2" name="categories" value="Adverse Drug Reaction" style="width:18px;height:18px;cursor:pointer;" />
+      <span style="font-size:14px;color:#222;">Adverse Drug Reaction</span>
+    </label>
+
+    <label style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid #ddd;background:#fafafa;cursor:pointer;user-select:none;min-width:180px;">
+      <input type="checkbox" id="category3" name="categories" value="Dose Adjustment" style="width:18px;height:18px;cursor:pointer;" />
+      <span style="font-size:14px;color:#222;">Dose Adjustment</span>
+    </label>
+
+    <label style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid #ddd;background:#fafafa;cursor:pointer;user-select:none;min-width:180px;">
+      <input type="checkbox" id="category4" name="categories" value="Therapeutic Interchange" style="width:18px;height:18px;cursor:pointer;" />
+      <span style="font-size:14px;color:#222;">Therapeutic Interchange</span>
+    </label>
+
+    <label style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid #ddd;background:#fafafa;cursor:pointer;user-select:none;min-width:180px;">
+      <input type="checkbox" id="category5" name="categories" value="Polypharmacy Review" style="width:18px;height:18px;cursor:pointer;" />
+      <span style="font-size:14px;color:#222;">Polypharmacy Review</span>
+    </label>
+
+    <label style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid #ddd;background:#fafafa;cursor:pointer;user-select:none;min-width:180px;">
+      <input type="checkbox" id="category6" name="categories" value="OTC Counseling" style="width:18px;height:18px;cursor:pointer;" />
+      <span style="font-size:14px;color:#222;">OTC Counseling</span>
+    </label>
+
+    <label style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid #ddd;background:#fafafa;cursor:pointer;user-select:none;min-width:180px;">
+      <input type="checkbox" id="category7" name="categories" value="Herb-Drug Interaction" style="width:18px;height:18px;cursor:pointer;" />
+      <span style="font-size:14px;color:#222;">Herb-Drug Interaction</span>
+    </label>
+
+    <label style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid #ddd;background:#fafafa;cursor:pointer;user-select:none;min-width:180px;">
+      <input type="checkbox" id="category8" name="categories" value="Other" style="width:18px;height:18px;cursor:pointer;" />
+      <span style="font-size:14px;color:#222;">Other</span>
+    </label>
+  </div>
+
+  <!-- "Other" text input -->
+  <div style="margin-top:12px;display:flex;gap:10px;align-items:center;">
+    <input id="otherCategory" name="otherCategory" type="text" placeholder="If Other, specify here" style="flex:1;padding:9px 10px;border-radius:8px;border:1px solid #ddd;font-size:14px;outline:none;" />
+    <small style="color:#666;font-size:13px;">(optional)</small>
+  </div>
+</div>
+
 
     <!-- Specific Question -->
     <div class="row mb-3 text-start">
@@ -328,6 +344,9 @@
 <!-- ✅ Script Includes -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+<!-- dic  form submit -->
+<script type="module" src="js/dicform.js"></script>
+
 <!-- ✅ Fix Navbar Overlap Dynamically -->
 <script>
   function adjustFormMargin() {
@@ -346,6 +365,104 @@
   window.addEventListener("load", adjustFormMargin);
   window.addEventListener("resize", adjustFormMargin);
 </script>
+
+<script>
+  (function() {
+    // IDs for checkboxes (match your markup)
+    const chkIds = ["category1","category2","category3","category4","category5","category6","category7","category8"];
+    const selectAllBtn = document.getElementById("selectAllBtn");
+    const clearAllChkBtn = document.getElementById("clearAllChkBtn");
+    const otherInput = document.getElementById("otherCategory");
+
+    // Toggle visual state when a checkbox changes
+    function onCheckboxChange(el) {
+      const label = el.closest("label");
+      if (!label) return;
+      if (el.checked) {
+        // checked style
+        label.style.background = "#e8f4ff";
+        label.style.borderColor = "#2d8cf0";
+        label.style.boxShadow = "0 2px 6px rgba(45,140,240,0.12)";
+        label.querySelector("span").style.color = "#084298";
+      } else {
+        // unchecked style
+        label.style.background = "#fafafa";
+        label.style.borderColor = "#ddd";
+        label.style.boxShadow = "none";
+        label.querySelector("span").style.color = "#222";
+      }
+    }
+
+    // Attach listeners for all checkboxes
+    chkIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      // initialize look
+      onCheckboxChange(el);
+      // when user clicks the label or checkbox, change appearance
+      el.addEventListener("change", () => onCheckboxChange(el));
+    });
+
+    // Select all / Clear all buttons
+    if (selectAllBtn) {
+      selectAllBtn.addEventListener("click", () => {
+        chkIds.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) {
+            el.checked = true;
+            onCheckboxChange(el);
+          }
+        });
+      });
+    }
+
+    if (clearAllChkBtn) {
+      clearAllChkBtn.addEventListener("click", () => {
+        chkIds.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) {
+            el.checked = false;
+            onCheckboxChange(el);
+          }
+        });
+        // clear other field too
+        if (otherInput) otherInput.value = "";
+      });
+    }
+
+    // If user types something in "other" we ensure "Other" checkbox is checked
+    if (otherInput) {
+      otherInput.addEventListener("input", () => {
+        const otherChk = document.getElementById("category8");
+        if (!otherChk) return;
+        if (otherInput.value.trim()) {
+          otherChk.checked = true;
+        } else {
+          // don't auto-uncheck if user checked explicitly — keep it unset
+          // still update visual
+          otherChk.checked = false;
+        }
+        onCheckboxChange(otherChk);
+      });
+    }
+
+    // Make label clicks toggle the checkbox even if label has no "for" attr (robust)
+    document.getElementById("categorySection")?.addEventListener("click", (ev) => {
+      const lbl = ev.target.closest("label");
+      if (!lbl) return;
+      // prevent clicks on the input from double toggling
+      const input = lbl.querySelector("input[type=checkbox]");
+      if (!input) return;
+      // if the click target was the input element itself, let default happen
+      if (ev.target === input) return;
+      // otherwise toggle
+      input.checked = !input.checked;
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+
+  })();
+</script>
+
 
 </body>
 </html>
